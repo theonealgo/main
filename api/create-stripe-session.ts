@@ -1,7 +1,7 @@
 import Stripe from 'stripe';
 import { NextRequest, NextResponse } from 'next/server';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2025-03-31.basil',
+  apiVersion: '2024-03-14' as any,
 });
 export async function POST(req: NextRequest) {
   const { plan, billing, email } = await req.json();
