@@ -2,7 +2,7 @@ import Stripe from 'stripe';
 import { NextRequest, NextResponse } from 'next/server';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2023-10-16',
+  apiVersion: '2024-03-14',
 });
 
 export async function POST(req: NextRequest) {
@@ -12,7 +12,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
 
-  // Match priceId from plan + billing combo
   const priceMap: Record<string, Record<string, string>> = {
     the_one_stock: {
       monthly: 'price_1RHjlnGM80oGs0bFw58mL9SQ',
@@ -24,7 +23,7 @@ export async function POST(req: NextRequest) {
     },
     the_one_premium: {
       monthly: 'price_1RHqfH4S3QlVoTDjEroNADmB',
-      yearly: 'price_1RHqfH4S3QlVoTDjEroNADmB', // same for now
+      yearly: 'price_1RHqfH4S3QlVoTDjEroNADmB',
     },
   };
 
@@ -34,11 +33,9 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    // Step 1: Check if customer already exists
     const existingCustomers = await stripe.customers.list({ email, limit: 1 });
     const customer = existingCustomers.data[0] || await stripe.customers.create({ email });
 
-    // Step 2: Check if they already used a free trial
     const subscriptions = await stripe.subscriptions.list({
       customer: customer.id,
       status: 'all',
@@ -56,7 +53,6 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Step 3: Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       customer: customer.id,
