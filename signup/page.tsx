@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import SignupForm from '@/components/SignupForm';
+import SignupForm from '@/components/SignupForm'; // adjust path if needed
 
 export default function SignupPage() {
   const searchParams = useSearchParams();
