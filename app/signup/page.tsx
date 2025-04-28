@@ -1,0 +1,32 @@
+'use client';
+
+import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react'; // 👈 Import signIn
+import SignupForm from '@/components/SignupForm';
+
+export default function SignupPage() {
+  const searchParams = useSearchParams();
+  const plan = searchParams.get('plan') || 'the_one_stock';
+  const billing = searchParams.get('billing') || 'monthly';
+
+  return (
+    <div className="min-h-screen flex bg-black text-white">
+      <div className="hidden lg:block relative w-1/2">
+        <Image
+          src="/images/bground.jpg"
+          alt="Trading Background"
+          fill
+          className="object-cover"
+          priority
+        />
+      </div>
+
+      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 space-y-6">
+
+        {/* OR SIGNUP MANUALLY */}
+        <SignupForm plan={plan} billing={billing} />
+      </div>
+    </div>
+  );
+}
