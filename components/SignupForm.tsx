@@ -13,8 +13,8 @@ export default function SignupForm({ plan, billing }: SignupFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically send a request to your backend
-    console.log('Submitted:', { email, tradingViewUsername, plan, billing });
+    console.log('Form submitted:', { email, tradingViewUsername, plan, billing });
+    // TODO: Here you can send the form data to your server.
   };
 
   return (
@@ -32,6 +32,7 @@ export default function SignupForm({ plan, billing }: SignupFormProps) {
               className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
+
           <div>
             <label className="block text-sm font-medium text-gray-700">TradingView Username</label>
             <input
@@ -42,10 +43,12 @@ export default function SignupForm({ plan, billing }: SignupFormProps) {
               className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
             />
           </div>
+
           <div className="text-sm text-gray-600">
-            Selected Plan: <strong>{plan}</strong> <br />
+            Selected Plan: <strong>{plan}</strong><br />
             Billing Cycle: <strong>{billing}</strong>
           </div>
+
           <button
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white rounded hover:bg-indigo-700"
