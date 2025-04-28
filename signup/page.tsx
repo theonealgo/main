@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react'; // 👈 Import signIn
 import SignupForm from '@/components/SignupForm';
 
 export default function SignupPage() {
@@ -23,8 +22,6 @@ export default function SignupPage() {
       </div>
 
       <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 space-y-6">
-
-        {/* OR SIGNUP MANUALLY */}
         <SignupForm plan={plan} billing={billing} />
       </div>
     </div>
