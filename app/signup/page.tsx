@@ -3,23 +3,22 @@
 import { useEffect, useState } from 'react';
 import SignupForm from '../../components/SignupForm';
 
-export default function SignupPage({
-  searchParams,
-}: {
-  searchParams: Record<string, string | string[] | undefined>;
-}) {
+// Correct type for App Router searchParams
+interface SignupPageProps {
+  searchParams: URLSearchParams;
+}
+
+export default function SignupPage({ searchParams }: SignupPageProps) {
   const [plan, setPlan] = useState<string | null>(null);
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    // Handle both string and array parameter formats
-    const getParam = (param: string | string[] | undefined) => {
-      if (!param) return null;
-      return Array.isArray(param) ? param[0] : param;
-    };
-
-    setPlan(getParam(searchParams.plan) ?? null);
-    setBilling(getParam(searchParams.billing) ?? null);
+    // Use URLSearchParams API directly
+    const p = searchParams.get('plan');
+    const b = searchParams.get('billing');
+    
+    setPlan(p);
+    setBilling(b);
   }, [searchParams]);
 
   return (
