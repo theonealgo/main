@@ -3,20 +3,27 @@
 import { useEffect, useState } from 'react';
 import SignupForm from '../../components/SignupForm';
 
-type Props = {
-  searchParams: { [key: string]: string | undefined };
+// Correct type definition for App Router
+type PageProps = {
+  searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default function SignupPage({ searchParams }: Props) {
+export default function SignupPage({ searchParams }: PageProps) {
   const [plan, setPlan] = useState<string | null>(null);
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    const p = searchParams.plan ?? null;
-    const b = searchParams.billing ?? null;
+    // Handle string array case for query parameters
+    const p = Array.isArray(searchParams.plan) 
+      ? searchParams.plan[0] 
+      : searchParams.plan ?? null;
+      
+    const b = Array.isArray(searchParams.billing)
+      ? searchParams.billing[0]
+      : searchParams.billing ?? null;
 
-    setPlan(p);
-    setBilling(b);
+    setPlan(p ?? null);
+    setBilling(b ?? null);
   }, [searchParams]);
 
   return (
