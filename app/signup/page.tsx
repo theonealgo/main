@@ -12,14 +12,15 @@ export default function SignupPage({ searchParams }: Props) {
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
+    // Check if searchParams is available before using it
     if (searchParams) {
-      const p = searchParams.plan ?? null;
-      const b = searchParams.billing ?? null;
+      const p = searchParams.plan ?? null;  // Using nullish coalescing operator
+      const b = searchParams.billing ?? null; // If the value is undefined, use null
 
       setPlan(p);
       setBilling(b);
     }
-  }, [searchParams]);
+  }, [searchParams]);  // Effect runs whenever searchParams changes
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
