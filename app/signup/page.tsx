@@ -1,21 +1,25 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 import SignupForm from '@/components/SignupForm';
 
 export default function SignupPage() {
   const searchParams = useSearchParams();
+
   const [plan, setPlan] = useState('the_one_stock');
   const [billing, setBilling] = useState('monthly');
 
   useEffect(() => {
-    const p = searchParams.get('plan');
-    const b = searchParams.get('billing');
+    if (!searchParams) return;
 
-    if (p) setPlan(p);
-    if (b) setBilling(b);
+    const planParam = searchParams.get('plan');
+    const billingParam = searchParams.get('billing');
+
+    if (planParam) setPlan(planParam);
+    if (billingParam) setBilling(billingParam);
   }, [searchParams]);
 
   return (
