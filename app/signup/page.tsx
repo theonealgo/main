@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SignupForm from './SignupForm';
+import SignupForm from '../../components/SignupForm';
 
 type Props = {
   searchParams: { [key: string]: string | undefined };
