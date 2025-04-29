@@ -13,13 +13,14 @@ export default function SignupPage() {
   const [billing, setBilling] = useState('monthly');
 
   useEffect(() => {
-    if (!searchParams) return;
+    // SAFETY CHECK: Make sure searchParams is not null before accessing it
+    if (searchParams) {
+      const planParam = searchParams.get('plan');
+      const billingParam = searchParams.get('billing');
 
-    const planParam = searchParams.get('plan');
-    const billingParam = searchParams.get('billing');
-
-    if (planParam) setPlan(planParam);
-    if (billingParam) setBilling(billingParam);
+      if (planParam) setPlan(planParam);
+      if (billingParam) setBilling(billingParam);
+    }
   }, [searchParams]);
 
   return (
