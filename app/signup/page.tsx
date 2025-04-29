@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import SignupForm from './SignupForm';
 
 type Props = {
-  searchParams?: { [key: string]: string };
+  searchParams?: { [key: string]: string | undefined };
 };
 
 export default function SignupPage({ searchParams }: Props) {
@@ -12,11 +12,13 @@ export default function SignupPage({ searchParams }: Props) {
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    const p = searchParams?.plan || null;
-    const b = searchParams?.billing || null;
+    if (searchParams) {
+      const p = searchParams.plan ?? null;
+      const b = searchParams.billing ?? null;
 
-    if (p) setPlan(p);
-    if (b) setBilling(b);
+      setPlan(p);
+      setBilling(b);
+    }
   }, [searchParams]);
 
   return (
