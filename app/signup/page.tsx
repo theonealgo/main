@@ -1,41 +1,28 @@
 'use client';
 
-import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { signIn } from 'next-auth/react';
-import SignupForm from '@/components/SignupForm';
+import SignupForm from './SignupForm';
 
-export default function SignupPage() {
-  const searchParams = useSearchParams();
+type Props = {
+  searchParams?: { [key: string]: string };
+};
 
-  const [plan, setPlan] = useState('the_one_stock');
-  const [billing, setBilling] = useState('monthly');
+export default function SignupPage({ searchParams }: Props) {
+  const [plan, setPlan] = useState<string | null>(null);
+  const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    // SAFETY CHECK: Make sure searchParams is not null before accessing it
-    if (searchParams) {
-      const planParam = searchParams.get('plan');
-      const billingParam = searchParams.get('billing');
+    const p = searchParams?.plan || null;
+    const b = searchParams?.billing || null;
 
-      if (planParam) setPlan(planParam);
-      if (billingParam) setBilling(billingParam);
-    }
+    if (p) setPlan(p);
+    if (b) setBilling(b);
   }, [searchParams]);
 
   return (
-    <div className="min-h-screen flex bg-black text-white">
-      <div className="hidden lg:block relative w-1/2">
-        <Image
-          src="/images/bground.jpg"
-          alt="Trading Background"
-          fill
-          className="object-cover"
-          priority
-        />
-      </div>
-
-      <div className="w-full lg:w-1/2 flex flex-col items-center justify-center p-8 space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md p-6 bg-white rounded-2xl shadow-md">
+        <h1 className="text-2xl font-bold mb-4 text-center">Create Your Account</h1>
         <SignupForm plan={plan} billing={billing} />
       </div>
     </div>
