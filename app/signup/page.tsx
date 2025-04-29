@@ -1,24 +1,26 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SignupForm from './SignupForm';
+import SignupForm from '../../components/SignupForm';
 
+// Use Next.js' correct type for App Router pages
 export default function SignupPage({
   searchParams,
 }: {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
   const [plan, setPlan] = useState<string | null>(null);
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    if (searchParams) {
-      const p = Array.isArray(searchParams.plan) ? searchParams.plan[0] : searchParams.plan ?? null;
-      const b = Array.isArray(searchParams.billing) ? searchParams.billing[0] : searchParams.billing ?? null;
+    // Type-safe parameter extraction
+    const getParam = (param: string | string[] | undefined): string | null => {
+      if (!param) return null;
+      return Array.isArray(param) ? param[0] : param;
+    };
 
-      setPlan(p);
-      setBilling(b);
-    }
+    setPlan(getParam(searchParams.plan));
+    setBilling(getParam(searchParams.billing));
   }, [searchParams]);
 
   return (
