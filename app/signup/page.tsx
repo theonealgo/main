@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import SignupForm from '../../components/SignupForm';
 
-// Correct type definition for App Router
+// Use Next.js' built-in type for searchParams
 type PageProps = {
   searchParams: { [key: string]: string | string[] | undefined };
 };
@@ -13,17 +13,14 @@ export default function SignupPage({ searchParams }: PageProps) {
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    // Handle string array case for query parameters
-    const p = Array.isArray(searchParams.plan) 
-      ? searchParams.plan[0] 
-      : searchParams.plan ?? null;
-      
-    const b = Array.isArray(searchParams.billing)
-      ? searchParams.billing[0]
-      : searchParams.billing ?? null;
+    // Handle both string and array formats
+    const getParam = (param: string | string[] | undefined) => {
+      if (Array.isArray(param)) return param[0];
+      return param || null;
+    };
 
-    setPlan(p ?? null);
-    setBilling(b ?? null);
+    setPlan(getParam(searchParams.plan));
+    setBilling(getParam(searchParams.billing));
   }, [searchParams]);
 
   return (
