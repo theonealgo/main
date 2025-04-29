@@ -1,26 +1,24 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import SignupForm from '../../components/SignupForm';
+import SignupForm from './SignupForm';
 
-// Use Next.js' built-in type for searchParams
-type PageProps = {
-  searchParams: { [key: string]: string | string[] | undefined };
-};
-
-export default function SignupPage({ searchParams }: PageProps) {
+export default function SignupPage({
+  searchParams,
+}: {
+  searchParams: Record<string, string | string[] | undefined>;
+}) {
   const [plan, setPlan] = useState<string | null>(null);
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    // Handle both string and array formats
-    const getParam = (param: string | string[] | undefined) => {
-      if (Array.isArray(param)) return param[0];
-      return param || null;
-    };
+    if (searchParams) {
+      const p = Array.isArray(searchParams.plan) ? searchParams.plan[0] : searchParams.plan ?? null;
+      const b = Array.isArray(searchParams.billing) ? searchParams.billing[0] : searchParams.billing ?? null;
 
-    setPlan(getParam(searchParams.plan));
-    setBilling(getParam(searchParams.billing));
+      setPlan(p);
+      setBilling(b);
+    }
   }, [searchParams]);
 
   return (
