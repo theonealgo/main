@@ -3,24 +3,23 @@
 import { useEffect, useState } from 'react';
 import SignupForm from '../../components/SignupForm';
 
-// Use Next.js' correct type for App Router pages
 export default function SignupPage({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) {
   const [plan, setPlan] = useState<string | null>(null);
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    // Type-safe parameter extraction
-    const getParam = (param: string | string[] | undefined): string | null => {
+    // Handle both string and array parameter formats
+    const getParam = (param: string | string[] | undefined) => {
       if (!param) return null;
       return Array.isArray(param) ? param[0] : param;
     };
 
-    setPlan(getParam(searchParams.plan));
-    setBilling(getParam(searchParams.billing));
+    setPlan(getParam(searchParams.plan) ?? null);
+    setBilling(getParam(searchParams.billing) ?? null);
   }, [searchParams]);
 
   return (
