@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import SignupForm from './SignupForm';
 
 type Props = {
-  searchParams?: { [key: string]: string | undefined };
+  searchParams: { [key: string]: string | undefined };
 };
 
 export default function SignupPage({ searchParams }: Props) {
@@ -12,15 +12,12 @@ export default function SignupPage({ searchParams }: Props) {
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    // Check if searchParams is available before using it
-    if (searchParams) {
-      const p = searchParams.plan ?? null;  // Using nullish coalescing operator
-      const b = searchParams.billing ?? null; // If the value is undefined, use null
+    const p = searchParams.plan ?? null;
+    const b = searchParams.billing ?? null;
 
-      setPlan(p);
-      setBilling(b);
-    }
-  }, [searchParams]);  // Effect runs whenever searchParams changes
+    setPlan(p);
+    setBilling(b);
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
