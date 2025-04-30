@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 // Correct Stripe initialization
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2023-10-16' as any,
+  apiVersion: '2025-03-31.basil',
 });
 export async function POST(req: NextRequest) {
   const { plan, billing, email } = await req.json();
