@@ -6,15 +6,15 @@ import { useSearchParams } from 'next/navigation';
 
 export default function SignupPage() {
   const searchParams = useSearchParams();
-  const [plan, setPlan] = useState<string | null>(null);
-  const [billing, setBilling] = useState<string | null>(null);
+  const [plan, setPlan] = useState<string>(''); // Now expects string only
+  const [billing, setBilling] = useState<string>(''); // Now expects string only
 
   useEffect(() => {
-    // Add null-check guard clause
     if (!searchParams) return;
 
-    const p = searchParams.get('plan');
-    const b = searchParams.get('billing');
+    // Convert null to empty string
+    const p = searchParams.get('plan') || '';
+    const b = searchParams.get('billing') || '';
     
     setPlan(p);
     setBilling(b);
