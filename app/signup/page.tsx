@@ -10,6 +10,9 @@ export default function SignupPage() {
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
+    // Add null-check guard clause
+    if (!searchParams) return;
+
     const p = searchParams.get('plan');
     const b = searchParams.get('billing');
     
