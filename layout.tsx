@@ -1,11 +1,9 @@
-// app/layout.tsx
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./styles/globals.css"; // ✅ correct path since styles is inside the same 'app' folder
+import "./styles/globals.css"; // Correct path for styles
 
-import Header from "../components/Header"; // Adjusted to reflect the correct relative path
-import Footer from "../components/Footer"; // Adjusted to reflect the correct relative path
+import Header from "./components/Header"; // ✅ Corrected relative import
+import Footer from "./components/Footer"; // ✅ Corrected relative import
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,11 +27,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="bg-black">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col`}
+      >
         <Header />
-        <main className="flex-grow w-full">
-          {children}
-        </main>
+        <main className="flex-grow w-full">{children}</main>
         <Footer />
       </body>
     </html>
