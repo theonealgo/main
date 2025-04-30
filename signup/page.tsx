@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import SignupForm from '../../components/SignupForm';
+import SignupForm from '@/components/SignupForm'; // ✅ Use alias
 
 export default function SignupPage() {
   const searchParams = useSearchParams();
