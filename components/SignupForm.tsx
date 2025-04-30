@@ -3,11 +3,11 @@
 import { useState } from 'react';
 
 interface SignupFormProps {
-  plan?: string;  // Make optional with ?
-  billing?: string; // Make optional with ?
+  plan: string;
+  billing: string;
 }
 
-export default function SignupForm({ plan = '', billing = '' }: SignupFormProps) {
+export default function SignupForm({ plan, billing }: SignupFormProps) {
   const [email, setEmail] = useState('');
   const [tradingViewUsername, setTradingViewUsername] = useState('');
 
@@ -21,13 +21,11 @@ export default function SignupForm({ plan = '', billing = '' }: SignupFormProps)
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
         <h1 className="text-2xl font-bold mb-6 text-center">Sign Up</h1>
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* ... keep existing form elements ... */}
-          
+          {/* Form fields remain the same */}
           <div className="text-sm text-gray-600">
-            {plan && <>Selected Plan: <strong>{plan}</strong><br /></>}
-            {billing && <>Billing Cycle: <strong>{billing}</strong></>}
+            Selected Plan: <strong>{plan || 'None'}</strong><br />
+            Billing Cycle: <strong>{billing || 'None'}</strong>
           </div>
-
           <button
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white rounded hover:bg-indigo-700"
