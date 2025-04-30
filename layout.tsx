@@ -4,8 +4,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css"; // ✅ correct path since styles is inside the same 'app' folder
 
-import Header from "../components/Header"; // ✅ correct path from app/ to root/components/
-import Footer from "../components/Footer"; // ✅ correct path from app/ to root/components/
+import Header from "../components/Header"; // Adjusted to reflect the correct relative path
+import Footer from "../components/Footer"; // Adjusted to reflect the correct relative path
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
