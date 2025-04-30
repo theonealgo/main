@@ -34,6 +34,7 @@ export default function Home() {
 
   return (
     <div className="bg-black text-white min-h-screen font-sans">
+
       {/* HERO SECTION */}
       <section
         className="relative min-h-screen flex items-center px-4 bg-cover bg-center"
@@ -85,60 +86,57 @@ export default function Home() {
           ))}
         </div>
       </section>
-{/* NEW COOL JAVA EFFECT SECTION - Live Stats Simulation */}
-<section className="bg-gradient-to-r from-gray-900 to-black py-24 px-4 md:px-12">
-  <div className="max-w-6xl mx-auto text-center space-y-12">
-    <h2 className="text-5xl font-bold text-white">
-      Real Results. Real Time.
-    </h2>
-    <p className="text-xl text-gray-300">
-      Our strategies are engineered for performance. See it live below.
-    </p>
 
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center text-white">
-      <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
-        <h3 className="text-4xl font-bold text-green-400">98%</h3>
-        <p className="mt-2 text-lg">Win Rate</p>
-      </div>
-      <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
-        <h3 className="text-4xl font-bold text-green-400">4.36</h3>
-        <p className="mt-2 text-lg">Profit Factor</p>
-      </div>
-      <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
-        <h3 className="text-4xl font-bold text-green-400">30 Days</h3>
-        <p className="mt-2 text-lg">Free Trial</p>
-      </div>
-    </div>
+      {/* LIVE STATS SECTION */}
+      <section className="bg-gradient-to-r from-gray-900 to-black py-24 px-4 md:px-12">
+        <div className="max-w-6xl mx-auto text-center space-y-12">
+          <h2 className="text-5xl font-bold text-white">Real Results. Real Time.</h2>
+          <p className="text-xl text-gray-300">
+            Our strategies are engineered for performance. See it live below.
+          </p>
 
-    <div className="mt-16">
-    <Link
-          href="/signup"
-          className="bg-gradient-to-r from-blue-500 to-teal-400 px-8 py-4 rounded-full text-lg font-semibold text-black hover:opacity-90 transition"
-        >
-          Start Winning Today
-        </Link>
-    </div>
-  </div>
-</section>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center text-white">
+            <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
+              <h3 className="text-4xl font-bold text-green-400">98%</h3>
+              <p className="mt-2 text-lg">Win Rate</p>
+            </div>
+            <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
+              <h3 className="text-4xl font-bold text-green-400">4.36</h3>
+              <p className="mt-2 text-lg">Profit Factor</p>
+            </div>
+            <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
+              <h3 className="text-4xl font-bold text-green-400">30 Days</h3>
+              <p className="mt-2 text-lg">Free Trial</p>
+            </div>
+          </div>
 
-      {/* Live Video Background */}
-<section className="relative bg-black py-24 px-4 md:px-12">
-  <video
-    src="/images/videos/market-chart.mp4"
-    autoPlay
-    loop
-    muted
-    className="absolute inset-0 w-full h-full object-cover opacity-60"
-  />
-  <div className="relative z-10 text-center text-white space-y-12">
-    <h2 className="text-5xl font-bold">
-      Trade with Confidence. Powered by Data.
-    </h2>
-    <p className="text-xl text-gray-300">
-      Harness the power of our proven trading strategies and make informed, data-driven decisions in real-time.
-    </p>
-  </div>
-</section>
+          <div className="mt-16">
+            <Link
+              href="/app/signup"
+              className="bg-gradient-to-r from-blue-500 to-teal-400 px-8 py-4 rounded-full text-lg font-semibold text-black hover:opacity-90 transition"
+            >
+              Start Winning Today
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* VIDEO SECTION */}
+      <section className="relative bg-black py-24 px-4 md:px-12 overflow-hidden">
+        <video
+          src="/images/videos/market-chart.mp4"
+          autoPlay
+          loop
+          muted
+          className="absolute inset-0 w-full h-full object-cover opacity-60"
+        />
+        <div className="relative z-10 text-center text-white space-y-12">
+          <h2 className="text-5xl font-bold">Trade with Confidence. Powered by Data.</h2>
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            Harness the power of our proven trading strategies and make informed, data-driven decisions in real-time.
+          </p>
+        </div>
+      </section>
     </div>
   );
 }
