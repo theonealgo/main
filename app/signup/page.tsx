@@ -6,19 +6,17 @@ import { useSearchParams } from 'next/navigation';
 
 export default function SignupPage() {
   const searchParams = useSearchParams();
-  const [plan, setPlan] = useState<string>(''); // Now expects string only
-  const [billing, setBilling] = useState<string>(''); // Now expects string only
+  const [plan, setPlan] = useState<string>(''); // Explicit string type
+  const [billing, setBilling] = useState<string>(''); // Explicit string type
 
   useEffect(() => {
-    if (!searchParams) return;
-
-    // Convert null to empty string
-    const p = searchParams.get('plan') || '';
-    const b = searchParams.get('billing') || '';
+    // Remove unnecessary null check - searchParams is always available
+    const p = searchParams.get('plan') || ''; // Ensure string fallback
+    const b = searchParams.get('billing') || ''; // Ensure string fallback
     
     setPlan(p);
     setBilling(b);
-  }, [searchParams]);
+  }, [searchParams]); // searchParams is dependency
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
