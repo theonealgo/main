@@ -2,18 +2,14 @@
 
 import { useEffect, useState } from 'react';
 import SignupForm from '../../components/SignupForm';
+import { useSearchParams } from 'next/navigation';
 
-// Correct type for App Router searchParams
-interface SignupPageProps {
-  searchParams: URLSearchParams;
-}
-
-export default function SignupPage({ searchParams }: SignupPageProps) {
+export default function SignupPage() {
+  const searchParams = useSearchParams();
   const [plan, setPlan] = useState<string | null>(null);
   const [billing, setBilling] = useState<string | null>(null);
 
   useEffect(() => {
-    // Use URLSearchParams API directly
     const p = searchParams.get('plan');
     const b = searchParams.get('billing');
     
