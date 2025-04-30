@@ -56,7 +56,8 @@ export default function TutorialsPage() {
           <div>
             <h2 className="text-3xl font-bold mb-4">1. Access the Indicator</h2>
             <p className="text-gray-300">
-              To begin, ensure you have access to <strong>The One</strong> indicator on TradingView. If you haven't received an invitation, please contact support to request access.
+              To begin, ensure you have access to <strong>The One</strong> indicator on TradingView. 
+              If you haven't received an invitation, please contact support to request access.
             </p>
           </div>
 
@@ -64,7 +65,8 @@ export default function TutorialsPage() {
           <div>
             <h2 className="text-3xl font-bold mb-4">2. Add the Indicator to Your Chart</h2>
             <p className="text-gray-300">
-              Once access is granted, navigate to the TradingView chart, click on "Indicators," and search for <strong>The One</strong>. Click to add it to your chart.
+              Once access is granted, navigate to the TradingView chart, click on "Indicators," 
+              and search for <strong>The One</strong>. Click to add it to your chart.
             </p>
           </div>
 
@@ -72,7 +74,9 @@ export default function TutorialsPage() {
           <div>
             <h2 className="text-3xl font-bold mb-4">3. Understand the Indicator Components</h2>
             <p className="text-gray-300">
-              Familiarize yourself with the various components of <strong>The One</strong> indicator, including entry signals, stop-loss levels, and take-profit targets. Refer to the documentation for detailed explanations.
+              Familiarize yourself with the various components of <strong>The One</strong> indicator, 
+              including entry signals, stop-loss levels, and take-profit targets. 
+              Refer to the documentation for detailed explanations.
             </p>
           </div>
 
@@ -83,8 +87,14 @@ export default function TutorialsPage() {
               <div className="max-w-md text-center">
                 <Zoom
                   zoomMargin={40}
-                  overlayBgColorEnd="rgba(0,0,0,0.95)"
-                  zoomZindex={1000}
+                  ZoomContent={({ img }) => (
+                    <div style={{ 
+                      backgroundColor: 'rgba(0,0,0,0.95)',
+                      zIndex: 1000
+                    }}>
+                      {img}
+                    </div>
+                  )}
                 >
                   <div className="relative h-[600px] w-full">
                     <Image
@@ -102,14 +112,22 @@ export default function TutorialsPage() {
                   </div>
                 </Zoom>
                 <p className="mt-4 text-gray-300">
-                  These are the recommended settings for <strong>The One Stocks</strong> indicator. Apply the settings exactly as shown for optimal performance on U.S. stocks like SPY, QQQ, and major large-caps.
+                  These are the recommended settings for <strong>The One Stocks</strong> indicator. 
+                  Apply the settings exactly as shown for optimal performance on U.S. stocks like SPY, QQQ, 
+                  and major large-caps.
                 </p>
               </div>
               <div className="max-w-md text-center">
                 <Zoom
                   zoomMargin={40}
-                  overlayBgColorEnd="rgba(0,0,0,0.95)"
-                  zoomZindex={1000}
+                  ZoomContent={({ img }) => (
+                    <div style={{ 
+                      backgroundColor: 'rgba(0,0,0,0.95)',
+                      zIndex: 1000
+                    }}>
+                      {img}
+                    </div>
+                  )}
                 >
                   <div className="relative h-[600px] w-full">
                     <Image
@@ -127,7 +145,9 @@ export default function TutorialsPage() {
                   </div>
                 </Zoom>
                 <p className="mt-4 text-gray-300">
-                  These settings are for <strong>The One Elite</strong> indicator, fine-tuned for SPY, QQQ, and pairs like GBPUSD and EURUSD. They're compatible with all time frames, but results can vary depending on volatility and market sessions.
+                  These settings are for <strong>The One Elite</strong> indicator, fine-tuned for SPY, QQQ, 
+                  and pairs like GBPUSD and EURUSD. They're compatible with all time frames, but results can vary 
+                  depending on volatility and market sessions.
                 </p>
               </div>
             </div>
@@ -140,7 +160,9 @@ export default function TutorialsPage() {
           <div>
             <h2 className="text-3xl font-bold mb-4">5. Backtest the Strategy</h2>
             <p className="text-gray-300">
-              Before going live, backtest <strong>The One Stocks</strong> indicator on historical data to understand its performance. Use TradingView's built-in backtesting tools to simulate trades and assess profitability.
+              Before going live, backtest <strong>The One Stocks</strong> indicator on historical data 
+              to understand its performance. Use TradingView's built-in backtesting tools to simulate 
+              trades and assess profitability.
             </p>
           </div>
 
@@ -148,25 +170,42 @@ export default function TutorialsPage() {
           <div>
             <h2 className="text-3xl font-bold mb-4">6. Start Paper Trading</h2>
             <p className="text-gray-300">
-              Begin paper trading using <strong>The One</strong> indicator to practice without risking real capital. Monitor your trades, refine your strategy, and build confidence before transitioning to live trading.
+              Begin paper trading using <strong>The One</strong> indicator to practice without risking real capital. 
+              Monitor your trades, refine your strategy, and build confidence before transitioning to live trading.
             </p>
           </div>
 
           {/* Step 7 */}
           <div>
             <h2 className="text-3xl font-bold mb-4">7. Selling at Tape Profit Levels</h2>
-            <p className="text-gray-300">
-  Unlock Accurate Trading with <strong>The One Stocks</strong> and <strong>The One Elite</strong> Indicators
-  When you use <strong>The One Stocks</strong> or <strong>The One Elite</strong> indicators, you’ll notice a critical advantage: no repainting. Unlike most indicators, which often adjust their buy and sell signals to the top or bottom of an apex, our signals remain fixed, offering you more reliable and consistent entry and exit points.
-
-  Our indicators provide you with clear, actionable signals that stay in place, ensuring that your trades are based on real-time data you can trust. For optimal performance:
-  <ul className="list-disc pl-6 mt-4">
-    <li><strong>Take Profit:</strong> Consider selling when the price reaches a higher high level, and the indicator confirms a take profit signal.</li>
-    <li><strong>Buy Signals:</strong> Only consider buy signals at higher high levels if you have significant trading experience, as these situations can be more volatile and complex.</li>
-  </ul>
-
-  Maximize your trading potential with indicators designed for accuracy and consistency. Whether you’re new to trading or a seasoned pro, <strong>The One Stocks</strong> and <strong>The One Elite</strong> will give you a clear edge in the market.
-</p>
+            <div className="text-gray-300">
+              <p className="mb-4">
+                Unlock Accurate Trading with <strong>The One Stocks</strong> and <strong>The One Elite</strong> Indicators
+                When you use <strong>The One Stocks</strong> or <strong>The One Elite</strong> indicators, 
+                you'll notice a critical advantage: no repainting. Unlike most indicators, which often adjust 
+                their buy and sell signals to the top or bottom of an apex, our signals remain fixed, offering 
+                you more reliable and consistent entry and exit points.
+              </p>
+              <p className="mb-4">
+                Our indicators provide you with clear, actionable signals that stay in place, ensuring that 
+                your trades are based on real-time data you can trust. For optimal performance:
+              </p>
+              <ul className="list-disc pl-6 mt-4">
+                <li className="mb-2">
+                  <strong>Take Profit:</strong> Consider selling when the price reaches a higher high level, 
+                  and the indicator confirms a take profit signal.
+                </li>
+                <li>
+                  <strong>Buy Signals:</strong> Only consider buy signals at higher high levels if you have 
+                  significant trading experience, as these situations can be more volatile and complex.
+                </li>
+              </ul>
+              <p className="mt-4">
+                Maximize your trading potential with indicators designed for accuracy and consistency. 
+                Whether you're new to trading or a seasoned pro, <strong>The One Stocks</strong> and 
+                <strong>The One Elite</strong> will give you a clear edge in the market.
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -175,16 +214,10 @@ export default function TutorialsPage() {
       <style jsx global>{`
         .zoom-overlay {
           background: rgba(0, 0, 0, 0.95) !important;
-          z-index: 1000 !important;
         }
         .zoom-image {
           cursor: zoom-out !important;
           image-rendering: crisp-edges !important;
-        }
-        .zoom-btn {
-          background: #00ff88 !important;
-          color: #000 !important;
-          font-weight: bold !important;
         }
       `}</style>
     </div>
