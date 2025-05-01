@@ -86,9 +86,6 @@ export default function Home() {
           ))}
         </div>
       </section>
-    </div>
-  );
-}
 
       {/* LIVE STATS SECTION */}
       <section className="bg-gradient-to-r from-gray-900 to-black py-24 px-4 md:px-12">
@@ -120,6 +117,7 @@ export default function Home() {
             >
               Start Winning Today
             </Link>
+          </div>
         </div>
       </section>
 
