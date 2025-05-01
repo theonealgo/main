@@ -1,6 +1,18 @@
 /* app/zoom-overrides.css */
-
 .zoom-overlay {
-  background-color: rgba(0, 0, 0, 0.95) !important;
+  background: rgba(0, 0, 0, 0.95) !important;
   z-index: 1000 !important;
+}
+
+.zoom-image {
+  cursor: zoom-out !important;
+  image-rendering: crisp-edges !important;
+}
+
+/* Optional: Style the close button */
+.zoom-btn {
+  background: #00ff88 !important;
+  color: #000 !important;
+  font-weight: bold !important;
+  z-index: 1001 !important;
 }
