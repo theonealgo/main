@@ -10,31 +10,30 @@ export default function Home() {
       src: "/images/theonestocks98.png",
       alt: "98-Minute Chart, 98% Win Rate",
       title: "98-Minute Trading Strategy | 98% Win Rate on SPY - High-Precision Short-Term Trades",
-      desc: "Maximize your profits with the 98-minute trading strategy, delivering an impressive 98% win rate for short-term traders. Perfect for those looking to enter and exit the market with precision, ensuring high-quality, profitable trades."
+      desc: "Maximize your profits with the 98-minute trading strategy, delivering an impressive 98% win rate for short-term traders. Perfect for those looking to enter and exit the market with precision, ensuring high-quality, profitable trades.",
     },
     {
       src: "/images/theoneelite4h98.png",
       alt: "4-Hour Chart, 98% Win Rate",
       title: "4-Hour Swing Strategy | 98% Win Rate on SPY - Consistent Profits for Swing Traders",
-      desc: "Leverage the power of the 4-hour chart with a proven 98% win rate, ideal for swing traders seeking consistency and precision. Achieve profitable trades over longer timeframes with a strategy designed for sustained growth."
+      desc: "Leverage the power of the 4-hour chart with a proven 98% win rate, ideal for swing traders seeking consistency and precision. Achieve profitable trades over longer timeframes with a strategy designed for sustained growth.",
     },
     {
       src: "/images/theonestocks9897.png",
       alt: "97-Minute Chart, 97% Win Rate",
       title: "97-Minute Trading Strategy | 97% Win Rate on SPY - High-Precision Short-Term Trades",
-      desc: "Unlock high-precision trading with the 97-minute strategy, offering a 97% win rate. Perfect for traders looking to capitalize on fast market movements with minimal risk and maximum reward."
+      desc: "Unlock high-precision trading with the 97-minute strategy, offering a 97% win rate. Perfect for traders looking to capitalize on fast market movements with minimal risk and maximum reward.",
     },
     {
       src: "/images/theoneelitegbpusd1097.png",
       alt: "GBP/USD 10 Minute Chart, 97% Win Rate",
       title: "GBP/USD 10 Minute Forex Strategy | 97% Win Rate - Precision Trading for Maximum Profit",
-      desc: "Profit from real-time Forex market movements with the GBP/USD 10 minute strategy, proven to deliver a 97% win rate. Perfect for precision traders targeting the most profitable currency pairs."
-    }
+      desc: "Profit from real-time Forex market movements with the GBP/USD 10 minute strategy, proven to deliver a 97% win rate. Perfect for precision traders targeting the most profitable currency pairs.",
+    },
   ];
 
   return (
     <div className="bg-black text-white min-h-screen font-sans">
-
       {/* HERO SECTION */}
       <section
         className="relative min-h-screen flex items-center px-4 bg-cover bg-center"
@@ -43,7 +42,8 @@ export default function Home() {
         <div className="relative z-10 max-w-6xl w-full pl-8 md:pl-16">
           <div className="text-left space-y-8">
             <h1 className="text-5xl md:text-7xl font-bold leading-tight">
-              One Signal.<br />
+              One Signal.
+              <br />
               <span className="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
                 Zero Noise.
               </span>
@@ -58,9 +58,7 @@ export default function Home() {
               >
                 Get Started for Free
               </Link>
-              <p className="text-sm text-gray-400">
-                No credit card required
-              </p>
+              <p className="text-sm text-gray-400">No credit card required</p>
             </div>
           </div>
         </div>
@@ -88,6 +86,9 @@ export default function Home() {
           ))}
         </div>
       </section>
+    </div>
+  );
+}
 
       {/* LIVE STATS SECTION */}
       <section className="bg-gradient-to-r from-gray-900 to-black py-24 px-4 md:px-12">
