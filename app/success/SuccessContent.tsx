@@ -1,3 +1,4 @@
+// main/app/success/SuccessContent.tsx
 'use client';
 
 import { useSearchParams } from 'next/navigation';
