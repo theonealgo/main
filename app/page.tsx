@@ -122,13 +122,13 @@ export default function Home() {
           </div>
 
           <div className="mt-16">
-            <Link
-              href="/app/signup"
-              className="bg-gradient-to-r from-blue-500 to-teal-400 px-8 py-4 rounded-full text-lg font-semibold text-black hover:opacity-90 transition"
-            >
-              Start Winning Today
-            </Link>
-          </div>
+  <Link
+    href="/signup"
+    className="bg-gradient-to-r from-blue-500 to-teal-400 px-8 py-4 rounded-full text-lg font-semibold text-black hover:opacity-90 transition"
+  >
+    Start Winning Today
+  </Link>
+</div>
         </div>
       </section>
 
