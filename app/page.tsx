@@ -1,8 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import Zoom from "react-medium-image-zoom";
+import dynamic from "next/dynamic";
+import Image from "next/image";
 import "react-medium-image-zoom/dist/styles.css";
+
+const Zoom = dynamic(() => import("react-medium-image-zoom"), { ssr: false });
 
 export default function Home() {
   const performanceItems = [
@@ -71,10 +74,12 @@ export default function Home() {
             <div key={i} className="space-y-8 group">
               <Zoom zoomMargin={40}>
                 <div className="relative h-[600px] w-full">
-                  <img
+                  <Image
                     src={item.src}
                     alt={item.alt}
-                    className="w-full h-full object-cover rounded-lg shadow-lg"
+                    fill
+                    className="object-cover rounded-lg shadow-lg"
+                    sizes="100vw"
                   />
                 </div>
               </Zoom>
@@ -128,6 +133,7 @@ export default function Home() {
           autoPlay
           loop
           muted
+          playsInline
           className="absolute inset-0 w-full h-full object-cover opacity-60"
         />
         <div className="relative z-10 text-center text-white space-y-12">
