@@ -73,14 +73,19 @@ export default function Home() {
         <div className="max-w-7xl mx-auto space-y-24">
           {performanceItems.map((item, i) => (
             <div key={i} className="space-y-8 group">
-            <Zoom zoomMargin={40}>
+        <Zoom zoomMargin={40}>
   <div className="relative h-[600px] w-full">
     <Image
-      src={item.src}
-      alt={item.alt}
+      src="/images/theonestockssettings.png"
+      alt="The One Stocks Settings - HD Configuration"
       fill
-      className="object-cover rounded-lg shadow-lg"
-      sizes="100vw"
+      quality={100}
+      priority
+      className="rounded-xl object-contain hover:shadow-xl transition-shadow"
+      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+      style={{
+        imageRendering: 'crisp-edges',
+      }}
     />
   </div>
 </Zoom>
