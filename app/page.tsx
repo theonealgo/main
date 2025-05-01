@@ -120,7 +120,6 @@ export default function Home() {
             >
               Start Winning Today
             </Link>
-          </div>
         </div>
       </section>
 
