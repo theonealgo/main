@@ -1,12 +1,14 @@
 'use client';
+
 export const dynamic = 'force-dynamic';
+
+import { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import SignupForm from '@/components/SignupForm';
 
-export default function SignupPage() {
+function SignupPageContent() {
   const searchParams = useSearchParams();
 
-  // Use non-null assertion (!) because useSearchParams never returns null in practice
   const rawPlan = searchParams!.get('plan');
   const rawBilling = searchParams!.get('billing');
 
@@ -17,4 +19,12 @@ export default function SignupPage() {
   const billing = validBilling.includes(rawBilling ?? '') ? rawBilling! : 'monthly';
 
   return <SignupForm plan={plan} billing={billing} />;
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={<div>Loading signup...</div>}>
+      <SignupPageContent />
+    </Suspense>
+  );
 }
