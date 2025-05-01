@@ -4,6 +4,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import "react-medium-image-zoom/dist/styles.css";
+import "./zoom-overrides.css"; // <-- Custom styles for overlay and z-index
 
 const Zoom = dynamic(() => import("react-medium-image-zoom"), { ssr: false });
 
