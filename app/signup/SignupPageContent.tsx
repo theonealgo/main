@@ -1,11 +1,9 @@
 'use client';
 
-export const dynamic = 'force-dynamic';
-
 import { useSearchParams } from 'next/navigation';
 import SignupForm from '@/components/SignupForm';
 
-export default function SignupPageContent() {
+export default function SignupPageClient() {
   const searchParams = useSearchParams();
 
   const rawPlan = searchParams?.get('plan');
