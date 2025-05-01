@@ -1,6 +1,7 @@
-// next.config.ts
+import path from 'path';
+import { NextConfig } from 'next';
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
@@ -21,6 +22,13 @@ const nextConfig = {
       'next-auth',
       'framer-motion',
     ],
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@': path.resolve(__dirname),
+    };
+    return config;
   },
 };
 
