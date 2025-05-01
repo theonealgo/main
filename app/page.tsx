@@ -71,12 +71,10 @@ export default function Home() {
         <div className="max-w-7xl mx-auto space-y-24">
           {performanceItems.map((item, i) => (
             <div key={i} className="space-y-8 group">
-              <Zoom zoomMargin={40}>
-  <img
-    src={item.src}
-    alt={item.alt}
-    className="rounded-lg w-full shadow-lg cursor-zoom-in"
-  />
+             <Zoom zoomMargin={40}>
+  <div className="relative h-[600px] w-full">
+    <img ... />
+  </div>
 </Zoom>
               <div className="px-4 space-y-4">
                 <h3 className="text-3xl font-bold">{item.title}</h3>
