@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import Zoom from 'react-medium-image-zoom';
 import 'react-medium-image-zoom/dist/styles.css';
+import './zoom-overrides.css'; // ✅ Add this line
 
 export default function TutorialsPage() {
   return (
