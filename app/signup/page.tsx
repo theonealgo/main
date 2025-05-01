@@ -1,10 +1,12 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
+export const dynamic = 'force-dynamic';
+
 import { Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import SignupForm from '@/components/SignupForm';
 
-function SignupPageInner() {
+function SignupPageContent() {
   const searchParams = useSearchParams();
 
   const rawPlan = searchParams?.get('plan');
@@ -22,7 +24,7 @@ function SignupPageInner() {
 export default function SignupPage() {
   return (
     <Suspense fallback={<div>Loading signup...</div>}>
-      <SignupPageInner />
+      <SignupPageContent />
     </Suspense>
   );
 }
