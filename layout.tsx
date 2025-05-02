@@ -1,8 +1,5 @@
 // app/layout.tsx
 
-'use client';
-
-import { usePathname } from 'next/navigation';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './styles/globals.css';
@@ -29,25 +26,10 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-
   return (
     <html lang="en" className="bg-black">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         {children}
-
-        {pathname === '/' && (
-          <div className="video-container">
-            <video
-              src="/videos/your-video.mp4"
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="w-full h-auto"
-            />
-          </div>
-        )}
       </body>
     </html>
   );
