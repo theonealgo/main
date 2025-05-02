@@ -8,6 +8,7 @@ body {
   position: relative;
   min-height: 100vh;
   margin: 0;
+  font-family: var(--font-geist-sans), sans-serif;
 }
 
 body::before {
@@ -17,23 +18,11 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-image: url('/images/bground.jpg');
+  background-image: url('/images/bground.jpg'); /* Correct path */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   opacity: 0.2;
   z-index: -1;
   pointer-events: none;
-}
-
-.video-container {
-  display: block;
-  position: relative;
-  z-index: 10;
-}
-
-@media (max-width: 768px) {
-  .video-container {
-    display: none;
-  }
 }
