@@ -19,22 +19,7 @@ export default function SignupPageClient() {
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 text-white bg-black">
       {/* Left Info Panel */}
-      <div
-        className="relative hidden md:flex items-center justify-center bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/bground.jpg')" }}
-      >
-        <div className="backdrop-blur-sm bg-black/60 p-12 rounded-xl max-w-md space-y-10">
-          <Link href="/" className="block">
-            <Image
-              src="/images/theonelogo.png"
-              alt="The One Logo"
-              width={164}
-              height={164}
-              className="filter brightness-0 invert"
-              priority
-            />
-          </Link>
-        </div>
+   
       </div>
 
       {/* Right Column - Form */}
