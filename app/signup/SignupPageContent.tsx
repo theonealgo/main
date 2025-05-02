@@ -1,4 +1,3 @@
-// app/signup/SignupPageContent.tsx
 'use client';
 
 import { useSearchParams } from 'next/navigation';
@@ -9,22 +8,20 @@ import Link from 'next/link';
 
 export default function SignupPageClient() {
   const searchParams = useSearchParams();
-  
-  // Existing plan/billing logic
+
   const rawPlan = searchParams?.get('plan');
   const rawBilling = searchParams?.get('billing');
-  const validPlans = ['the_one_stock', 'the_one_elite', 'the_one_premium'];
-  const plan = validPlans.includes(rawPlan ?? '') ? rawPlan! : 'the_one_stock';
+  const validPlans = ['the_one_stocks', 'the_one_elite', 'the_one_premium'];
+  const plan = validPlans.includes(rawPlan ?? '') ? rawPlan! : 'the_one_stocks';
   const validBilling = ['monthly', 'yearly'];
   const billing = validBilling.includes(rawBilling ?? '') ? rawBilling! : 'monthly';
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black">
-      {/* Left Column - Market Video */}
-      <div className="relative hidden md:block"></div>
-        
-        <div className="relative z-10 p-12 h-full flex flex-col justify-between bg-gradient-to-t from-black via-transparent to-black">
-          <Link href="/" className="mb-8 inline-block">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black text-white">
+      {/* Left Column */}
+      <div className="relative hidden md:flex items-center justify-center p-12 bg-gradient-to-b from-black via-gray-900 to-black">
+        <div className="space-y-8 max-w-md">
+          <Link href="/" className="inline-block">
             <Image
               src="/images/theonelogo.png"
               alt="The One Logo"
@@ -34,30 +31,24 @@ export default function SignupPageClient() {
               priority
             />
           </Link>
-          
+
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-white space-y-6"
+            className="space-y-6"
           >
             <h2 className="text-4xl font-bold">Professional Trading Suite</h2>
             <ul className="space-y-4 text-lg">
-              <li className="flex items-center gap-3">
-                <CheckIcon /> SPY/QQQ Optimized Strategies
-              </li>
-              <li className="flex items-center gap-3">
-                <CheckIcon /> Forex Pair Analysis Tools
-              </li>
-              <li className="flex items-center gap-3">
-                <CheckIcon /> Real-time Chart Patterns
-              </li>
+              <FeatureItem text="SPY/QQQ Optimized Strategies" />
+              <FeatureItem text="Forex Pair Analysis Tools" />
+              <FeatureItem text="Real-time Chart Patterns" />
             </ul>
           </motion.div>
         </div>
       </div>
 
-      {/* Right Column - Form */}
-      <motion.div 
+      {/* Right Column - Signup Form */}
+      <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         className="flex items-center justify-center p-8 bg-gradient-to-br from-gray-900 to-black"
@@ -86,7 +77,7 @@ export default function SignupPageClient() {
           </motion.div>
 
           <p className="text-center text-sm text-gray-400">
-            Existing member?{' '}
+            Already a member?{' '}
             <Link href="/login" className="text-blue-400 hover:underline">
               Authenticate here
             </Link>
@@ -97,7 +88,15 @@ export default function SignupPageClient() {
   );
 }
 
-// Reusable Check Icon Component
+function FeatureItem({ text }: { text: string }) {
+  return (
+    <li className="flex items-center gap-3">
+      <CheckIcon />
+      <span>{text}</span>
+    </li>
+  );
+}
+
 function CheckIcon() {
   return (
     <svg
@@ -107,12 +106,7 @@ function CheckIcon() {
       viewBox="0 0 24 24"
       stroke="currentColor"
     >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M5 13l4 4L19 7"
-      />
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
     </svg>
   );
 }
