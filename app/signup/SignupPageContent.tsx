@@ -8,6 +8,10 @@ import Link from "next/link";
 import SignupForm from "@/components/SignupForm";
 
 export default function SignupPageContent() {
+  // Default values for plan and billing
+  const plan = "the_one_stocks";  // or set to your default value
+  const billing = "monthly"; // or set to your default value
+
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 text-white bg-black">
       {/* Left Image Panel */}
@@ -34,7 +38,8 @@ export default function SignupPageContent() {
         </Link>
 
         <div className="w-full max-w-md">
-          <SignupForm />
+          {/* Pass plan and billing props */}
+          <SignupForm plan={plan} billing={billing} />
         </div>
       </motion.div>
     </div>
