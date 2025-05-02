@@ -83,9 +83,7 @@ export default function Home() {
                     priority
                     className="rounded-xl object-contain hover:shadow-xl transition-shadow"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-                    style={{
-                      imageRendering: "crisp-edges",
-                    }}
+                    style={{ imageRendering: "crisp-edges" }}
                   />
                 </div>
               </Zoom>
@@ -97,9 +95,7 @@ export default function Home() {
           ))}
         </div>
       </section>
-    </div>
-  );
-}
+
       {/* LIVE STATS SECTION */}
       <section className="bg-gradient-to-r from-gray-900 to-black py-24 px-4 md:px-12">
         <div className="max-w-6xl mx-auto text-center space-y-12">
@@ -107,7 +103,6 @@ export default function Home() {
           <p className="text-xl text-gray-300">
             Our strategies are engineered for performance. See it live below.
           </p>
-
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center text-white">
             <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
               <h3 className="text-4xl font-bold text-green-400">98%</h3>
@@ -122,17 +117,16 @@ export default function Home() {
               <p className="mt-2 text-lg">Free Trial</p>
             </div>
           </div>
-
           <div className="mt-16">
-  <Link
-    href="/signup"
-    className="bg-gradient-to-r from-blue-500 to-teal-400 px-8 py-4 rounded-full text-lg font-semibold text-black hover:opacity-90 transition"
-  >
-    Start Winning Today
-  </Link>
-</div>
+            <Link
+              href="/signup"
+              className="bg-gradient-to-r from-blue-500 to-teal-400 px-8 py-4 rounded-full text-lg font-semibold text-black hover:opacity-90 transition"
+            >
+              Start Winning Today
+            </Link>
+          </div>
         </div>
-      </section
+      </section>
 
       {/* VIDEO SECTION */}
       <section className="relative bg-black py-24 px-4 md:px-12 overflow-hidden">
@@ -145,7 +139,6 @@ export default function Home() {
           className="w-full h-auto rounded-2xl shadow-xl"
         />
       </section>
-    </>
+    </div>
   );
-}
- 
+} 
