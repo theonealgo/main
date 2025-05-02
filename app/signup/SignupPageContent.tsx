@@ -1,3 +1,4 @@
+// app/signup/SignupPageContent.tsx
 'use client';
 
 import { useSearchParams } from 'next/navigation';
@@ -9,7 +10,7 @@ import Link from 'next/link';
 export default function SignupPageClient() {
   const searchParams = useSearchParams();
   
-  // Existing plan/billing logic remains the same
+  // Existing plan/billing logic
   const rawPlan = searchParams?.get('plan');
   const rawBilling = searchParams?.get('billing');
   const validPlans = ['the_one_stock', 'the_one_elite', 'the_one_premium'];
@@ -18,29 +19,28 @@ export default function SignupPageClient() {
   const billing = validBilling.includes(rawBilling ?? '') ? rawBilling! : 'monthly';
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2">
-      {/* Left Column - Visual Section */}
-      <div className="relative hidden md:block bg-gradient-to-br from-blue-900 to-black">
-        <div className="absolute inset-0 overflow-hidden opacity-90">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover"
-            poster="/images/signup-poster.jpg"
-          >
-            <source src="/videos/market-analysis.mp4" type="video/mp4" />
-          </video>
-        </div>
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black">
+      {/* Left Column - Market Video */}
+      <div className="relative hidden md:block">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover opacity-40"
+          poster="/images/bground.jpg"
+        >
+          <source src="/images/videos/market-chart.mp4" type="video/mp4" />
+        </video>
         
-        <div className="relative z-10 p-12 text-white h-full flex flex-col justify-between">
+        <div className="relative z-10 p-12 h-full flex flex-col justify-between bg-gradient-to-t from-black via-transparent to-black">
           <Link href="/" className="mb-8 inline-block">
             <Image
-              src="/images/logo-white.png"
-              alt="Logo"
-              width={160}
-              height={48}
+              src="/images/theonelogo.png"
+              alt="The One Logo"
+              width={184}
+              height={184}
+              className="filter brightness-0 invert"
               priority
             />
           </Link>
@@ -48,25 +48,25 @@ export default function SignupPageClient() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            className="text-white space-y-6"
           >
-            <h2 className="text-4xl font-bold mb-4">Join 50,000+ Traders</h2>
+            <h2 className="text-4xl font-bold">Professional Trading Suite</h2>
             <ul className="space-y-4 text-lg">
               <li className="flex items-center gap-3">
-                <CheckIcon /> Institutional-grade analytics
+                <CheckIcon /> SPY/QQQ Optimized Strategies
               </li>
               <li className="flex items-center gap-3">
-                <CheckIcon /> Real-time market insights
+                <CheckIcon /> Forex Pair Analysis Tools
               </li>
               <li className="flex items-center gap-3">
-                <CheckIcon /> Premium trading tools
+                <CheckIcon /> Real-time Chart Patterns
               </li>
             </ul>
           </motion.div>
         </div>
       </div>
 
-      {/* Right Column - Form Section */}
+      {/* Right Column - Form */}
       <motion.div 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -74,13 +74,19 @@ export default function SignupPageClient() {
       >
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
-            <h1 className="text-3xl font-bold mb-2">
-              {plan === 'the_one_elite' ? 'Elite Membership' : 'Pro Membership'}
+            <Image
+              src="/images/theonelogo.png"
+              alt="Logo"
+              width={120}
+              height={120}
+              className="mx-auto mb-4"
+            />
+            <h1 className="text-3xl font-bold mb-2 text-white">
+              {plan.replace(/_/g, ' ').toUpperCase()}
             </h1>
-            <p className="text-gray-400">Create your account in 30 seconds</p>
+            <p className="text-gray-400">Access institutional trading tools</p>
           </div>
 
-          {/* Animated Form Container */}
           <motion.div
             initial={{ scale: 0.95 }}
             animate={{ scale: 1 }}
@@ -90,9 +96,9 @@ export default function SignupPageClient() {
           </motion.div>
 
           <p className="text-center text-sm text-gray-400">
-            Already have an account?{' '}
+            Existing member?{' '}
             <Link href="/login" className="text-blue-400 hover:underline">
-              Sign in
+              Authenticate here
             </Link>
           </p>
         </div>
