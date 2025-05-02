@@ -7,16 +7,11 @@ interface PageTemplateProps {
   className?: string;
 }
 
-export default function PageTemplate({ 
-  children,
-  className = ''
-}: PageTemplateProps) {
+export default function PageTemplate({ children, className = '' }: PageTemplateProps) {
   return (
     <div className={`min-h-screen flex flex-col ${className}`}>
       <Header />
-      <main className="flex-grow">
-        {children}
-      </main>
+      <main className="flex-grow">{children}</main>
       <Footer />
     </div>
   );
