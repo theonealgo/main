@@ -1,9 +1,10 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./styles/globals.css"; // Correct path for styles
+import "./styles/globals.css";
 
-import Header from "./components/Header"; // ✅ Corrected relative import
-import Footer from "./components/Footer"; // ✅ Corrected relative import
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,17 +23,28 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" className="bg-black">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col`}
-      >
-        <Header />
-        <main className="flex-grow w-full">{children}</main>
-        <Footer />
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col relative`}>
+        {/* Global low-opacity background */}
+        <div 
+          className="fixed inset-0 z-0 opacity-20"
+          style={{
+            backgroundImage: "url('/images/bground.jpg')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundAttachment: "fixed",
+          }}
+        />
+        
+        <div className="relative z-10">
+          <Header />
+          <main className="flex-grow w-full">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );
