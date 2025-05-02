@@ -1,9 +1,13 @@
+/* styles/globals.css */
+
 @import "tailwindcss/base";
 @import "tailwindcss/components";
 @import "tailwindcss/utilities";
 
 body {
   position: relative;
+  min-height: 100vh;
+  margin: 0;
 }
 
 body::before {
@@ -20,4 +24,16 @@ body::before {
   opacity: 0.2;
   z-index: -1;
   pointer-events: none;
+}
+
+.video-container {
+  display: block;
+  position: relative;
+  z-index: 10;
+}
+
+@media (max-width: 768px) {
+  .video-container {
+    display: none;
+  }
 }
