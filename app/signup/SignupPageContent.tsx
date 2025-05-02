@@ -17,24 +17,24 @@ export default function SignupPageClient() {
   const billing = validBilling.includes(rawBilling ?? '') ? rawBilling! : 'monthly';
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black text-white">
-      {/* Left Panel - Background image without white overlay */}
-      <div
-        className="relative hidden md:flex items-center justify-center h-screen bg-cover bg-center"
+    <div className="min-h-screen bg-black text-white relative">
+      {/* Background image covering entire page with low opacity */}
+      <div 
+        className="fixed inset-0 z-0 opacity-20"
         style={{
           backgroundImage: "url('/images/bground.jpg')",
-          backgroundColor: 'transparent',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
-      >
-      </div>
+      />
 
-      {/* Right Column - Form */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="flex items-center justify-center p-6 sm:p-12 bg-gradient-to-br from-gray-900 to-black"
-      >
-        <div className="w-full max-w-md space-y-8">
+      {/* Form content */}
+      <div className="relative z-10 min-h-screen flex items-center justify-center p-6 sm:p-12">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="w-full max-w-md space-y-8 bg-gradient-to-br from-gray-900/90 to-black/90 p-8 rounded-xl backdrop-blur-sm"
+        >
           <div className="text-center">
             <Image
               src="/images/theonelogo.png"
@@ -43,7 +43,6 @@ export default function SignupPageClient() {
               height={100}
               className="mx-auto mb-4"
             />
-            {/* Removed the "the one stocks" text */}
             <p className="text-sm text-gray-400">
               Access institutional-grade tools
             </p>
@@ -63,8 +62,8 @@ export default function SignupPageClient() {
               Authenticate here
             </Link>
           </p>
-        </div>
-      </motion.div>
+        </motion.div>
+      </div>
     </div>
   );
 }
