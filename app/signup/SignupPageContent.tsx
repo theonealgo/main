@@ -17,7 +17,7 @@ export default function SignupPageClient() {
   const billing = validBilling.includes(rawBilling ?? '') ? rawBilling! : 'monthly';
 
   return (
-    <main className="flex-grow flex items-center justify-center p-4 sm:p-8">
+    <div className="flex-grow flex items-center justify-center p-4 sm:p-8">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -55,6 +55,6 @@ export default function SignupPageClient() {
           </Link>
         </p>
       </motion.div>
-    </main>
+    </div>
   );
 }
