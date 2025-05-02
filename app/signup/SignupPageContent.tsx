@@ -19,7 +19,10 @@ export default function SignupPageClient() {
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 text-white bg-black">
       {/* Left Info Panel */}
-   
+  <div
+  className="hidden md:block bg-cover bg-center"
+  style={{ backgroundImage: "url('/images/bground.jpg')" }}
+></div> 
       </div>
 
       {/* Right Column - Form */}
