@@ -40,9 +40,9 @@ export default function RootLayout({
           }}
         />
         
-        <div className="relative z-10">
+        <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
-          <main className="flex-grow w-full">{children}</main>
+          <main className="flex-grow">{children}</main>
           <Footer />
         </div>
       </body>
