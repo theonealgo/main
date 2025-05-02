@@ -21,17 +21,7 @@ export default function SignupPageClient() {
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black">
       {/* Left Column - Market Video */}
-      <div className="relative hidden md:block">
-        <video
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-40"
-          poster="/images/bground.jpg"
-        >
-          <source src="/images/videos/market-chart.mp4" type="video/mp4" />
-        </video>
+      <div className="relative hidden md:block"></div>
         
         <div className="relative z-10 p-12 h-full flex flex-col justify-between bg-gradient-to-t from-black via-transparent to-black">
           <Link href="/" className="mb-8 inline-block">
