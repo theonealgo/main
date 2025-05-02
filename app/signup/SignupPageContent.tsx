@@ -1,61 +1,35 @@
 'use client';
 
-import { useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
-import SignupForm from '@/components/SignupForm';
-import Image from 'next/image';
-import Link from 'next/link';
+import React from 'react';
 
-export default function SignupPageClient() {
-  const searchParams = useSearchParams();
-
-  const rawPlan = searchParams?.get('plan') ?? '';
-  const validPlans = ['the_one_stocks', 'the_one_elite', 'the_one_premium'];
-  const plan = validPlans.includes(rawPlan) ? rawPlan : 'the_one_stocks';
-
-  const rawBilling = searchParams?.get('billing') ?? '';
-  const validBilling = ['monthly', 'yearly'];
-  const billing = validBilling.includes(rawBilling) ? rawBilling : 'monthly';
-
+export default function SignupContent() {
   return (
-    <div className="flex-grow flex items-center justify-center p-4 sm:p-8 min-h-screen">
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="w-full max-w-2xl lg:max-w-4xl space-y-8 bg-gradient-to-br from-gray-900/90 to-black/90 p-8 sm:p-12 rounded-xl backdrop-blur-sm border border-gray-800"
-      >
-        <div className="text-center">
-          <Image
-            src="/images/theonelogo.png"
-            alt="TheOne Logo"
-            width={140}
-            height={140}
-            className="mx-auto mb-6"
-            priority
+    <div
+      className="min-h-screen bg-cover bg-center flex items-center justify-center"
+      style={{ backgroundImage: "url('/images/bground.jpg')" }}
+    >
+      <div className="bg-white bg-opacity-80 p-8 rounded-lg shadow-lg max-w-md w-full">
+        <h1 className="text-2xl font-bold mb-4 text-center">Sign Up</h1>
+        {/* Replace the below form with your actual signup form */}
+        <form className="space-y-4">
+          <input
+            type="email"
+            placeholder="Email"
+            className="w-full px-4 py-2 border border-gray-300 rounded"
           />
-          <p className="text-sm text-gray-400 mb-2">
-            Access institutional-grade tools
-          </p>
-        </div>
-
-        <motion.div
-          initial={{ scale: 0.95 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <SignupForm plan={plan} billing={billing} />
-        </motion.div>
-
-        <p className="text-center text-sm text-gray-400 pt-4">
-          Already a member?{' '}
-          <Link 
-            href="/login" 
-            className="text-blue-400 hover:underline hover:text-blue-300 transition-colors"
+          <input
+            type="password"
+            placeholder="Password"
+            className="w-full px-4 py-2 border border-gray-300 rounded"
+          />
+          <button
+            type="submit"
+            className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition"
           >
-            Authenticate here
-          </Link>
-        </p>
-      </motion.div>
+            Create Account
+          </button>
+        </form>
+      </div>
     </div>
   );
 }
