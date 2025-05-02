@@ -128,17 +128,25 @@ export default function Home() {
         </div>
       </section>
 
-      {/* VIDEO SECTION */}
-      <section className="relative bg-black py-24 px-4 md:px-12 overflow-hidden">
-        <video
-          src="/images/videos/market-chart.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-auto rounded-2xl shadow-xl"
-        />
-      </section>
+     {/* VIDEO SECTION */}
+<section className="relative bg-black py-24 px-4 md:px-12 overflow-hidden">
+  <video
+    src="/images/videos/market-chart.mp4"
+    autoPlay
+    muted
+    loop
+    playsInline
+    className="w-full h-auto rounded-2xl shadow-xl"
+    style={{ display: 'block' }} // Ensures video only shows on the homepage
+  />
+  {/* Overlay Text */}
+  <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white z-10">
+    <h2 className="text-4xl md:text-5xl font-bold mb-4">Trade with Confidence. Powered by Data.</h2>
+    <p className="text-lg md:text-xl max-w-4xl">
+      Harness the power of our proven trading strategies and make informed, data-driven decisions in real time.
+    </p>
+  </div>
+</section>
     </div>
   );
 } 
