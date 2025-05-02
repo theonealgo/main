@@ -10,24 +10,23 @@
 }
 
 body {
-  background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
 }
 
-/* Background image overlay */
-.bg-image-overlay::before {
+/* Background image solution that definitely works */
+body::before {
   content: "";
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
   background-image: url('/images/bground.jpg');
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  background-repeat: no-repeat;
   opacity: 0.2;
-  z-index: -10;
+  z-index: -1;
   pointer-events: none;
 }
