@@ -56,12 +56,14 @@ export default function Home() {
               Just signals that work, backed by real data in real time.
             </p>
             <div className="space-y-4">
-              <Link
-                href="/app-signuplogin-page"
-                className="block w-full bg-gradient-to-r from-blue-500 to-teal-500 text-center text-white px-6 py-3 rounded-md font-semibold hover:opacity-90 transition"
-              >
-                Get Started Here
-              </Link>
+             <div className="mt-8 flex justify-center">
+  <Link
+    href="/main/app/signup"
+    className="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition"
+  >
+    Get Started
+  </Link>
+</div>
               <p className="text-sm text-gray-200">No credit card required</p>
             </div>
           </div>
