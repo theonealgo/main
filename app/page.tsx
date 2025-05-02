@@ -132,13 +132,7 @@ export default function Home() {
   </Link>
 </div>
         </div>
-      </section>
-
-      {/* VIDEO SECTION */}
-      export default function Home() {
-  return (
-    <>
-      <section>...first content...</section>
+      </section
 
       {/* VIDEO SECTION */}
       <section className="relative bg-black py-24 px-4 md:px-12 overflow-hidden">
