@@ -30,8 +30,8 @@ export default function RootLayout({
     <html lang="en" className="bg-black">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col relative`}>
         {/* Global low-opacity background */}
-      <div 
-  className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+<div 
+  className="fixed inset-0 -z-10 w-screen h-screen bg-cover bg-center bg-no-repeat"
   style={{
     backgroundImage: "url('/images/bground.jpg')",
     backgroundAttachment: "fixed",
