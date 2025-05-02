@@ -57,12 +57,12 @@ export default function Home() {
             </p>
             <div className="space-y-4">
              <div className="mt-8 flex justify-center">
-  <Link
-    href="/main/app/signup"
-    className="inline-block bg-blue-600 text-white px-6 py-3 rounded-xl text-lg font-semibold hover:bg-blue-700 transition"
-  >
-    Get Started
-  </Link>
+   <Link
+          href="/signup"
+          className="bg-gradient-to-r from-blue-500 to-teal-500 text-white px-5 py-2 rounded-full text-sm font-semibold shadow hover:opacity-90 transition"
+        >
+          Get Started For Free
+        </Link>
 </div>
               <p className="text-sm text-gray-200">No credit card required</p>
             </div>
