@@ -1,8 +1,8 @@
 'use client';
 
-import SignupForm from './SignupForm';
+import SignupForm from '@/components/SignupForm';
 
-export default function SignupContent() {
+export default function SignupPageContent() {
   return (
     <section
       className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
