@@ -17,13 +17,16 @@ export default function SignupPageClient() {
   const billing = validBilling.includes(rawBilling ?? '') ? rawBilling! : 'monthly';
 
   return (
-    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black text-white">
+    <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 text-white bg-black">
       {/* Left Info Panel */}
-      <div className="relative hidden md:flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black p-12">
-        <div className="max-w-md space-y-10">
+      <div
+        className="relative hidden md:flex items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/bground.jpg')" }}
+      >
+        <div className="backdrop-blur-sm bg-black/60 p-12 rounded-xl max-w-md space-y-10">
           <Link href="/" className="block">
             <Image
-              src="public/images/theonelogo.png"
+              src="/images/theonelogo.png"
               alt="The One Logo"
               width={164}
               height={164}
@@ -37,6 +40,14 @@ export default function SignupPageClient() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
+            <h2 className="text-4xl font-bold leading-snug">
+              Professional Trading Suite
+            </h2>
+            <ul className="space-y-4 text-lg">
+              <FeatureItem text="SPY/QQQ Optimized Strategies" />
+              <FeatureItem text="Forex Pair Analysis Tools" />
+              <FeatureItem text="Real-time Chart Patterns" />
+            </ul>
           </motion.div>
         </div>
       </div>
@@ -45,7 +56,7 @@ export default function SignupPageClient() {
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex items-center justify-center p-6 sm:p-12 bg-gradient-to-br from-gray-900 to-black"
+        className="flex items-center justify-center p-6 sm:p-12 bg-gradient-to-br from-black via-gray-900 to-black"
       >
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
@@ -59,6 +70,9 @@ export default function SignupPageClient() {
             <h1 className="text-3xl font-bold text-white mb-1">
               {plan.replace(/_/g, ' ').toUpperCase()}
             </h1>
+            <p className="text-sm text-gray-400">
+              Access institutional-grade tools
+            </p>
           </div>
 
           <motion.div
