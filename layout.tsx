@@ -28,16 +28,19 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="bg-black">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col relative`}>
-        {/* Global low-opacity background */}
-<div 
-  className="fixed inset-0 -z-10 w-screen h-screen bg-cover bg-center bg-no-repeat"
-  style={{
-    backgroundImage: "url('/images/bground.jpg')",
-    backgroundAttachment: "fixed",
-  }}
-/>
-        
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col relative`}
+      >
+        {/* ✅ Background image behind the entire app */}
+        <div
+          className="fixed inset-0 -z-10 w-full h-full bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('/images/bground.jpg')",
+            backgroundAttachment: "fixed",
+          }}
+        />
+
+        {/* App content overlaid */}
         <div className="relative z-10 flex flex-col min-h-screen">
           <Header />
           <main className="flex-grow">{children}</main>
