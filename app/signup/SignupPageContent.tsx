@@ -5,8 +5,6 @@ import { motion } from 'framer-motion';
 import SignupForm from '@/components/SignupForm';
 import Image from 'next/image';
 import Link from 'next/link';
-import Header from '@/components/Header';
-import Footer from '@/components/Footer';
 
 export default function SignupPageClient() {
   const searchParams = useSearchParams();
@@ -33,8 +31,6 @@ export default function SignupPageClient() {
       
       {/* Content container */}
       <div className="relative z-10 flex flex-col min-h-screen">
-        <Header />
-        
         {/* Main form area */}
         <main className="flex-grow flex items-center justify-center p-4 sm:p-8">
           <motion.div
@@ -75,8 +71,6 @@ export default function SignupPageClient() {
             </p>
           </motion.div>
         </main>
-        
-        <Footer />
       </div>
     </div>
   );
