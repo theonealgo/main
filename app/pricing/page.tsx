@@ -45,7 +45,7 @@ export default function PricingPage() {
         "Advanced risk management tools",
       ],
       planKey: 'the_one_premium',
-      image: '/images/trading.jpeg'
+      image: '/images/theonestocks98.png'
     }
   ];
 
