@@ -18,19 +18,22 @@ export default function SignupPageClient() {
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black text-white">
-      {/* Left Info Panel */}
-      <div className="relative hidden md:flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black p-12">
-        <div className="max-w-md space-y-10">
-          <Link href="/" className="block">
-            <Image
-              src="/images/theonelogo.png"
-              alt="The One Logo"
-              width={164}
-              height={164}
-              className="filter brightness-0 invert"
-              priority
-            />
-          </Link>
+      {/* Left Info Panel - Just background and logo */}
+      <div
+        className="relative hidden md:flex items-center justify-center bg-cover bg-center"
+        style={{ backgroundImage: "url('/images/bground.jpg')" }}
+      >
+        <Link href="/" className="block">
+          <Image
+            src="/images/theonelogo.png"
+            alt="The One Logo"
+            width={164}
+            height={164}
+            className="filter brightness-0 invert"
+            priority
+          />
+        </Link>
+      </div>
 
       {/* Right Column - Form */}
       <motion.div
@@ -74,26 +77,3 @@ export default function SignupPageClient() {
     </div>
   );
 }
-
-function FeatureItem({ text }: { text: string }) {
-  return (
-    <li className="flex items-center gap-3">
-      <CheckIcon />
-      <span>{text}</span>
-    </li>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      className="h-6 w-6 text-green-400"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-    </svg>
-  );
-}   
