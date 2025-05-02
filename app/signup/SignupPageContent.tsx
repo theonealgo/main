@@ -32,23 +32,6 @@ export default function SignupPageClient() {
             />
           </Link>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <h2 className="text-4xl font-bold leading-snug">
-              Professional Trading Suite
-            </h2>
-            <ul className="space-y-4 text-lg">
-              <FeatureItem text="SPY/QQQ Optimized Strategies" />
-              <FeatureItem text="Forex Pair Analysis Tools" />
-              <FeatureItem text="Real-time Chart Patterns" />
-            </ul>
-          </motion.div>
-        </div>
-      </div>
-
       {/* Right Column - Form */}
       <motion.div
         initial={{ opacity: 0 }}
