@@ -1,11 +1,23 @@
 'use client';
 
+import { useSearchParams } from 'next/navigation';
 import SignupForm from '@/components/SignupForm';
 
-export default function SignupPageContent() {
-  return (
-    <section
-      className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
+export default function SignupPageClient() {
+  const searchParams = useSearchParams();
+
+  const rawPlan = searchParams?.get('plan');
+  const rawBilling = searchParams?.get('billing');
+
+  const validPlans = ['the_one_stock', 'the_one_elite', 'the_one_premium'];
+  const plan = validPlans.includes(rawPlan ?? '') ? rawPlan! : 'the_one_stock';
+
+  const validBilling = ['monthly', 'yearly'];
+  const billing = validBilling.includes(rawBilling ?? '') ? rawBilling! : 'monthly';
+
+  return <SignupForm plan={plan} billing={billing} />;
+}
+   className="min-h-screen bg-cover bg-center flex items-center justify-center px-4"
       style={{ backgroundImage: "url('/images/bground.jpg')" }}
     >
       <div className="bg-white bg-opacity-90 p-8 rounded-lg shadow-lg max-w-md w-full">
@@ -14,6 +26,3 @@ export default function SignupPageContent() {
         </h1>
         <SignupForm />
       </div>
-    </section>
-  );
-}
