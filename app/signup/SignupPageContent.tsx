@@ -5,22 +5,17 @@ import { motion } from 'framer-motion';
 import SignupForm from '@/components/SignupForm';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo } from 'react';
 
 export default function SignupPageClient() {
   const searchParams = useSearchParams();
 
-  const plan = useMemo(() => {
-    const rawPlan = searchParams.get('plan');
-    const validPlans = ['the_one_stocks', 'the_one_elite', 'the_one_premium'] as const;
-    return validPlans.includes(rawPlan as typeof validPlans[number]) ? rawPlan! : 'the_one_stocks';
-  }, [searchParams]);
+  const rawPlan = searchParams?.get('plan') ?? '';
+  const validPlans = ['the_one_stocks', 'the_one_elite', 'the_one_premium'];
+  const plan = validPlans.includes(rawPlan) ? rawPlan : 'the_one_stocks';
 
-  const billing = useMemo(() => {
-    const rawBilling = searchParams.get('billing');
-    const validBilling = ['monthly', 'yearly'] as const;
-    return validBilling.includes(rawBilling as typeof validBilling[number]) ? rawBilling! : 'monthly';
-  }, [searchParams]);
+  const rawBilling = searchParams?.get('billing') ?? '';
+  const validBilling = ['monthly', 'yearly'];
+  const billing = validBilling.includes(rawBilling) ? rawBilling : 'monthly';
 
   return (
     <div className="flex-grow flex items-center justify-center p-4 sm:p-8 min-h-screen">
