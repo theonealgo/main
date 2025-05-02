@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -19,8 +18,7 @@ export default function PricingPage() {
         "2.2+ profit factor",
         "Real-time entry/exit alerts",
       ],
-      planKey: 'the_one_stocks',
-      image: '/images/theonestockssettings.png'
+      planKey: 'the_one_stocks'
     },
     {
       title: "The One Elite",
@@ -32,8 +30,7 @@ export default function PricingPage() {
         "2.9+ profit factor",
         "Real-time entry/exit alerts",
       ],
-      planKey: 'the_one_elite',
-      image: '/images/theoneelitesettings.png'
+      planKey: 'the_one_elite'
     },
     {
       title: "The One Premium",
@@ -44,135 +41,78 @@ export default function PricingPage() {
         "All timeframes supported",
         "Advanced risk management tools",
       ],
-      planKey: 'the_one_premium',
-      image: '/images/theonestocks98.png'
+      planKey: 'the_one_premium'
     }
   ];
 
   return (
-    <div className="min-h-screen bg-black text-white font-sans overflow-x-hidden">
-      {/* Background Section */}
-      <div className="fixed inset-0 z-0 opacity-20">
-        <Image
-          src="/images/bground.jpg"
-          alt="Market background"
-          fill
-          className="object-cover"
-          quality={100}
-        />
+    <div className="bg-black text-white min-h-screen font-sans overflow-x-hidden box-border">
+      {/* Billing toggle */}
+      <div className="flex justify-center mt-12 mb-4">
+        <div className="bg-gray-900 p-1 rounded-full flex">
+          <button
+            onClick={() => setBillingCycle('monthly')}
+            className={`px-6 py-2 rounded-full transition ${billingCycle === 'monthly' ? 'bg-teal-500 text-white' : 'text-gray-400'}`}
+          >
+            Monthly
+          </button>
+          <button
+            onClick={() => setBillingCycle('yearly')}
+            className={`px-6 py-2 rounded-full transition ${billingCycle === 'yearly' ? 'bg-teal-500 text-white' : 'text-gray-400'}`}
+          >
+            Yearly (Save 20%)
+          </button>
+        </div>
       </div>
 
-      {/* Content */}
-      <div className="relative z-10 container mx-auto px-4 py-16">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-bold mb-4 bg-gradient-to-r from-teal-400 to-blue-500 bg-clip-text text-transparent"
-          >
-            Pricing Plans
-          </motion.h1>
-          <p className="text-gray-400 text-xl mb-8">Choose your trading advantage</p>
-
-          {/* Billing Toggle */}
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex justify-center mb-12"
-          >
-            <div className="bg-gray-900 p-1 rounded-full flex">
-              <button
-                onClick={() => setBillingCycle('monthly')}
-                className={`px-6 py-2 rounded-full transition-colors ${
-                  billingCycle === 'monthly' 
-                    ? 'bg-teal-500 text-white shadow-lg' 
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Monthly Billing
-              </button>
-              <button
-                onClick={() => setBillingCycle('yearly')}
-                className={`px-6 py-2 rounded-full transition-colors ${
-                  billingCycle === 'yearly' 
-                    ? 'bg-teal-500 text-white shadow-lg' 
-                    : 'text-gray-400 hover:text-white'
-                }`}
-              >
-                Yearly (Save 20%)
-              </button>
-            </div>
-          </motion.div>
-
-          {/* Pricing Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {pricingPlans.map((plan, index) => (
-              <motion.div
-                key={plan.planKey}
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.2 }}
-                className="bg-gray-900 rounded-xl p-8 border border-gray-800 hover:border-teal-400 transition-all relative overflow-hidden"
-              >
-                {/* Strategy Preview */}
-                <div className="mb-6 -mx-8 -mt-8">
-                  <Image
-                    src={plan.image}
-                    alt={plan.title}
-                    width={600}
-                    height={400}
-                    className="w-full h-48 object-cover"
-                  />
-                </div>
-
-                <h3 className="text-2xl font-bold mb-4">{plan.title}</h3>
-                <p className="text-gray-400 mb-6">{plan.description}</p>
-                
-                <div className="mb-8">
-                  <span className="text-4xl font-bold">${plan.price}</span>
+      {/* Pricing cards */}
+      <section className="py-16 px-4 md:px-12">
+        <div className="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 justify-items-center">
+          {pricingPlans.map((plan, index) => (
+            <div
+              key={index}
+              className="bg-gray-900 p-8 rounded-2xl border border-gray-800 hover:border-teal-400 transition-all flex flex-col justify-between w-full max-w-sm"
+            >
+              <div>
+                <h3 className="text-2xl font-bold mb-2 text-center">{plan.title}</h3>
+                <p className="text-gray-400 mb-6 text-center">{plan.description}</p>
+                <div className="mb-6 text-center">
+                  <span className="text-5xl font-bold">${plan.price}</span>
                   <span className="text-gray-400 ml-2">/{billingCycle}</span>
                 </div>
-
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature) => (
-                    <li key={feature} className="flex items-center">
-                      <span className="text-teal-400 mr-2">✓</span>
-                      {feature}
+                <ul className="space-y-3 mb-8 min-h-[190px] md:min-h-[220px] text-sm">
+                  {plan.features.map((feature, fIndex) => (
+                    <li key={fIndex} className="flex items-start">
+                      <span className="text-teal-400 mr-2 mt-1">✓</span> {feature}
                     </li>
                   ))}
                 </ul>
-
-                <Link
-                  href={`/signup?plan=${plan.planKey}&billing=${billingCycle}`}
-                  className="block w-full bg-gradient-to-r from-blue-500 to-teal-500 text-center text-white px-6 py-3 rounded-lg font-semibold hover:opacity-90 transition"
-                >
-                  Start Free Trial
-                </Link>
-              </motion.div>
-            ))}
-          </div>
+              </div>
+              <Link
+                href={`/signup?plan=${plan.planKey}&billing=${billingCycle}`}
+                className="block w-full bg-gradient-to-r from-blue-500 to-teal-500 text-center text-white px-6 py-3 rounded-md font-semibold hover:opacity-90 transition"
+              >
+                Try Free for 30 Days
+              </Link>
+            </div>
+          ))}
         </div>
+      </section>
 
-        {/* Security Footer */}
-        <motion.div 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-16 text-center border-t border-gray-800 pt-12"
-        >
-          <div className="mb-6">
-            <Image
-              src="/images/paymentmethod.svg"
-              alt="Payment Methods"
-              width={300}
-              height={40}
-              className="mx-auto"
-            />
-          </div>
-          <p className="text-gray-400 text-sm">
-            256-bit SSL Encryption • Cancel Anytime • 30-Day Money Back Guarantee
-          </p>
-        </motion.div>
+      {/* Payment notice */}
+      <div className="bg-gray-900 py-12 px-4 md:px-12 text-center">
+        <h3 className="text-2xl font-semibold mb-4">Safe & Secure Checkout</h3>
+        <p className="text-gray-400 max-w-2xl mx-auto mb-6 text-sm">
+          Cancel anytime in one click from within your account. After signup, access is instant. Trade at your own risk.
+        </p>
+        <div className="flex justify-center mb-4">
+          <Image
+            src="/images/paymentmethod.svg"
+            alt="Payment Methods"
+            width={240}
+            height={30}
+          />
+        </div>
       </div>
     </div>
   );
