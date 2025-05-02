@@ -1,24 +1,23 @@
-// app/layout.tsx
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css";
 
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: 'swap',
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
   title: "TheOneAlgo",
   description: "Built with TradingView® technology",
+  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -27,24 +26,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="bg-black">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col relative`}
-      >
-        {/* ✅ Background image behind the entire app */}
-        <div
-          className="fixed inset-0 -z-10 w-full h-full bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('/images/bground.jpg')",
-            backgroundAttachment: "fixed",
-          }}
-        />
-
-        {/* App content overlaid */}
-        <div className="relative z-10 flex flex-col min-h-screen">
-          <Header />
-          <main className="flex-grow">{children}</main>
-          <Footer />
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} bg-image-overlay antialiased text-white min-h-screen flex flex-col`}>
+        <div className="flex flex-col min-h-screen relative z-0">
+          {children}
         </div>
       </body>
     </html>
