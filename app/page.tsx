@@ -56,7 +56,7 @@ export default function Home() {
               Just signals that work, backed by real data in real time.
             </p>
             <div className="space-y-4">
-             <div className="mt-8 flex justify-center">
+             <div className="mt-8 flex justify-left">
    <Link
           href="/signup"
           className="bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition"
