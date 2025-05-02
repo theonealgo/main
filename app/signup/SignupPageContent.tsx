@@ -26,15 +26,6 @@ export default function SignupPageClient() {
           backgroundColor: 'transparent',
         }}
       >
-        <Link href="/" className="block">
-          <Image
-            src="/images/theonelogo.png"
-            alt="The One Logo"
-            width={164}
-            height={164}
-            priority
-          />
-        </Link>
       </div>
 
       {/* Right Column - Form */}
