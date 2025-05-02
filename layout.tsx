@@ -17,7 +17,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "TheOneAlgo",
   description: "Built with TradingView® technology",
-  themeColor: "#000000",
 };
 
 export default function RootLayout({
@@ -26,11 +25,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} bg-image-overlay antialiased text-white min-h-screen flex flex-col`}>
-        <div className="flex flex-col min-h-screen relative z-0">
-          {children}
-        </div>
+    <html lang="en" className="bg-black">
+      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        {children}
       </body>
     </html>
   );
