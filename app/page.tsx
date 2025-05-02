@@ -135,22 +135,23 @@ export default function Home() {
       </section>
 
       {/* VIDEO SECTION */}
+      export default function Home() {
+  return (
+    <>
+      <section>...first content...</section>
+
+      {/* VIDEO SECTION */}
       <section className="relative bg-black py-24 px-4 md:px-12 overflow-hidden">
         <video
           src="/images/videos/market-chart.mp4"
           autoPlay
-          loop
           muted
+          loop
           playsInline
-          className="absolute inset-0 w-full h-full object-cover opacity-60"
+          className="w-full h-auto rounded-2xl shadow-xl"
         />
-        <div className="relative z-10 text-center text-white space-y-12">
-          <h2 className="text-5xl font-bold">Trade with Confidence. Powered by Data.</h2>
-          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
-            Harness the power of our proven trading strategies and make informed, data-driven decisions in real-time.
-          </p>
-        </div>
       </section>
-    </div>
+    </>
   );
 }
+ 
