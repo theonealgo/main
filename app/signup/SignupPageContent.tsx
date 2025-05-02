@@ -18,15 +18,15 @@ export default function SignupPageClient() {
 
   return (
     <div className="min-h-screen grid grid-cols-1 md:grid-cols-2 bg-black text-white">
-      {/* Left Column */}
-      <div className="relative hidden md:flex items-center justify-center p-12 bg-gradient-to-b from-black via-gray-900 to-black">
-        <div className="space-y-8 max-w-md">
-          <Link href="/" className="inline-block">
+      {/* Left Info Panel */}
+      <div className="relative hidden md:flex items-center justify-center bg-gradient-to-b from-black via-gray-900 to-black p-12">
+        <div className="max-w-md space-y-10">
+          <Link href="/" className="block">
             <Image
               src="/images/theonelogo.png"
               alt="The One Logo"
-              width={184}
-              height={184}
+              width={164}
+              height={164}
               className="filter brightness-0 invert"
               priority
             />
@@ -37,7 +37,9 @@ export default function SignupPageClient() {
             animate={{ opacity: 1, y: 0 }}
             className="space-y-6"
           >
-            <h2 className="text-4xl font-bold">Professional Trading Suite</h2>
+            <h2 className="text-4xl font-bold leading-snug">
+              Professional Trading Suite
+            </h2>
             <ul className="space-y-4 text-lg">
               <FeatureItem text="SPY/QQQ Optimized Strategies" />
               <FeatureItem text="Forex Pair Analysis Tools" />
@@ -47,25 +49,27 @@ export default function SignupPageClient() {
         </div>
       </div>
 
-      {/* Right Column - Signup Form */}
+      {/* Right Column - Form */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        className="flex items-center justify-center p-8 bg-gradient-to-br from-gray-900 to-black"
+        className="flex items-center justify-center p-6 sm:p-12 bg-gradient-to-br from-gray-900 to-black"
       >
         <div className="w-full max-w-md space-y-8">
           <div className="text-center">
             <Image
               src="/images/theonelogo.png"
               alt="Logo"
-              width={120}
-              height={120}
+              width={100}
+              height={100}
               className="mx-auto mb-4"
             />
-            <h1 className="text-3xl font-bold mb-2 text-white">
+            <h1 className="text-3xl font-bold text-white mb-1">
               {plan.replace(/_/g, ' ').toUpperCase()}
             </h1>
-            <p className="text-gray-400">Access institutional trading tools</p>
+            <p className="text-sm text-gray-400">
+              Access institutional-grade tools
+            </p>
           </div>
 
           <motion.div
