@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import Image from "next/image";
 import "react-medium-image-zoom/dist/styles.css";
-import "./zoom-overrides.css"; // <-- Custom styles for overlay and z-index
+import "./zoom-overrides.css";
 
 const Zoom = dynamic(() => import("react-medium-image-zoom"), { ssr: false });
 
@@ -56,8 +56,8 @@ export default function Home() {
               Just signals that work, backed by real data in real time.
             </p>
             <div className="space-y-4">
-           <Link
-                href={`/signup?plan=${plan.planKey}&billing=${billingCycle}`}
+              <Link
+                href="/app-signuplogin-page"
                 className="block w-full bg-gradient-to-r from-blue-500 to-teal-500 text-center text-white px-6 py-3 rounded-md font-semibold hover:opacity-90 transition"
               >
                 Get Started Here
@@ -73,22 +73,22 @@ export default function Home() {
         <div className="max-w-7xl mx-auto space-y-24">
           {performanceItems.map((item, i) => (
             <div key={i} className="space-y-8 group">
-        <Zoom zoomMargin={40}>
-  <div className="relative h-[600px] w-full">
-    <Image
-      src="/images/theonestockssettings.png"
-      alt="The One Stocks Settings - HD Configuration"
-      fill
-      quality={100}
-      priority
-      className="rounded-xl object-contain hover:shadow-xl transition-shadow"
-      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-      style={{
-        imageRendering: 'crisp-edges',
-      }}
-    />
-  </div>
-</Zoom>
+              <Zoom zoomMargin={40}>
+                <div className="relative h-[600px] w-full">
+                  <Image
+                    src={item.src}
+                    alt={item.alt}
+                    fill
+                    quality={100}
+                    priority
+                    className="rounded-xl object-contain hover:shadow-xl transition-shadow"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
+                    style={{
+                      imageRendering: "crisp-edges",
+                    }}
+                  />
+                </div>
+              </Zoom>
               <div className="px-4 space-y-4">
                 <h3 className="text-3xl font-bold">{item.title}</h3>
                 <p className="text-gray-300 text-lg">{item.desc}</p>
@@ -97,7 +97,9 @@ export default function Home() {
           ))}
         </div>
       </section>
-
+    </div>
+  );
+}
       {/* LIVE STATS SECTION */}
       <section className="bg-gradient-to-r from-gray-900 to-black py-24 px-4 md:px-12">
         <div className="max-w-6xl mx-auto text-center space-y-12">
