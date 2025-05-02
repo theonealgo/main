@@ -5,6 +5,8 @@ import { motion } from 'framer-motion';
 import SignupForm from '@/components/SignupForm';
 import Image from 'next/image';
 import Link from 'next/link';
+import Header from '@/components/Header'; // Ensure Header is correctly imported
+import Footer from '@/components/Footer'; // Ensure Footer is correctly imported
 
 export default function SignupPageClient() {
   const searchParams = useSearchParams();
@@ -17,8 +19,8 @@ export default function SignupPageClient() {
   const billing = validBilling.includes(rawBilling ?? '') ? rawBilling! : 'monthly';
 
   return (
-    <main className="relative flex-grow flex items-center justify-center p-4 sm:p-8">
-      {/* Background image */}
+    <div className="relative min-h-screen bg-black text-white">
+      {/* Full-screen background image */}
       <div
         className="fixed inset-0 z-0 bg-cover bg-center"
         style={{
@@ -26,48 +28,59 @@ export default function SignupPageClient() {
           backgroundAttachment: 'fixed',
         }}
       />
-
-      {/* Dark overlay to keep text readable */}
+      
+      {/* Dark overlay for readability */}
       <div className="fixed inset-0 z-10 bg-black bg-opacity-50" />
+      
+      {/* Content section */}
+      <div className="relative z-20 flex flex-col min-h-screen">
+        {/* Header will be rendered from the layout */}
+        <Header />
 
-      {/* Foreground content */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        className="relative z-20 w-full max-w-2xl lg:max-w-4xl space-y-8 bg-gradient-to-br from-gray-900/90 to-black/90 p-8 sm:p-12 rounded-xl backdrop-blur-sm border border-gray-800"
-      >
-        <div className="text-center">
-          <Image
-            src="/images/theonelogo.png"
-            alt="Logo"
-            width={140}
-            height={140}
-            className="mx-auto mb-6"
-            priority
-          />
-          <p className="text-sm text-gray-400 mb-2">
-            Access institutional-grade tools
-          </p>
-        </div>
-
-        <motion.div
-          initial={{ scale: 0.95 }}
-          animate={{ scale: 1 }}
-          transition={{ duration: 0.3 }}
-        >
-          <SignupForm plan={plan} billing={billing} />
-        </motion.div>
-
-        <p className="text-center text-sm text-gray-400 pt-4">
-          Already a member?{' '}
-          <Link
-            href="/login"
-            className="text-blue-400 hover:underline hover:text-blue-300 transition-colors"
+        {/* Main form content */}
+        <main className="flex-grow flex items-center justify-center p-4 sm:p-8">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="w-full max-w-2xl lg:max-w-4xl space-y-8 bg-gradient-to-br from-gray-900/90 to-black/90 p-8 sm:p-12 rounded-xl backdrop-blur-sm border border-gray-800"
           >
-            Authenticate here
-          </Link>
-        </p>
-      </motion.div>
-    </main>
+            <div className="text-center">
+              <Image
+                src="/images/theonelogo.png"
+                alt="Logo"
+                width={140}
+                height={140}
+                className="mx-auto mb-6"
+                priority
+              />
+              <p className="text-sm text-gray-400 mb-2">
+                Access institutional-grade tools
+              </p>
+            </div>
+
+            <motion.div
+              initial={{ scale: 0.95 }}
+              animate={{ scale: 1 }}
+              transition={{ duration: 0.3 }}
+            >
+              <SignupForm plan={plan} billing={billing} />
+            </motion.div>
+
+            <p className="text-center text-sm text-gray-400 pt-4">
+              Already a member?{' '}
+              <Link 
+                href="/login" 
+                className="text-blue-400 hover:underline hover:text-blue-300 transition-colors"
+              >
+                Authenticate here
+              </Link>
+            </p>
+          </motion.div>
+        </main>
+        
+        {/* Footer rendered from the layout */}
+        <Footer />
+      </div>
+    </div>
   );
 }
