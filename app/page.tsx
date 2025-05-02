@@ -52,17 +52,17 @@ export default function Home() {
                 Zero Noise.
               </span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-300 max-w-2xl">
+            <p className="text-xl md:text-2xl text-gray-200 max-w-2xl">
               Just signals that work, backed by real data in real time.
             </p>
             <div className="space-y-4">
-              <Link
-                href="/app/signup"
-                className="bg-white text-black px-8 py-4 rounded-md text-lg font-semibold hover:bg-gray-200 transition inline-block"
+           <Link
+                href={`/signup?plan=${plan.planKey}&billing=${billingCycle}`}
+                className="block w-full bg-gradient-to-r from-blue-500 to-teal-500 text-center text-white px-6 py-3 rounded-md font-semibold hover:opacity-90 transition"
               >
-                Get Started for Free
+                Get Started Here
               </Link>
-              <p className="text-sm text-gray-400">No credit card required</p>
+              <p className="text-sm text-gray-200">No credit card required</p>
             </div>
           </div>
         </div>
