@@ -57,7 +57,10 @@ export default function SignupPageClient() {
                 Access institutional-grade tools
               </p>
             </div>
-
+<div 
+  className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat"
+  style={{ backgroundImage: "url('/images/bground.jpg')" }}
+></div>
             <motion.div
               initial={{ scale: 0.95 }}
               animate={{ scale: 1 }}
