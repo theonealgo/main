@@ -1,16 +1,25 @@
 'use client';
 
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [open, setOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   return (
-    <header className="w-full bg-black border-b border-gray-800 px-6 py-4 flex items-center justify-between shadow-sm">
+    <header className="w-full bg-black border-b border-gray-800 px-6 py-4 flex items-center justify-between shadow-sm relative z-50">
       {/* Logo */}
       <Link href="/" className="flex items-center">
         <Image
@@ -23,66 +32,40 @@ export default function Header() {
       </Link>
 
       {/* Navigation */}
-      <nav className="flex items-center gap-6">
-        <div className="relative">
+      <nav className="flex items-center gap-6 relative">
+        {/* Dropdown Menu */}
+        <div className="relative" ref={dropdownRef}>
           <button
-            onClick={toggleMenu}
-            className="text-sm text-white hover:text-teal-400 transition-colors flex items-center gap-1"
+            onClick={() => setOpen(!open)}
+            className="text-sm text-white hover:text-teal-400 transition-colors px-3 py-2 rounded-md border border-gray-700 hover:border-teal-400"
           >
-            Menu
-            <svg
-              className={`w-4 h-4 transition-transform ${isMenuOpen ? 'rotate-180' : ''}`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-            </svg>
+            Pages ▾
           </button>
-
-          {/* Dropdown Menu */}
-          {isMenuOpen && (
-            <div className="absolute right-0 mt-2 w-48 bg-gray-900 border border-gray-800 rounded-md shadow-lg py-1 z-50">
-              <Link
-                href="/pricing"
-                className="block px-4 py-2 text-sm text-white hover:bg-gray-800 transition-colors"
-                onClick={toggleMenu}
-              >
-                Pricing
-              </Link>
-              <Link
-                href="/about"
-                className="block px-4 py-2 text-sm text-white hover:bg-gray-800 transition-colors"
-                onClick={toggleMenu}
-              >
-                About Us
-              </Link>
-              <Link
-                href="/features"
-                className="block px-4 py-2 text-sm text-white hover:bg-gray-800 transition-colors"
-                onClick={toggleMenu}
-              >
-                Features
-              </Link>
-              <Link
-                href="/contact"
-                className="block px-4 py-2 text-sm text-white hover:bg-gray-800 transition-colors"
-                onClick={toggleMenu}
-              >
-                Contact
-              </Link>
-              <Link
-                href="/blog"
-                className="block px-4 py-2 text-sm text-white hover:bg-gray-800 transition-colors"
-                onClick={toggleMenu}
-              >
-                Blog
-              </Link>
+          {open && (
+            <div className="absolute right-0 mt-3 bg-gray-900 border border-gray-700 rounded-lg shadow-lg py-2 w-56">
+              {[
+                { href: '/', label: 'Home' },
+                { href: '/pricing', label: 'Pricing' },
+                { href: '/signup', label: 'Signup' },
+                { href: '/about', label: 'About' },
+                { href: '/faq', label: 'FAQ' },
+                { href: '/contact', label: 'Contact' },
+                { href: '/privacy', label: 'Privacy Policy' },
+                { href: '/terms', label: 'Terms of Service' },
+              ].map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="block px-4 py-2 text-sm text-white hover:bg-gray-800 transition"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           )}
         </div>
 
+        {/* CTA Button */}
         <Link
           href="/signup"
           className="bg-gradient-to-r from-blue-500 to-teal-500 text-white px-5 py-2 rounded-full text-sm font-semibold shadow hover:opacity-90 transition"
