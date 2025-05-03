@@ -1,18 +1,18 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 
-const handler = NextAuth({
+const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID || (() => { throw new Error("Missing GOOGLE_CLIENT_ID") })(),
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET || (() => { throw new Error("Missing GOOGLE_CLIENT_SECRET") })(),
+      clientId: process.env.GOOGLE_CLIENT_ID ?? (() => { throw new Error("Missing GOOGLE_CLIENT_ID") })(),
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? (() => { throw new Error("Missing GOOGLE_CLIENT_SECRET") })(),
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET || (() => { throw new Error("Missing NEXTAUTH_SECRET") })(),
+  secret: process.env.NEXTAUTH_SECRET ?? (() => { throw new Error("Missing NEXTAUTH_SECRET") })(),
 
   pages: {
-    signIn: '/signin',
-    error: '/auth/error',
+    signIn: "/signin",
+    error: "/auth/error",
   },
 
   session: {
@@ -21,25 +21,32 @@ const handler = NextAuth({
 
   callbacks: {
     async jwt({ token, account, user, profile }) {
-      console.log("🔥 JWT callback fired", { token, account, user, profile });
+      console.log("JWT callback fired", { token, account, user, profile });
 
       if (account) {
         token.accessToken = account.access_token;
-        token.id = profile?.sub || user?.id || undefined; // ✅ fixed null to undefined
+        token.id = profile?.sub ?? user?.id ?? undefined;
       }
 
       return token;
     },
 
     async session({ session, token }) {
-      console.log("💥 Session callback fired", { session, token });
+      console.log("Session callback fired", { session, token });
 
-      session.accessToken = token.accessToken ?? undefined; // ✅ fixed null to undefined
-      session.user.id = token.id ?? undefined; // ✅ fixed null to undefined
+      session.accessToken = token.accessToken ?? undefined;
+
+      // Defensive check — TypeScript might complain if session.user doesn't have an `id` field
+      session.user = {
+        ...session.user,
+        id: token.id ?? undefined,
+      };
 
       return session;
     },
   },
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
