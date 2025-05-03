@@ -21,22 +21,22 @@ const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, account, user, profile }) {
-      console.log("JWT callback fired", { token, account, user, profile });
+      console.log("🔥 JWT callback fired", { token, account, user, profile });
 
       if (account) {
         token.accessToken = account.access_token;
-        token.id = profile?.sub ?? user?.id ?? undefined;
+        token.id = profile?.sub ?? user?.id ?? undefined; // ✅ null replaced with undefined
       }
 
       return token;
     },
 
     async session({ session, token }) {
-      console.log("Session callback fired", { session, token });
+      console.log("💥 Session callback fired", { session, token });
 
       session.accessToken = token.accessToken ?? undefined;
 
-      // Defensive check — TypeScript might complain if session.user doesn't have an `id` field
+      // Cast user safely
       session.user = {
         ...session.user,
         id: token.id ?? undefined,
