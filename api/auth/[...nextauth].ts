@@ -1,52 +1,32 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
+import NextAuth from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import type { NextAuthOptions } from 'next-auth';
 
-const authOptions: NextAuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID ?? (() => { throw new Error("Missing GOOGLE_CLIENT_ID") })(),
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? (() => { throw new Error("Missing GOOGLE_CLIENT_SECRET") })(),
+      clientId: process.env.GOOGLE_ID as string,
+      clientSecret: process.env.GOOGLE_SECRET as string,
     }),
   ],
-  secret: process.env.NEXTAUTH_SECRET ?? (() => { throw new Error("Missing NEXTAUTH_SECRET") })(),
-
-  pages: {
-    signIn: "/signin",
-    error: "/auth/error",
-  },
-
   session: {
-    strategy: "jwt",
+    strategy: 'jwt',
   },
-
   callbacks: {
-    async jwt({ token, account, user, profile }) {
-      console.log("🔥 JWT callback fired", { token, account, user, profile });
-
+    async jwt({ token, account, profile, user }) {
       if (account) {
         token.accessToken = account.access_token;
-        token.id = profile?.sub ?? user?.id ?? undefined; // ✅ null replaced with undefined
+        token.id = profile?.sub ?? user?.id ?? undefined; // ✅ FIXED: null replaced with undefined
       }
-
       return token;
     },
-
     async session({ session, token }) {
-      console.log("💥 Session callback fired", { session, token });
-
-      session.accessToken = token.accessToken ?? undefined;
-
-      // Cast user safely
-      session.user = {
-        ...session.user,
-        id: token.id ?? undefined,
-      };
-
+      session.user.id = token.id as string;
+      session.accessToken = token.accessToken as string;
       return session;
     },
   },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+export default NextAuth(authOptions);
