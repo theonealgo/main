@@ -12,16 +12,6 @@ export default function AboutPage() {
         className="relative min-h-screen flex items-center justify-center bg-cover bg-center gradient-border"
         style={{ backgroundImage: "url('/images/bground.jpg')" }}
       >
-        <div className="absolute inset-0 video-fallback">
-          <video
-            autoPlay
-            muted
-            loop
-            playsInline
-            className="w-full h-full object-cover opacity-30"
-            src="/images/videos/market-chart.mp4"
-          />
-        </div>
         <div className="relative z-10 text-left px-4 max-w-6xl">
           <div className="flex items-center mb-12">
             <Link href="/">
