@@ -64,19 +64,6 @@ export default function Header() {
             </div>
           )}
         </div>
-
-        {/* Legal Menu */}
-        <div className="relative">
-          <button onClick={() => toggleMenu('legal')} className="hover:text-teal-400 transition">
-            Legal
-          </button>
-          {openMenu === 'legal' && (
-            <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
-              <Link href="/disclaimer" className="block px-4 py-2 hover:bg-gray-800">Disclaimer</Link>
-            </div>
-          )}
-        </div>
-
         {/* CTA */}
         <Link
           href="/signup"
