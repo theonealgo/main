@@ -1,30 +1,23 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useState } from 'react';
 
 export default function Header() {
-  const [open, setOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [openMenu, setOpenMenu] = useState('');
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  const toggleMenu = (menu: string) => {
+    setOpenMenu(openMenu === menu ? '' : menu);
+  };
 
   return (
-    <header className="w-full bg-black border-b border-gray-800 px-6 py-4 flex items-center justify-between shadow-sm relative z-50">
+    <header className="w-full bg-black text-white px-6 py-4 flex items-center justify-between border-b border-gray-800">
       {/* Logo */}
       <Link href="/" className="flex items-center">
         <Image
           src="/images/theonelogo.png"
-          alt="TheOneAlgo Logo"
+          alt="Logo"
           width={128}
           height={128}
           className="h-10 w-auto"
@@ -33,42 +26,61 @@ export default function Header() {
 
       {/* Navigation */}
       <nav className="flex items-center gap-6 relative">
-        {/* Dropdown Menu */}
-        <div className="relative" ref={dropdownRef}>
-          <button
-            onClick={() => setOpen(!open)}
-            className="text-sm text-white hover:text-teal-400 transition-colors px-3 py-2 rounded-md border border-gray-700 hover:border-teal-400"
-          >
-            Pages ▾
+        {/* Product Menu */}
+        <div className="relative">
+          <button onClick={() => toggleMenu('product')} className="hover:text-teal-400 transition">
+            Product
           </button>
-          {open && (
-            <div className="absolute right-0 mt-3 bg-gray-900 border border-gray-700 rounded-lg shadow-lg py-2 w-56">
-              {[
-                { href: '/', label: 'Home' },
-                { href: '/pricing', label: 'Pricing' },
-                { href: '/signup', label: 'Signup' },
-                { href: '/about', label: 'About' },
-                { href: '/faq', label: 'FAQ' },
-                { href: '/contact', label: 'Contact' },
-                { href: '/privacy', label: 'Privacy Policy' },
-                { href: '/terms', label: 'Terms of Service' },
-              ].map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="block px-4 py-2 text-sm text-white hover:bg-gray-800 transition"
-                >
-                  {link.label}
-                </Link>
-              ))}
+          {openMenu === 'product' && (
+            <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
+              <Link href="/pricing" className="block px-4 py-2 hover:bg-gray-800">Pricing</Link>
+              <Link href="/features" className="block px-4 py-2 hover:bg-gray-800">Features</Link>
             </div>
           )}
         </div>
 
-        {/* CTA Button */}
+        {/* Resources Menu */}
+        <div className="relative">
+          <button onClick={() => toggleMenu('resources')} className="hover:text-teal-400 transition">
+            Resources
+          </button>
+          {openMenu === 'resources' && (
+            <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
+              <Link href="/documentation" className="block px-4 py-2 hover:bg-gray-800">Documentation</Link>
+              <Link href="/tutorials" className="block px-4 py-2 hover:bg-gray-800">Tutorials</Link>
+            </div>
+          )}
+        </div>
+
+        {/* Company Menu */}
+        <div className="relative">
+          <button onClick={() => toggleMenu('company')} className="hover:text-teal-400 transition">
+            Company
+          </button>
+          {openMenu === 'company' && (
+            <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
+              <Link href="/about" className="block px-4 py-2 hover:bg-gray-800">About</Link>
+              <Link href="/contact" className="block px-4 py-2 hover:bg-gray-800">Contact</Link>
+            </div>
+          )}
+        </div>
+
+        {/* Legal Menu */}
+        <div className="relative">
+          <button onClick={() => toggleMenu('legal')} className="hover:text-teal-400 transition">
+            Legal
+          </button>
+          {openMenu === 'legal' && (
+            <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
+              <Link href="/disclaimer" className="block px-4 py-2 hover:bg-gray-800">Disclaimer</Link>
+            </div>
+          )}
+        </div>
+
+        {/* CTA */}
         <Link
           href="/signup"
-          className="bg-gradient-to-r from-blue-500 to-teal-500 text-white px-5 py-2 rounded-full text-sm font-semibold shadow hover:opacity-90 transition"
+          className="bg-gradient-to-r from-blue-500 to-teal-500 px-5 py-2 rounded-full text-sm font-semibold shadow hover:opacity-90 transition"
         >
           Get Started
         </Link>
