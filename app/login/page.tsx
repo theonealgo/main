@@ -1,23 +1,21 @@
 'use client';
 
+import { signIn } from 'next-auth/react';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const router = useRouter();
 
-  const handleLogin = async () => {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+  const handleCustomLogin = async () => {
+    const res = await signIn('credentials', {
+      redirect: true,
+      email,
+      password,
+      callbackUrl: '/',
     });
 
-    if (res.ok) {
-      router.push('/'); // redirect after login
-    } else {
+    if (res?.error) {
       alert('Invalid login');
     }
   };
@@ -41,10 +39,17 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
         <button
-          onClick={handleLogin}
+          onClick={handleCustomLogin}
           className="w-full bg-blue-600 hover:bg-blue-700 py-2 rounded"
         >
-          Sign In
+          Sign In with Email
+        </button>
+        <hr className="border-t border-gray-700 my-4" />
+        <button
+          onClick={() => signIn('google')}
+          className="w-full bg-red-600 hover:bg-red-700 py-2 rounded"
+        >
+          Sign In with Google
         </button>
       </div>
     </div>
