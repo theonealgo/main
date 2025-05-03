@@ -25,7 +25,7 @@ const handler = NextAuth({
 
       if (account) {
         token.accessToken = account.access_token;
-       token.id = profile?.sub || user?.id || undefined;
+        token.id = profile?.sub || user?.id || undefined; // ✅ fixed null to undefined
       }
 
       return token;
@@ -34,8 +34,8 @@ const handler = NextAuth({
     async session({ session, token }) {
       console.log("💥 Session callback fired", { session, token });
 
-     session.accessToken = token.accessToken ?? undefined;
-session.user.id = token.id ?? undefined;
+      session.accessToken = token.accessToken ?? undefined; // ✅ fixed null to undefined
+      session.user.id = token.id ?? undefined; // ✅ fixed null to undefined
 
       return session;
     },
