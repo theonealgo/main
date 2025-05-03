@@ -22,7 +22,7 @@ export default function SignupPageClient() {
       style={{ backgroundImage: "url('/images/bground.jpg')" }}
     >
 <div className="p-8 rounded-lg shadow-lg max-w-2xl w-full backdrop-blur-sm bg-white/20">
-        <h1 className="text-3xl font-bold text-center text-white mb-6">Create Your Free Account</h1>
+        <h1 className="text-3xl font-bold text-center text-teal mb-6">Create Your Free Account</h1>
         <SignupForm plan={plan} billing={billing} />
       </div>
     </section>
