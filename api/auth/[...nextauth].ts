@@ -1,9 +1,15 @@
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import type { NextAuthOptions } from "next-auth";
+import { createClient } from "@supabase/supabase-js";
 
-const authOptions: NextAuthOptions = {
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -12,18 +18,37 @@ const authOptions: NextAuthOptions = {
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "text" },
+        email: { label: "Email", type: "text", placeholder: "you@example.com" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Replace with your real user authentication
-        const user = {
-          id: "1",
-          name: "Test User",
-          email: credentials?.email ?? "test@example.com",
-        };
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Email and password are required");
+        }
 
-        return user ?? null;
+        // Validate user credentials with Supabase
+        const { data: user, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", credentials.email)
+          .single();
+
+        if (error || !user) {
+          throw new Error("No user found with the provided email");
+        }
+
+        // Here, you should verify the password.
+        // This example assumes passwords are stored in plain text, which is NOT recommended.
+        // In production, always hash and securely compare passwords.
+        if (credentials.password !== user.password) {
+          throw new Error("Incorrect password");
+        }
+
+        return {
+          id: user.id.toString(),
+          name: user.name,
+          email: user.email,
+        };
       },
     }),
   ],
@@ -31,15 +56,15 @@ const authOptions: NextAuthOptions = {
     async jwt({ token, account, user, profile }) {
       if (account) {
         token.accessToken = account.access_token;
-        token.id = profile?.sub ?? (user?.id ?? undefined); // Ensure undefined if no ID
+        token.id = profile?.sub ?? user?.id;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user && token.id) {
-        session.user.id = token.id;
+      if (token) {
+        session.user.id = token.id as string;
+        session.accessToken = token.accessToken;
       }
-      session.accessToken = token.accessToken;
       return session;
     },
   },
@@ -49,6 +74,4 @@ const authOptions: NextAuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-const handler = NextAuth(authOptions);
-
-export { handler as GET, handler as POST };
+export default NextAuth(authOptions);
