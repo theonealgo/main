@@ -1,59 +1,70 @@
-import NextAuth, { AuthOptions } from 'next-auth';
-import GoogleProvider from 'next-auth/providers/google';
-import CredentialsProvider from 'next-auth/providers/credentials';
-import type { NextAuthOptions } from 'next-auth';
+import NextAuth, { AuthOptions } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import CredentialsProvider from "next-auth/providers/credentials";
+import { JWT } from "next-auth/jwt";
 
-export const authOptions: NextAuthOptions = {
+interface ExtendedToken extends JWT {
+  id?: string;
+  accessToken?: string;
+}
+
+export const authOptions: AuthOptions = {
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID || 'your-google-id',
-      clientSecret: process.env.GOOGLE_SECRET || 'your-google-secret',
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
-      name: 'Credentials',
+      name: "Credentials",
       credentials: {
-        email: { label: 'Email', type: 'text' },
-        password: { label: 'Password', type: 'password' },
+        email: { label: "Email", type: "text" },
+        password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const res = await fetch(`${process.env.NEXTAUTH_URL}/api/auth/login`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(credentials),
-        });
-
-        const user = await res.json();
-
-        if (res.ok && user) {
-          return user;
+        // Replace this with real DB/auth logic
+        if (
+          credentials?.email === "demo@example.com" &&
+          credentials?.password === "demo"
+        ) {
+          return {
+            id: "demo-user-id",
+            name: "Demo User",
+            email: "demo@example.com",
+          };
         }
         return null;
       },
     }),
   ],
-  session: {
-    strategy: 'jwt',
-  },
-  secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     async jwt({ token, user, account, profile }) {
+      const customToken = token as ExtendedToken;
+
       if (account) {
-        token.accessToken = account.access_token;
-        token.id = profile?.sub ?? user?.id ?? undefined; // ✅ FIXED HERE
+        customToken.accessToken = account.access_token;
+        customToken.id = profile?.sub ?? user?.id ?? undefined;
       }
-      return token;
+
+      return customToken;
     },
+
     async session({ session, token }) {
-      if (token) {
-        (session.user as any).id = token.id;
-        (session as any).accessToken = token.accessToken;
+      const customToken = token as ExtendedToken;
+
+      if (session.user && customToken.id) {
+        session.user.id = customToken.id;
       }
+
       return session;
     },
   },
   pages: {
-    signIn: '/login',
+    signIn: "/login", // Optional: custom login page
   },
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 const handler = NextAuth(authOptions);
