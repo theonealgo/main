@@ -1,70 +1,57 @@
-import NextAuth, { AuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { JWT } from "next-auth/jwt";
+import NextAuth, { NextAuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
-interface ExtendedToken extends JWT {
-  id?: string;
-  accessToken?: string;
-}
-
-export const authOptions: AuthOptions = {
+export const authOptions: NextAuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "text" },
+        email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Replace this with real DB/auth logic
-        if (
-          credentials?.email === "demo@example.com" &&
-          credentials?.password === "demo"
-        ) {
+        if (!credentials?.email || !credentials?.password) return null;
+        
+        // Replace this with your actual auth logic:
+        const isValidUser = credentials.password === 'test123'; // temp logic
+        if (isValidUser) {
           return {
-            id: "demo-user-id",
-            name: "Demo User",
-            email: "demo@example.com",
+            id: '1234',
+            email: credentials.email,
+            name: 'Test User',
           };
         }
         return null;
-      },
-    }),
+      }
+    })
   ],
+  session: {
+    strategy: 'jwt',
+  },
   callbacks: {
     async jwt({ token, user, account, profile }) {
-      const customToken = token as ExtendedToken;
-
       if (account) {
-        customToken.accessToken = account.access_token;
-        customToken.id = profile?.sub ?? user?.id ?? undefined;
+        token.accessToken = account.access_token;
+        token.id = profile?.sub || user?.id || undefined; // ✅ Fix is right here
       }
-
-      return customToken;
+      return token;
     },
-
     async session({ session, token }) {
-      const customToken = token as ExtendedToken;
-
-      if (session.user && customToken.id) {
-        session.user.id = customToken.id;
+      if (token?.id) {
+        session.user.id = token.id;
       }
-
+      session.accessToken = token.accessToken;
       return session;
-    },
+    }
   },
   pages: {
-    signIn: "/login", // Optional: custom login page
-  },
-  session: {
-    strategy: "jwt",
-  },
-  secret: process.env.NEXTAUTH_SECRET,
+    signIn: '/auth/signin',
+  }
 };
 
 const handler = NextAuth(authOptions);
