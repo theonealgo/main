@@ -15,9 +15,9 @@ const handler = NextAuth({
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
-        // You must implement this logic
+        // Implement user validation here
         const user = {
-          id: "1",
+          id: "1", // Ensure this is always a non-null string
           name: "Test User",
           email: credentials?.email,
         };
@@ -34,20 +34,20 @@ const handler = NextAuth({
     async jwt({ token, account, user, profile }) {
       if (account) {
         token.accessToken = account.access_token;
-      token.id = profile?.sub ?? user?.id ?? undefined;
+        token.id = profile?.sub ?? user?.id ?? undefined; // Ensures 'undefined' instead of 'null'
       }
       return token;
     },
     async session({ session, token }) {
       if (token) {
-        session.user.id = token.id;
+        session.user.id = token.id as string;
         session.accessToken = token.accessToken;
       }
       return session;
     },
   },
   pages: {
-    signIn: "/signin", // Customize if needed
+    signIn: "/signin", // Custom sign-in page
   },
   secret: process.env.NEXTAUTH_SECRET,
 });
