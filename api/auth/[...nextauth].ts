@@ -1,77 +1,106 @@
-import NextAuth, { NextAuthOptions } from "next-auth";
-import GoogleProvider from "next-auth/providers/google";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { createClient } from "@supabase/supabase-js";
+// pages/api/auth/[...nextauth].ts
+import NextAuth, { AuthOptions } from 'next-auth';
+import GoogleProvider from 'next-auth/providers/google';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import { SupabaseAdapter } from '@next-auth/supabase-adapter';
+import { createClient } from '@supabase/supabase-js';
+import bcrypt from 'bcryptjs';
 
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-export const authOptions: NextAuthOptions = {
+export const authOptions: AuthOptions = {
+  adapter: SupabaseAdapter(supabase),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     CredentialsProvider({
-      name: "Credentials",
+      name: 'Credentials',
       credentials: {
-        email: { label: "Email", type: "text", placeholder: "you@example.com" },
-        password: { label: "Password", type: "password" },
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' },
+        tradingview_username: { label: 'TradingView Username', type: 'text' }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Email and password are required");
+        if (!credentials?.email || !credentials.password || !credentials.tradingview_username) {
+          throw new Error('All fields are required');
         }
 
-        // Validate user credentials with Supabase
+        // Check if user exists
         const { data: user, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("email", credentials.email)
+          .from('users')
+          .select('*')
+          .eq('email', credentials.email)
           .single();
 
-        if (error || !user) {
-          throw new Error("No user found with the provided email");
+        if (error) throw new Error(error.message);
+        
+        // Verify password
+        const isValid = await bcrypt.compare(credentials.password, user.password);
+        if (!isValid) throw new Error('Invalid credentials');
+
+        // Verify TradingView username matches
+        if (user.tradingview_username !== credentials.tradingview_username) {
+          throw new Error('Invalid TradingView username');
         }
 
-        // Here, you should verify the password.
-        // This example assumes passwords are stored in plain text, which is NOT recommended.
-        // In production, always hash and securely compare passwords.
-        if (credentials.password !== user.password) {
-          throw new Error("Incorrect password");
-        }
-
-        return {
-          id: user.id.toString(),
-          name: user.name,
-          email: user.email,
-        };
-      },
-    }),
+        return user;
+      }
+    })
   ],
   callbacks: {
-    async jwt({ token, account, user, profile }) {
-      if (account) {
-        token.accessToken = account.access_token;
-        token.id = profile?.sub ?? user?.id;
-      }
-      return token;
-    },
-    async session({ session, token }) {
-      if (token) {
-        session.user.id = token.id as string;
-        session.accessToken = token.accessToken;
+    async session({ session, user, token }) {
+      // Add TradingView username to session
+      if (token.tradingview_username) {
+        session.user.tradingview_username = token.tradingview_username;
       }
       return session;
     },
+    async jwt({ token, user, account }) {
+      // Initial sign in
+      if (account && user) {
+        // Fetch complete user data from Supabase
+        const { data: supabaseUser } = await supabase
+          .from('users')
+          .select('tradingview_username')
+          .eq('id', user.id)
+          .single();
+
+        token.tradingview_username = supabaseUser?.tradingview_username;
+      }
+      return token;
+    },
+    async signIn({ user, account, profile }) {
+      if (account?.provider === 'google') {
+        // Check/update TradingView username for Google users
+        const { data: existingUser } = await supabase
+          .from('users')
+          .select('tradingview_username')
+          .eq('email', user.email)
+          .single();
+
+        if (!existingUser?.tradingview_username) {
+          // Redirect to username setup page
+          return '/auth/username-setup';
+        }
+      }
+      return true;
+    }
   },
   pages: {
-    signIn: "/signin",
+    signIn: '/auth/signin',
+    newUser: '/auth/username-setup', // New users will be directed here
+    error: '/auth/error'
   },
-  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt'
+  },
+  secret: process.env.NEXTAUTH_SECRET
 };
 
 export default NextAuth(authOptions);
