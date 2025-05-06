@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next-auth/supabase-adapter": "^0.2.1",
     "@types/react-medium-image-zoom": "^3.0.3",
     "@types/stripe": "^8.0.416",
     "framer-motion": "^12.7.4",
