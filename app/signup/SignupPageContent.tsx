@@ -6,11 +6,11 @@ import SignupForm from '../../components/SignupForm';
 
 export default function SignupPageContent() {
   const searchParams = useSearchParams();
-  const rawPlan    = searchParams.get('plan')    ?? '';
-  const rawBilling = searchParams.get('billing') ?? '';
+  const rawPlan    = searchParams?.get('plan')    ?? '';
+  const rawBilling = searchParams?.get('billing') ?? '';
 
-  const validPlans   = ['the_one_stock','the_one_elite','the_one_premium'];
-  const validBilling = ['monthly','yearly'];
+  const validPlans   = ['the_one_stock', 'the_one_elite', 'the_one_premium'];
+  const validBilling = ['monthly', 'yearly'];
 
   const plan    = validPlans.includes(rawPlan)    ? rawPlan    : 'the_one_stock';
   const billing = validBilling.includes(rawBilling) ? rawBilling : 'monthly';
