@@ -1,9 +1,10 @@
 'use client';
 
+export const dynamic = 'force-dynamic';
+
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-
 export default function ProfileSetupPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
