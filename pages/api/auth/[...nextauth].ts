@@ -1,12 +1,22 @@
 // pages/api/auth/[...nextauth].ts
-import NextAuth, { AuthOptions } from "next-auth";
+
+import NextAuth, { DefaultSession, AuthOptions } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { SupabaseAdapter } from "@next-auth/supabase-adapter";
 import { createClient } from "@supabase/supabase-js";
 import bcrypt from "bcryptjs";
 
-// Initialize Supabase client
+// 1) Module augmentation to let TS know about our extra field:
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: DefaultSession["user"] & {
+      tradingview_username?: string;
+    };
+  }
+}
+
+// 2) Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
