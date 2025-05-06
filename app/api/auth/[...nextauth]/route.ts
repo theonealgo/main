@@ -1,16 +1,21 @@
+// app/api/auth/[...nextauth]/route.ts
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-// Replace these with your real DB calls:
-async function verifyUser(email: string, password: string) {
-  // e.g. query your Supabase or whatever
-  // return { id, name, email } or null
-}
+// Supabase client & adapter
+import { createClient } from "@supabase/supabase-js";
+import { SupabaseAdapter } from "@next-auth/supabase-adapter";
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;   // Use service role key for full CRUD
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const authOptions = {
+  adapter: SupabaseAdapter(supabase),
+
   providers: [
-    // 1️⃣ Classic email/password
+    // —————————— Email/Password + TV Username ——————————
     CredentialsProvider({
       name: "Email",
       credentials: {
@@ -23,17 +28,21 @@ export const authOptions = {
         },
       },
       async authorize(creds) {
-        const user = await verifyUser(creds!.email, creds!.password);
-        if (user) {
-          // Attach the TradingView username for later
-          user.tradingViewUsername = creds!.tradingViewUsername;
-          return user;
-        }
-        return null;
+        // 👇 Replace with your own verification logic against Supabase ‘users’ table
+        const { data: user, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("email", creds!.email)
+          .single();
+
+        if (error || !user) return null;
+        // verify password here (bcrypt.compare, etc)…
+        user.tradingViewUsername = creds!.tradingViewUsername!;
+        return user;
       },
     }),
 
-    // 2️⃣ Google OAuth
+    // —————————— Google OAuth ——————————
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -41,28 +50,37 @@ export const authOptions = {
   ],
 
   callbacks: {
-    // Persist tradingViewUsername into the JWT after sign-in
+    // Persist TV username from token → session
     async jwt({ token, user }) {
       if (user?.tradingViewUsername) {
         token.tradingViewUsername = user.tradingViewUsername;
       }
       return token;
     },
-    // Expose it on session.user
     async session({ session, token }) {
       session.user.tradingViewUsername = token.tradingViewUsername as string;
       return session;
     },
-    // Send everyone to /dashboard after login
+    // Redirect all logins to your dashboard
     async redirect({ baseUrl }) {
       return `${baseUrl}/dashboard`;
     },
   },
 
-  session: { strategy: "jwt" },
-  pages: {
-    signIn: "/signin",   // your custom sign-in page
+  // Optional event: when a new user is created, insert into your ‘profiles’ table
+  events: {
+    async createUser({ user }) {
+      await supabase
+        .from("profiles")
+        .upsert({
+          id: user.id,
+          tradingview_username: (user as any).tradingViewUsername || null,
+        });
+    },
   },
+
+  session: { strategy: "jwt" },
+  pages: { signIn: "/signin" },
 };
 
 const handler = NextAuth(authOptions);
