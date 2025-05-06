@@ -1,4 +1,3 @@
-// app/success/profile-setup/ProfileSetupClient.tsx
 'use client';
 
 import { useSession } from 'next-auth/react';
