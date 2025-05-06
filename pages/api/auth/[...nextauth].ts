@@ -33,10 +33,7 @@ const supabase = createClient(
 );
 
 export const authOptions: AuthOptions = {
-  adapter: SupabaseAdapter({
-    url:    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    secret: process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  }),
+    adapter: SupabaseAdapter(supabase),
   providers: [
     GoogleProvider({
       clientId:     process.env.GOOGLE_CLIENT_ID!,
