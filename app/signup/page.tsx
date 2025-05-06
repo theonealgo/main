@@ -1,8 +1,8 @@
 // app/signup/page.tsx
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
-import { Suspense } from 'react';
-import SignupPageContent from './SignupPageContent';
+import { Suspense } from "react";
+import SignupPageContent from "./SignupPageContent";
 
 export default function SignupPage() {
   return (
