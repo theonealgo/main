@@ -15,24 +15,28 @@ const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: num
 };
 
 export default function AuthPage() {
-  const params = useSearchParams();
-  const router = useRouter();
-  const screenHint = params.get('screen_hint');
-  const initialView = screenHint === 'login' ? 'login' : screenHint === 'forgot' ? 'forgot' : 'signup';
+  const params      = useSearchParams();
+  const router      = useRouter();
+  const screenHint  = params.get('screen_hint');
+  const initialView = screenHint === 'login' 
+    ? 'login' 
+    : screenHint === 'forgot' 
+      ? 'forgot' 
+      : 'signup';
   const [view, setView] = useState<'signup'|'login'|'forgot'>(initialView);
 
-  // shared
+  // Shared state
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
+  const [error,   setError]   = useState('');
 
   // Signup state
-  const rawPlan    = (params.get('plan')    as PlanKey) || 'the_one_stock';
+  const rawPlan    = (params.get('plan')    as PlanKey)        || 'the_one_stock';
   const rawBilling = (params.get('billing') as 'monthly'|'yearly') || 'monthly';
-  const [tvUser,    setTvUser]    = useState('');
-  const [email,     setEmail]     = useState('');
-  const [password,  setPassword]  = useState('');
-  const [plan,      setPlan]      = useState<PlanKey>(rawPlan);
-  const [billing,   setBilling]   = useState<'monthly'|'yearly'>(rawBilling);
+  const [tvUser,   setTvUser]    = useState('');
+  const [email,    setEmail]     = useState('');
+  const [password, setPassword]  = useState('');
+  const [plan,     setPlan]      = useState<PlanKey>(rawPlan);
+  const [billing,  setBilling]   = useState<'monthly'|'yearly'>(rawBilling);
 
   // Login state
   const [loginEmail,    setLoginEmail]    = useState('');
@@ -41,14 +45,18 @@ export default function AuthPage() {
   // Forgot state
   const [forgotEmail, setForgotEmail] = useState('');
 
-  // price display
+  // Compute price
   const price = billing === 'monthly'
     ? PLAN_CONFIG[plan].monthly
     : PLAN_CONFIG[plan].yearly;
 
+  // ————— Signup handler —————
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
-    setLoading(true); setError('');
+    setLoading(true);
+    setError('');
+
+    // 1) Sign in (or sign up) via CredentialsProvider
     const res = await signIn('credentials', {
       redirect: false,
       tradingViewUsername: tvUser,
@@ -56,40 +64,65 @@ export default function AuthPage() {
       password,
       plan,
       billing,
-      callbackUrl: '/api/stripe/create-checkout',
     });
+
     if (res?.error) {
       setError(res.error);
+      setLoading(false);
+      return;
+    }
+
+    // 2) Kick off Stripe checkout
+    try {
+      const stripeRes = await fetch('/api/stripe/create-checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ plan, billing, email }),
+      });
+      const { url } = await stripeRes.json();
+      if (!url) throw new Error('Stripe session failed');
+      router.push(url);
+    } catch (err: any) {
+      setError(err.message || 'Checkout failed');
       setLoading(false);
     }
   }
 
+  // ————— Login handler —————
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
-    setLoading(true); setError('');
+    setLoading(true);
+    setError('');
+
     const res = await signIn('credentials', {
       redirect: false,
       email: loginEmail,
       password: loginPassword,
-      callbackUrl: '/dashboard',
     });
+
     if (res?.error) {
       setError(res.error);
       setLoading(false);
+    } else {
+      router.push('/dashboard');
     }
   }
 
+  // ————— Forgot-password handler —————
   async function handleForgot(e: FormEvent) {
     e.preventDefault();
-    setLoading(true); setError('');
-    // call your password-reset endpoint
+    setLoading(true);
+    setError('');
+
     const resp = await fetch('/api/auth/forgot-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email: forgotEmail }),
     });
+
     if (!resp.ok) setError('Failed to send reset link.');
     else setError('Check your inbox for reset instructions.');
+
     setLoading(false);
   }
 
@@ -107,40 +140,57 @@ export default function AuthPage() {
                   view === mode ? 'bg-teal-500 text-black' : 'bg-gray-800'
                 }`}
               >
-                { mode === 'signup' ? 'Sign Up' : mode === 'login' ? 'Log In' : 'Forgot?' }
+                { mode === 'signup' ? 'Sign Up'
+                  : mode === 'login'   ? 'Log In'
+                  :                    'Forgot?' }
               </button>
             ))}
           </div>
+
           {error && <p className="text-red-400">{error}</p>}
 
+          {/* ————— Sign Up Form ————— */}
           {view === 'signup' && (
             <form onSubmit={handleSignup} className="space-y-4">
               <input
-                type="text" required placeholder="TradingView Username"
-                value={tvUser} onChange={e=>setTvUser(e.target.value)}
+                type="text"
+                required
+                placeholder="TradingView Username"
+                value={tvUser}
+                onChange={e => setTvUser(e.target.value)}
                 className="w-full p-3 bg-gray-900 rounded"
               />
               <input
-                type="email" required placeholder="Email"
-                value={email} onChange={e=>setEmail(e.target.value)}
+                type="email"
+                required
+                placeholder="Email"
+                value={email}
+                onChange={e => setEmail(e.target.value)}
                 className="w-full p-3 bg-gray-900 rounded"
               />
               <input
-                type="password" required placeholder="Password"
-                value={password} onChange={e=>setPassword(e.target.value)}
+                type="password"
+                required
+                placeholder="Password"
+                value={password}
+                onChange={e => setPassword(e.target.value)}
                 className="w-full p-3 bg-gray-900 rounded"
               />
+
               {/* Plan selector */}
               <select
                 value={plan}
-                onChange={e=>setPlan(e.target.value as PlanKey)}
+                onChange={e => setPlan(e.target.value as PlanKey)}
                 className="w-full p-3 bg-gray-900 rounded"
               >
-                {Object.entries(PLAN_CONFIG).map(([k,c])=>(
-                  <option key={k} value={k}>{c.label}</option>
+                {Object.entries(PLAN_CONFIG).map(([key, cfg]) => (
+                  <option key={key} value={key}>
+                    {cfg.label}
+                  </option>
                 ))}
               </select>
-              {/* Billing radio */}
+
+              {/* Billing radios */}
               <div className="flex space-x-4">
                 {(['monthly','yearly'] as const).map(cycle => (
                   <label key={cycle} className="flex-1">
@@ -149,16 +199,18 @@ export default function AuthPage() {
                       name="billing"
                       value={cycle}
                       checked={billing === cycle}
-                      onChange={()=>setBilling(cycle)}
+                      onChange={() => setBilling(cycle)}
                       className="mr-2"
                     />
-                    {cycle.charAt(0).toUpperCase()+cycle.slice(1)}
+                    {cycle.charAt(0).toUpperCase() + cycle.slice(1)}
                   </label>
                 ))}
               </div>
+
               <div className="text-center text-lg font-bold">
                 ${price}/{billing}
               </div>
+
               <button
                 type="submit"
                 disabled={loading}
@@ -166,6 +218,7 @@ export default function AuthPage() {
               >
                 {loading ? 'Processing…' : 'Start 30-Day Free Trial'}
               </button>
+
               <button
                 type="button"
                 onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
@@ -176,16 +229,23 @@ export default function AuthPage() {
             </form>
           )}
 
+          {/* ————— Log In Form ————— */}
           {view === 'login' && (
             <form onSubmit={handleLogin} className="space-y-4">
               <input
-                type="email" required placeholder="Email"
-                value={loginEmail} onChange={e=>setLoginEmail(e.target.value)}
+                type="email"
+                required
+                placeholder="Email"
+                value={loginEmail}
+                onChange={e => setLoginEmail(e.target.value)}
                 className="w-full p-3 bg-gray-900 rounded"
               />
               <input
-                type="password" required placeholder="Password"
-                value={loginPassword} onChange={e=>setLoginPassword(e.target.value)}
+                type="password"
+                required
+                placeholder="Password"
+                value={loginPassword}
+                onChange={e => setLoginPassword(e.target.value)}
                 className="w-full p-3 bg-gray-900 rounded"
               />
               <button
@@ -205,11 +265,15 @@ export default function AuthPage() {
             </form>
           )}
 
+          {/* ————— Forgot Password Form ————— */}
           {view === 'forgot' && (
             <form onSubmit={handleForgot} className="space-y-4">
               <input
-                type="email" required placeholder="Your Email"
-                value={forgotEmail} onChange={e=>setForgotEmail(e.target.value)}
+                type="email"
+                required
+                placeholder="Your Email"
+                value={forgotEmail}
+                onChange={e => setForgotEmail(e.target.value)}
                 className="w-full p-3 bg-gray-900 rounded"
               />
               <button
