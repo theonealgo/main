@@ -78,41 +78,41 @@ export default function Home() {
 
       {/* HERO */}
       <section
-        className="relative flex items-center px-4 pt-16 pb-32 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/bground.jpg')" }}
+  className="relative flex items-center justify-center px-4 pt-16 pb-32 bg-cover bg-center min-h-screen"
+  style={{ backgroundImage: "url('/images/bground.jpg')" }}
+>
+  <div className="absolute inset-0 bg-black opacity-50" />
+
+  <div className="relative z-20 max-w-6xl w-full mx-auto px-8 md:px-16 space-y-6 text-center md:text-left">
+    {typed.split('\n').map((line, i) => (
+      <h1 key={i} className="text-5xl md:text-7xl font-bold leading-tight">
+        {line}
+      </h1>
+    ))}
+
+    <p className="text-xl md:text-2xl text-gray-200 max-w-2xl mx-auto md:mx-0">
+      Just signals that work, backed by real data in real time.
+    </p>
+
+    <div className="mt-8 space-y-2 flex flex-col items-center md:items-start">
+      <Link
+        href="/auth?screen_hint=signup"
+        className="bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition"
       >
-        <div className="absolute inset-0 bg-black opacity-50" />
+        Get Started For Free
+      </Link>
+      <p className="text-sm text-gray-200">No credit card required</p>
+    </div>
+  </div>
 
-        <div className="relative z-20 max-w-6xl w-full pl-8 md:pl-16 space-y-6">
-          {typed.split('\n').map((line, i) => (
-            <h1 key={i} className="text-5xl md:text-7xl font-bold leading-tight">
-              {line}
-            </h1>
-          ))}
-
-          <p className="text-xl md:text-2xl text-gray-200 max-w-2xl">
-            Just signals that work, backed by real data in real time.
-          </p>
-
-          <div className="mt-8 space-y-2">
-            <Link
-              href="/auth?screen_hint=signup"
-              className="bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition"
-            >
-              Get Started For Free
-            </Link>
-            <p className="text-sm text-gray-200">No credit card required</p>
-          </div>
-        </div>
-
-        <button
-          onClick={scrollToPerf}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-4xl animate-bounce text-gray-300"
-          aria-label="Scroll to performance"
-        >
-          ↓
-        </button>
-      </section>
+  <button
+    onClick={scrollToPerf}
+    className="absolute bottom-8 left-1/2 -translate-x-1/2 text-4xl animate-bounce text-gray-300"
+    aria-label="Scroll to performance"
+  >
+    ↓
+  </button>
+</section>
 
       {/* PERFORMANCE ITEMS */}
       <section id="performance" className="bg-black py-24 px-4 md:px-12">
