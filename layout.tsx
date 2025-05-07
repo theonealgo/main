@@ -1,20 +1,22 @@
-// layout.tsx
+// app/layout.tsx
 
-import { usePathname } from 'next/navigation';
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./styles/globals.css";
 
+import Header from "../components/Header";
+import Footer from "../components/Footer";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
-  display: 'swap',
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -27,17 +29,20 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
-
   return (
     <html lang="en" className="bg-black">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-        {pathname === '/' && (
-          <div className="video-container">
-            {/* Your video component here */}
-          </div>
-        )}
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col`}
+      >
+        <Header />
+
+        {/* Your page content */}
+        <main className="flex-grow w-full">
+          {children}
+        </main>
+
+        {/* Footer at bottom of every page */}
+        <Footer />
       </body>
     </html>
   );
