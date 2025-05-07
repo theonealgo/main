@@ -88,16 +88,9 @@ export default function Header() {
         </div>
 
         {/* Get Started CTA */}
-        <Link
-          href="/auth?screen_hint=signup"
-          className="
-            bg-gradient-to-r from-blue-500 to-teal-500
-            px-5 py-2 rounded-full text-sm font-semibold
-            shadow hover:opacity-90 transition
-          "
-        >
-          Get Started
-        </Link>
+        <Link href="/auth?screen_hint=signup">
+  Get Started
+</Link>
       </nav>
     </header>
   );
