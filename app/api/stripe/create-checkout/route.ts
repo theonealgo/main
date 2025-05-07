@@ -9,9 +9,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function GET() {
   const session = await getServerSession(authOptions);
-  if (!session?.user?.email) {
-    return new Response("Unauthorized", { status: 401 });
-  }
+  if (!session?.user?.email) return new Response("Unauthorized", { status: 401 });
 
   const { plan, billing } = session.user as any;
   const priceId = billing === "yearly"
@@ -22,12 +20,9 @@ export async function GET() {
     mode: "subscription",
     line_items: [{ price: priceId!, quantity: 1 }],
     customer_email: session.user.email,
-    success_url: `${process.env.NEXTAUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.NEXTAUTH_URL}/signup?plan=${plan}&billing=${billing}`,
+    success_url:    `${process.env.NEXTAUTH_URL}/dashboard?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url:     `${process.env.NEXTAUTH_URL}/signup?plan=${plan}&billing=${billing}`,
   });
 
-  return new Response(null, {
-    status: 302,
-    headers: { Location: checkout.url! },
-  });
+  return new Response(null, { status: 302, headers: { Location: checkout.url! } });
 }
