@@ -40,40 +40,48 @@ export const authOptions: AuthOptions = {
         billing: { label: "Billing", type: "text" },
       },
       async authorize(creds) {
-        // Signup or signin + password hashing/verification
-        const { data: user } = await supabase
+        // 1) try fetch existing user
+        let { data: user, error } = await supabase
           .from("users")
           .select("*")
           .eq("email", creds!.email)
           .maybeSingle();
+        if (error) return null;
+
+        // 2) if not found, create with hashed password
         if (!user) {
-          // create new
-          const hashed = await import("bcryptjs").then(b => b.hash(creds!.password, 10));
-          const { data: newUser } = await supabase
+          const bcrypt = await import("bcryptjs");
+          const hashed = await bcrypt.hash(creds!.password, 10);
+          const { data: newUser, error: insertErr } = await supabase
             .from("users")
             .insert({
               email: creds!.email,
               hashed_password: hashed,
               tradingview_username: creds!.tradingViewUsername,
-              plan: creds!.plan,
+              plan:    creds!.plan,
               billing: creds!.billing,
             })
             .single();
-          if (!newUser) return null;
+          if (insertErr || !newUser) return null;
           user = newUser;
         } else {
-          // verify existing
-          const valid = await import("bcryptjs").then(b =>
-            b.compare(creds!.password, (user as any).hashed_password)
+          // 3) if found, verify password
+          const bcrypt = await import("bcryptjs");
+          const valid = await bcrypt.compare(
+            creds!.password,
+            (user as any).hashed_password
           );
           if (!valid) return null;
         }
+
+        // 4) attach extra props for callbacks/events
         (user as any).tradingViewUsername = creds!.tradingViewUsername!;
         (user as any).plan                = creds!.plan!;
         (user as any).billing             = creds!.billing!;
         return user;
       },
     }),
+
     GoogleProvider({
       clientId:     process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
@@ -112,6 +120,9 @@ export const authOptions: AuthOptions = {
   },
 
   session: { strategy: "jwt" },
-  pages:   { signIn: "/signin" },
+
+  // ◀── Here we point NextAuth at our single "/auth" page
+  pages:   { signIn: "/auth" },
+
   secret:  process.env.NEXTAUTH_SECRET,
 };
