@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
+import { Analytics } from '@vercel/analytics/react';
 import 'react-medium-image-zoom/dist/styles.css';
 import './zoom-overrides.css';
 
@@ -39,32 +40,33 @@ export default function Home() {
   const scrollToPerf = () =>
     document.getElementById('performance')?.scrollIntoView({ behavior: 'smooth' });
 
- const performanceItems = [
-  {
-    src: '/images/theonestocks98.png',
-    alt: 'SPY swing trading signals with 98% win rate',
-    title: 'The One Stocks Swing Analyzer | 98% Win Rate on SPY Signals',
-    desc: 'Real-time SPY swing trade alerts powered by The One Stocks algorithm, delivering a 98% historical win rate. Ideal for precision short-term entries and exits on the S&P 500 ETF.',
-  },
-  {
-    src: '/images/theoneelite4h98.png',
-    alt: '4-hour SPY swing strategy with 98% win rate',
-    title: 'The One Elite 4-Hour SPY Strategy | 98% Win Rate Swing Trades',
-    desc: 'Harness our 4-hour SPY liquidity and momentum signals to capture market swings with a 98% win rate, backed by rigorous backtesting on S&P 500 data.',
-  },
-  {
-    src: '/images/theonestocks9897.png',
-    alt: 'Multi-index strategy with 97% win rate',
-    title: 'The One Stocks Multi-Index Analyzer | 97% Win Rate on SPY & Nasdaq',
-    desc: 'Trade both SPY and Nasdaq with a unified algorithmic strategy that posts a 97% win rate across major equity indices, optimized for 1–4 hour timeframes.',
-  },
-  {
-    src: '/images/theoneelitegbpusd1097.png',
-    alt: 'GBP/USD forex strategy with 97% win rate',
-    title: 'The One Elite Forex Signal for GBP/USD | 97% Win Rate on 1-Hour Chart',
-    desc: 'Precision GBP/USD entry and exit signals on the 1-hour timeframe, delivering a 97% win rate. Perfect for forex traders seeking high-confidence, data-driven trades.',
-  },
-];
+  const performanceItems = [
+    {
+      src: '/images/theonestocks98.png',
+      alt: 'SPY swing trading signals with 98% win rate',
+      title: 'The One Stocks Swing Analyzer | 98% Win Rate on SPY Signals',
+      desc: 'Real-time SPY swing trade alerts powered by The One Stocks algorithm, delivering a 98% historical win rate. Ideal for precision short-term entries and exits on the S&P 500 ETF.',
+    },
+    {
+      src: '/images/theoneelite4h98.png',
+      alt: '4-hour SPY swing strategy with 98% win rate',
+      title: 'The One Elite 4-Hour SPY Strategy | 98% Win Rate Swing Trades',
+      desc: 'Harness our 4-hour SPY liquidity and momentum signals to capture market swings with a 98% win rate, backed by rigorous backtesting on S&P 500 data.',
+    },
+    {
+      src: '/images/theonestocks9897.png',
+      alt: 'Multi-index strategy with 97% win rate',
+      title: 'The One Stocks Multi-Index Analyzer | 97% Win Rate on SPY & Nasdaq',
+      desc: 'Trade both SPY and Nasdaq with a unified algorithmic strategy that posts a 97% win rate across major equity indices, optimized for 1–4 hour timeframes.',
+    },
+    {
+      src: '/images/theoneelitegbpusd1097.png',
+      alt: 'GBP/USD forex strategy with 97% win rate',
+      title: 'The One Elite Forex Signal for GBP/USD | 97% Win Rate on 1-Hour Chart',
+      desc: 'Precision GBP/USD entry and exit signals on the 1-hour timeframe, delivering a 97% win rate. Perfect for forex traders seeking high-confidence, data-driven trades.',
+    },
+  ];
+
   return (
     <div className="bg-black text-white min-h-screen font-sans relative">
       {/* Theme toggle */}
@@ -148,9 +150,9 @@ export default function Home() {
             Our strategies are engineered for performance. See it live below.
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-white">
-            <StatCard label="Win Rate" value="98%" color="green-400" />
-            <StatCard label="Profit Factor" value="4.36" color="green-400" />
-            <StatCard label="Free Trial" value="30 Days" color="green-400" />
+            <StatCard label="Win Rate" value="98%" colorClass="text-green-400" />
+            <StatCard label="Profit Factor" value="4.36" colorClass="text-green-400" />
+            <StatCard label="Free Trial" value="30 Days" colorClass="text-green-400" />
           </div>
           <Link
             href="/auth?screen_hint=signup"
@@ -192,6 +194,9 @@ export default function Home() {
           ↑
         </button>
       )}
+
+      {/* Vercel Analytics */}
+      <Analytics />
     </div>
   );
 }
@@ -199,15 +204,15 @@ export default function Home() {
 function StatCard({
   label,
   value,
-  color,
+  colorClass,
 }: {
   label: string;
   value: string;
-  color: string;
+  colorClass: string;
 }) {
   return (
-    <div className={`p-8 rounded-xl bg-gray-800 shadow-lg`}>
-      <h3 className={`text-4xl font-bold text-${color}`}>{value}</h3>
+    <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
+      <h3 className={`text-4xl font-bold ${colorClass}`}>{value}</h3>
       <p className="mt-2 text-lg">{label}</p>
     </div>
   );
