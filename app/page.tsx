@@ -1,215 +1,247 @@
-// app/page.tsx
+// app/auth/page.tsx
 'use client';
+export const dynamic = 'force-dynamic';
 
-import React, { useState, useEffect } from 'react';
-import Link from 'next/link';
-import dynamic from 'next/dynamic';
-import Image from 'next/image';
-import 'react-medium-image-zoom/dist/styles.css';
-import './zoom-overrides.css';
+import React, { Suspense, useState, FormEvent } from 'react';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { signIn } from 'next-auth/react';
 
-const Zoom = dynamic(() => import('react-medium-image-zoom'), { ssr: false });
+type PlanKey = 'the_one_stock'|'the_one_elite'|'the_one_premium';
 
-export default function Home() {
-  // Theme toggle
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  useEffect(() => {
-    document.documentElement.classList.toggle('light', theme === 'light');
-  }, [theme]);
+const PLAN_CONFIG: Record<PlanKey,{ label:string; monthly:number; yearly:number }> = {
+  the_one_stock:   { label:'The One: Stock Swing Analyzer [TheoneAlgo]',                monthly:49.99, yearly:499.90 },
+  the_one_elite:   { label:'The One Elite – Dynamic Liquidity Strategy [Theonealgo]', monthly:59.99, yearly:599.90 },
+  the_one_premium: { label:'The One Premium (both indicators)',                        monthly:99.99, yearly:999.90 },
+};
 
-  // Typewriter effect
-  const fullText = 'One Signal.\nZero Noise.';
-  const [typed, setTyped] = useState('');
-  useEffect(() => {
-    let i = 0;
-    const iv = setInterval(() => {
-      setTyped(fullText.slice(0, ++i));
-      if (i >= fullText.length) clearInterval(iv);
-    }, 100);
-    return () => clearInterval(iv);
-  }, []);
-
-  // Back-to-top visibility
-  const [showTop, setShowTop] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setShowTop(window.scrollY > 600);
-    window.addEventListener('scroll', onScroll);
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-  const scrollToPerf = () =>
-    document.getElementById('performance')?.scrollIntoView({ behavior: 'smooth' });
-
-  // Carousel data
-  const performanceItems = [
-    {
-      src: '/images/theonestocks98.png',
-      alt: 'SPY swing trading signals with 98% win rate',
-      title: 'The One Stocks Swing Analyzer | 98% Win Rate on SPY Signals',
-      desc: 'Real-time SPY swing trade alerts powered by The One Stocks algorithm, delivering a 98% historical win rate. Ideal for precision short-term entries and exits on the S&P 500 ETF.',
-    },
-    {
-      src: '/images/theoneelite4h98.png',
-      alt: '4-hour SPY swing strategy with 98% win rate',
-      title: 'The One Elite 4-Hour SPY Strategy | 98% Win Rate Swing Trades',
-      desc: 'Harness our 4-hour SPY liquidity and momentum signals to capture market swings with a 98% win rate, backed by rigorous backtesting on S&P 500 data.',
-    },
-    {
-      src: '/images/theonestocks9897.png',
-      alt: 'Multi-index strategy with 97% win rate',
-      title: 'The One Stocks Multi-Index Analyzer | 97% Win Rate on SPY & Nasdaq',
-      desc: 'Trade both SPY and Nasdaq with a unified algorithmic strategy that posts a 97% win rate across major equity indices, optimized for 1–4 hour timeframes.',
-    },
-    {
-      src: '/images/theoneelitegbpusd1097.png',
-      alt: 'GBP/USD forex strategy with 97% win rate',
-      title: 'The One Elite Forex Signal for GBP/USD | 97% Win Rate on 1-Hour Chart',
-      desc: 'Precision GBP/USD entry and exit signals on the 1-hour timeframe, delivering a 97% win rate. Perfect for forex traders seeking high-confidence, data-driven trades.',
-    },
-  ];
-
+export default function AuthPage() {
   return (
-    <div className="bg-black text-white min-h-screen font-sans relative">
-      {/* Theme toggle */}
-      <button
-        onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
-        className="fixed top-4 right-4 z-20 p-2 bg-gray-800 rounded-full hover:bg-gray-700 transition"
-        aria-label="Toggle theme"
-      >
-        {theme === 'dark' ? '🌞' : '🌙'}
-      </button>
-
-      {/* HERO */}
-      <section
-        className="relative min-h-screen flex items-center px-4 bg-cover bg-center"
-        style={{ backgroundImage: "url('/images/bground.jpg')" }}
-      >
-        <div className="relative z-10 max-w-6xl w-full pl-8 md:pl-16 space-y-4">
-          {typed.split('\n').map((line, i) => (
-            <h1 key={i} className="text-5xl md:text-7xl font-bold leading-tight">
-              {line}
-            </h1>
-          ))}
-          <p className="text-xl md:text-2xl text-gray-200 max-w-2xl">
-            Just signals that work, backed by real data in real time.
-          </p>
-          <div className="space-y-2">
-            {/* <-- Corrected link to Auth signup --> */}
-            <Link
-              href="/auth?screen_hint=signup"
-              className="bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition"
-            >
-              Get Started For Free
-            </Link>
-            <p className="text-sm text-gray-200">No credit card required</p>
-          </div>
-        </div>
-        <button
-          onClick={scrollToPerf}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 text-4xl animate-bounce text-gray-300"
-          aria-label="Scroll to performance"
-        >
-          ↓
-        </button>
-      </section>
-
-      {/* PERFORMANCE */}
-      <section id="performance" className="bg-black py-24 px-4 md:px-12">
-        <div className="max-w-7xl mx-auto space-y-24">
-          {performanceItems.map((item, i) => (
-            <div key={i} className="space-y-8 group">
-              <Zoom zoomMargin={40}>
-                <div className="relative h-[600px] w-full">
-                  <Image
-                    src={item.src}
-                    alt={item.alt}
-                    fill
-                    quality={100}
-                    priority
-                    className="rounded-xl object-contain hover:shadow-xl transition-shadow"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-                    style={{ imageRendering: 'crisp-edges' }}
-                  />
-                </div>
-              </Zoom>
-              <div className="px-4 space-y-4">
-                <h3 className="text-3xl font-bold">{item.title}</h3>
-                <p className="text-gray-300 text-lg">{item.desc}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* LIVE STATS */}
-      <section className="bg-gradient-to-r from-gray-900 to-black py-24 px-4 md:px-12">
-        <div className="max-w-6xl mx-auto text-center space-y-12">
-          <h2 className="text-5xl font-bold">Real Results. Real Time.</h2>
-          <p className="text-xl text-gray-300">
-            Our strategies are engineered for performance. See it live below.
-          </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-white">
-            <StatCard label="Win Rate" value="98%" colorClass="text-green-400" />
-            <StatCard label="Profit Factor" value="4.36" colorClass="text-green-400" />
-            <StatCard label="Free Trial" value="30 Days" colorClass="text-green-400" />
-          </div>
-          {/* <-- Corrected link here, too --> */}
-          <Link
-            href="/auth?screen_hint=signup"
-            className="mt-16 inline-block bg-gradient-to-r from-blue-500 to-teal-400 px-8 py-4 rounded-full text-lg font-semibold text-black hover:opacity-90 transition"
-          >
-            Start Winning Today
-          </Link>
-        </div>
-      </section>
-
-      {/* VIDEO */}
-      <section className="relative bg-black py-24 px-4 md:px-12 overflow-hidden">
-        <video
-          src="/images/videos/market-chart.mp4"
-          autoPlay
-          muted
-          loop
-          playsInline
-          className="w-full h-auto rounded-2xl shadow-xl"
-        />
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white z-10">
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Trade with Confidence. Powered by Data.
-          </h2>
-          <p className="text-lg md:text-xl max-w-4xl">
-            Harness the power of our proven trading strategies and make informed,
-            data-driven decisions in real time.
-          </p>
-        </div>
-      </section>
-
-      {/* BACK TO TOP */}
-      {showTop && (
-        <button
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="fixed bottom-8 right-8 p-3 bg-blue-600 rounded-full text-white shadow-lg hover:bg-blue-500 transition"
-          aria-label="Back to top"
-        >
-          ↑
-        </button>
-      )}
-    </div>
+    <Suspense fallback={<div>Loading auth…</div>}>
+      <AuthContent/>
+    </Suspense>
   );
 }
 
-function StatCard({
-  label,
-  value,
-  colorClass,
-}: {
-  label: string;
-  value: string;
-  colorClass: string;
-}) {
+function AuthContent() {
+  const params      = useSearchParams();
+  const router      = useRouter();
+  const hint        = params.get('screen_hint');
+  const initView    = hint==='login'?'login':hint==='forgot'?'forgot':'signup';
+  const [view, setView] = useState<'signup'|'login'|'forgot'>(initView);
+
+  // Shared state
+  const [loading, setLoading] = useState(false);
+  const [error,   setError]   = useState('');
+
+  // Signup fields
+  const rawPlan    = (params.get('plan')    as PlanKey)        || 'the_one_stock';
+  const rawBilling = (params.get('billing') as 'monthly'|'yearly') || 'monthly';
+  const [tvUser,   setTvUser]    = useState('');
+  const [email,    setEmail]     = useState('');
+  const [password, setPassword]  = useState('');
+  const [plan,     setPlan]      = useState<PlanKey>(rawPlan);
+  const [billing,  setBilling]   = useState<'monthly'|'yearly'>(rawBilling);
+
+  // Login fields
+  const [loginEmail,    setLoginEmail]    = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
+
+  // Forgot field
+  const [forgotEmail, setForgotEmail] = useState('');
+
+  const price = billing==='monthly'
+    ? PLAN_CONFIG[plan].monthly
+    : PLAN_CONFIG[plan].yearly;
+
+  // — Handlers —
+  async function handleSignup(e:FormEvent) {
+    e.preventDefault();
+    setLoading(true); setError('');
+    // 1) next-auth credentials
+    const res = await signIn('credentials',{
+      redirect:false,
+      tradingViewUsername:tvUser,
+      email, password, plan, billing,
+    });
+    if (res?.error) {
+      setError(res.error); setLoading(false); return;
+    }
+    // 2) create stripe session
+    try {
+      const r = await fetch('/api/stripe/create-checkout',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({plan,billing,email}),
+      });
+      const {url} = await r.json();
+      if (!url) throw new Error('Checkout failed');
+      router.push(url);
+    } catch(err:any) {
+      setError(err.message||'Checkout error');
+      setLoading(false);
+    }
+  }
+
+  async function handleLogin(e:FormEvent) {
+    e.preventDefault();
+    setLoading(true); setError('');
+    const res = await signIn('credentials',{
+      redirect:false,
+      email:loginEmail, password:loginPassword,
+      callbackUrl:'/dashboard',
+    });
+    if (res?.error) {
+      setError(res.error); setLoading(false);
+    } else {
+      router.push('/dashboard');
+    }
+  }
+
+  async function handleForgot(e:FormEvent) {
+    e.preventDefault();
+    setLoading(true); setError('');
+    const resp = await fetch('/api/auth/forgot-password',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({email:forgotEmail}),
+    });
+    setError(resp.ok ? 'Check your email' : 'Failed to send link');
+    setLoading(false);
+  }
+
   return (
-    <div className="p-8 rounded-xl bg-gray-800 shadow-lg">
-      <h3 className={`text-4xl font-bold ${colorClass}`}>{value}</h3>
-      <p className="mt-2 text-lg">{label}</p>
+    <div className="min-h-screen flex bg-black text-white">
+      <div className="flex-1 flex items-center justify-center p-6">
+        <div className="max-w-md w-full space-y-6">
+          {/* Tabs */}
+          <div className="flex space-x-2">
+            {(['signup','login','forgot'] as const).map(m=>(
+              <button
+                key={m}
+                onClick={()=>{setView(m);setError('');}}
+                className={`flex-1 py-2 rounded ${
+                  view===m ? 'bg-teal-500 text-black' : 'bg-gray-800'
+                }`}
+              >
+                {m==='signup'?'Sign Up':m==='login'?'Log In':'Forgot?'}
+              </button>
+            ))}
+          </div>
+
+          {error && <p className="text-red-400">{error}</p>}
+
+          {/* — Sign Up — */}
+          {view==='signup' && (
+            <form onSubmit={handleSignup} className="space-y-4">
+              <input
+                type="text" required placeholder="TradingView Username"
+                value={tvUser} onChange={e=>setTvUser(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900 rounded"
+              />
+              <input
+                type="email" required placeholder="Email"
+                value={email} onChange={e=>setEmail(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900 rounded"
+              />
+              <input
+                type="password" required placeholder="Password"
+                value={password} onChange={e=>setPassword(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900 rounded"
+              />
+
+              <select
+                value={plan}
+                onChange={e=>setPlan(e.target.value as PlanKey)}
+                className="w-full px-4 py-2 bg-gray-900 rounded"
+              >
+                {Object.entries(PLAN_CONFIG).map(([k,c])=>(
+                  <option key={k} value={k}>{c.label}</option>
+                ))}
+              </select>
+
+              <div className="flex space-x-4">
+                {(['monthly','yearly'] as const).map(c=>(
+                  <label key={c} className="flex-1">
+                    <input
+                      type="radio" name="billing" value={c}
+                      checked={billing===c}
+                      onChange={()=>setBilling(c)}
+                      className="mr-2"
+                    />
+                    {c.charAt(0).toUpperCase()+c.slice(1)}
+                  </label>
+                ))}
+              </div>
+
+              <p className="text-center text-lg font-bold">${price}/{billing}</p>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-blue-600 rounded disabled:opacity-50"
+              >
+                {loading?'Processing…':'Start 30-Day Free Trial'}
+              </button>
+
+              <button
+                type="button"
+                onClick={()=>signIn('google',{callbackUrl:'/dashboard'})}
+                className="w-full py-3 bg-white text-black rounded"
+              >
+                Continue with Google
+              </button>
+            </form>
+          )}
+
+          {/* — Log In — */}
+          {view==='login' && (
+            <form onSubmit={handleLogin} className="space-y-4">
+              <input
+                type="email" required placeholder="Email"
+                value={loginEmail} onChange={e=>setLoginEmail(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900 rounded"
+              />
+              <input
+                type="password" required placeholder="Password"
+                value={loginPassword} onChange={e=>setLoginPassword(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900 rounded"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-blue-600 rounded disabled:opacity-50"
+              >
+                {loading?'Processing…':'Log In'}
+              </button>
+              <button
+                type="button"
+                onClick={()=>signIn('google',{callbackUrl:'/dashboard'})}
+                className="w-full py-3 bg-white text-black rounded"
+              >
+                Continue with Google
+              </button>
+            </form>
+          )}
+
+          {/* — Forgot Password — */}
+          {view==='forgot' && (
+            <form onSubmit={handleForgot} className="space-y-4">
+              <input
+                type="email" required placeholder="Your Email"
+                value={forgotEmail} onChange={e=>setForgotEmail(e.target.value)}
+                className="w-full px-4 py-2 bg-gray-900 rounded"
+              />
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-3 bg-blue-600 rounded disabled:opacity-50"
+              >
+                {loading?'Sending…':'Send Reset Link'}
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
