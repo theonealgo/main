@@ -1,4 +1,3 @@
-// components/Header.tsx
 'use client';
 
 import Link from 'next/link';
@@ -6,44 +5,36 @@ import Image from 'next/image';
 import { useState } from 'react';
 
 export default function Header() {
-  const [openMenu, setOpenMenu] = useState<string>("");
-  const toggleMenu     = (menu: string) =>
-    setOpenMenu(openMenu === menu ? "" : menu);
+  const [openMenu, setOpenMenu] = useState<string>('');
+  const toggleMenu = (menu: string) =>
+    setOpenMenu(openMenu === menu ? '' : menu);
 
   return (
-    <header
-      className={`
-        fixed top-0 left-0 right-0 z-30
-        bg-black text-white
-        px-6 py-4
-        flex items-center justify-between
-        border-b border-gray-800
-      `}
-    >
+    <header className="w-full bg-black text-white px-6 py-4 flex items-center justify-between border-b border-gray-800">
       {/* Logo */}
       <Link href="/" className="flex items-center">
         <Image
           src="/images/theonelogo.png"
-          alt="The One Algo Logo"
+          alt="Logo"
           width={128}
           height={128}
           className="h-10 w-auto"
         />
       </Link>
 
-      {/* Nav + CTA */}
+      {/* Navigation */}
       <nav className="flex items-center gap-6 relative">
-        {/** Product menu **/}
+        {/* Product Menu */}
         <div className="relative">
           <button
-            onClick={() => toggleMenu("product")}
+            onClick={() => toggleMenu('product')}
             className="hover:text-teal-400 transition"
           >
             Product
           </button>
-          {openMenu === "product" && (
+          {openMenu === 'product' && (
             <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
-              <Link href="/pricing"  className="block px-4 py-2 hover:bg-gray-800">
+              <Link href="/pricing" className="block px-4 py-2 hover:bg-gray-800">
                 Pricing
               </Link>
               <Link href="/features" className="block px-4 py-2 hover:bg-gray-800">
@@ -53,15 +44,15 @@ export default function Header() {
           )}
         </div>
 
-        {/** Resources menu **/}
+        {/* Resources Menu */}
         <div className="relative">
           <button
-            onClick={() => toggleMenu("resources")}
+            onClick={() => toggleMenu('resources')}
             className="hover:text-teal-400 transition"
           >
             Resources
           </button>
-          {openMenu === "resources" && (
+          {openMenu === 'resources' && (
             <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
               <Link
                 href="/documentation"
@@ -69,27 +60,24 @@ export default function Header() {
               >
                 Documentation
               </Link>
-              <Link
-                href="/tutorials"
-                className="block px-4 py-2 hover:bg-gray-800"
-              >
+              <Link href="/tutorials" className="block px-4 py-2 hover:bg-gray-800">
                 Tutorials
               </Link>
             </div>
           )}
         </div>
 
-        {/** Company menu **/}
+        {/* Company Menu */}
         <div className="relative">
           <button
-            onClick={() => toggleMenu("company")}
+            onClick={() => toggleMenu('company')}
             className="hover:text-teal-400 transition"
           >
             Company
           </button>
-          {openMenu === "company" && (
+          {openMenu === 'company' && (
             <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
-              <Link href="/about"   className="block px-4 py-2 hover:bg-gray-800">
+              <Link href="/about" className="block px-4 py-2 hover:bg-gray-800">
                 About
               </Link>
               <Link href="/contact" className="block px-4 py-2 hover:bg-gray-800">
@@ -99,7 +87,7 @@ export default function Header() {
           )}
         </div>
 
-        {/** Primary CTA **/}
+        {/* Get Started CTA */}
         <Link
           href="/auth?screen_hint=signup"
           className="
