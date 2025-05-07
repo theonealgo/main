@@ -1,3 +1,4 @@
+// next.config.ts
 import path from 'path';
 import { NextConfig } from 'next';
 
@@ -5,23 +6,13 @@ const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-      {
-        protocol: 'http',
-        hostname: 'localhost',
-      },
+      { protocol: 'https', hostname: '**' },
+      { protocol: 'http',  hostname: 'localhost' },
     ],
   },
   experimental: {
-    serverActions: {}, // ✅ Must be an object, not `true`
-    optimizePackageImports: [
-      '@vercel/speed-insights',
-      'next-auth',
-      'framer-motion',
-    ],
+    serverActions: {},
+    optimizePackageImports: ['@vercel/speed-insights','next-auth','framer-motion'],
   },
   webpack: (config) => {
     config.resolve.alias = {
@@ -30,8 +21,6 @@ const nextConfig: NextConfig = {
     };
     return config;
   },
-
-  // ─── Rewrites ────────────────────────────────────────────────────────────────
   async rewrites() {
     return [
       {
