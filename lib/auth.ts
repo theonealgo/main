@@ -1,11 +1,11 @@
 // lib/auth.ts
 import { createClient } from "@supabase/supabase-js";
 import { SupabaseAdapter } from "@next-auth/supabase-adapter";
-import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import { AuthOptions, DefaultSession } from "next-auth";
 
-// ─── Module Augmentation ───────────────────────────────────────────────────────
+// ─── Module augmentation so NextAuth’s Session & JWT carry our extra fields ───
 declare module "next-auth" {
   interface Session extends DefaultSession {
     user: DefaultSession["user"] & {
@@ -22,6 +22,7 @@ declare module "next-auth" {
 }
 // ────────────────────────────────────────────────────────────────────────────────
 
+// Create a Supabase client with service‐role key (full CRUD) for your adapter & events
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
 const supabase    = createClient(supabaseUrl, supabaseKey);
@@ -33,14 +34,14 @@ export const authOptions: AuthOptions = {
     CredentialsProvider({
       name: "Email",
       credentials: {
-        email: { label: "Email", type: "text" },
-        password: { label: "Password", type: "password" },
-        tradingViewUsername: { label: "TradingView Username", type: "text" },
-        plan:    { label: "Plan", type: "text" },
-        billing: { label: "Billing", type: "text" },
+        email:              { label: "Email",              type: "text"     },
+        password:           { label: "Password",           type: "password" },
+        tradingViewUsername:{ label: "TradingView Username",type: "text"     },
+        plan:               { label: "Plan",               type: "text"     },
+        billing:            { label: "Billing",            type: "text"     },
       },
       async authorize(creds) {
-        // 1) try fetch existing user
+        // 1) lookup by email
         let { data: user, error } = await supabase
           .from("users")
           .select("*")
@@ -48,33 +49,30 @@ export const authOptions: AuthOptions = {
           .maybeSingle();
         if (error) return null;
 
-        // 2) if not found, create with hashed password
+        // 2) if not found, hash & insert (signup)
         if (!user) {
-          const bcrypt = await import("bcryptjs");
-          const hashed = await bcrypt.hash(creds!.password, 10);
+          const { hash } = await import("bcryptjs").then(b => ({ hash: (pw: string) => b.hash(pw, 10) }));
+          const hashed    = await hash(creds!.password);
           const { data: newUser, error: insertErr } = await supabase
             .from("users")
             .insert({
-              email: creds!.email,
-              hashed_password: hashed,
+              email:                creds!.email,
+              hashed_password:      hashed,
               tradingview_username: creds!.tradingViewUsername,
-              plan:    creds!.plan,
-              billing: creds!.billing,
+              plan:                 creds!.plan,
+              billing:              creds!.billing,
             })
             .single();
           if (insertErr || !newUser) return null;
           user = newUser;
         } else {
-          // 3) if found, verify password
-          const bcrypt = await import("bcryptjs");
-          const valid = await bcrypt.compare(
-            creds!.password,
-            (user as any).hashed_password
-          );
+          // 3) verify existing password
+          const { compare } = await import("bcryptjs").then(b => ({ compare: b.compare }));
+          const valid       = await compare(creds!.password, (user as any).hashed_password);
           if (!valid) return null;
         }
 
-        // 4) attach extra props for callbacks/events
+        // 4) stash our extra fields on the returned user for callbacks/events
         (user as any).tradingViewUsername = creds!.tradingViewUsername!;
         (user as any).plan                = creds!.plan!;
         (user as any).billing             = creds!.billing!;
@@ -104,25 +102,28 @@ export const authOptions: AuthOptions = {
       return session;
     },
     async redirect({ baseUrl }) {
+      // After login/registration, send to dashboard
       return `${baseUrl}/dashboard`;
     },
   },
 
   events: {
+    // When NextAuth creates a new user, also upsert your “profiles” table
     async createUser({ user }) {
       await supabase.from("profiles").upsert({
-        id: user.id,
+        id:                   user.id,
         tradingview_username: (user as any).tradingViewUsername || null,
-        plan:                (user as any).plan,
-        billing:             (user as any).billing,
+        plan:                 (user as any).plan,
+        billing:              (user as any).billing,
       });
     },
   },
 
   session: { strategy: "jwt" },
 
-  // ◀── Here we point NextAuth at our single "/auth" page
-  pages:   { signIn: "/auth" },
+  // ← Make NextAuth use your unified /auth page for all sign‐in & sign‐up flows
+  pages: { signIn: "/auth" },
 
-  secret:  process.env.NEXTAUTH_SECRET,
+  // ⚠️ Keep this secret safe & synced in Vercel env vars
+  secret: process.env.NEXTAUTH_SECRET,
 };
