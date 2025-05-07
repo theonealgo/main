@@ -3,7 +3,26 @@ import { createClient } from "@supabase/supabase-js";
 import { SupabaseAdapter } from "@next-auth/supabase-adapter";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { AuthOptions } from "next-auth";
+import { AuthOptions, DefaultSession } from "next-auth";
+
+// ─── Module Augmentation ───────────────────────────────────────────────────────
+// Tell NextAuth about our extra fields on session.user and JWT
+declare module "next-auth" {
+  interface Session extends DefaultSession {
+    user: DefaultSession["user"] & {
+      tradingViewUsername: string;
+      plan: string;
+      billing: string;
+    };
+  }
+
+  interface JWT {
+    tradingViewUsername: string;
+    plan: string;
+    billing: string;
+  }
+}
+// ────────────────────────────────────────────────────────────────────────────────
 
 // Supabase config values
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
