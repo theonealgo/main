@@ -4,20 +4,19 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import { Analytics } from '@vercel/analytics/react';
 import 'react-medium-image-zoom/dist/styles.css';
 import './zoom-overrides.css';
 
 const Zoom = dynamic(() => import('react-medium-image-zoom'), { ssr: false });
 
 export default function Home() {
-  // — Theme toggle (light/dark) —
+  // Theme toggle
   const [theme, setTheme] = useState<'light' | 'dark'>('dark');
   useEffect(() => {
     document.documentElement.classList.toggle('light', theme === 'light');
   }, [theme]);
 
-  // — Typewriter for hero headline —
+  // Typewriter
   const fullText = 'One Signal.\nZero Noise.';
   const [typed, setTyped] = useState('');
   useEffect(() => {
@@ -29,7 +28,7 @@ export default function Home() {
     return () => clearInterval(iv);
   }, []);
 
-  // — Scroll arrow visibility —
+  // Back-to-top
   const [showTop, setShowTop] = useState(false);
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
@@ -85,10 +84,7 @@ export default function Home() {
       >
         <div className="relative z-10 max-w-6xl w-full pl-8 md:pl-16 space-y-4">
           {typed.split('\n').map((line, i) => (
-            <h1
-              key={i}
-              className="text-5xl md:text-7xl font-bold leading-tight"
-            >
+            <h1 key={i} className="text-5xl md:text-7xl font-bold leading-tight">
               {line}
             </h1>
           ))}
@@ -194,9 +190,6 @@ export default function Home() {
           ↑
         </button>
       )}
-
-      {/* Vercel Analytics */}
-      <Analytics />
     </div>
   );
 }
