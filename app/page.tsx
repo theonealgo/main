@@ -97,7 +97,7 @@ export default function Home() {
     <div className="mt-8 space-y-2 flex flex-col items-center md:items-start">
       <Link
         href="/auth?screen_hint=signup"
-        className="bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition"
+        className="bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition  ml-[1in]"
       >
         Get Started For Free
       </Link>
