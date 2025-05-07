@@ -5,13 +5,19 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { AuthOptions } from "next-auth";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!     // service-role key for full CRUD
-);
+// Supabase config values
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+
+// This client is used in authorize() & events
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 export const authOptions: AuthOptions = {
-  adapter: SupabaseAdapter(supabase),
+  // Pass the config object, not the client instance
+  adapter: SupabaseAdapter({
+    url: supabaseUrl,
+    secret: supabaseKey,
+  }),
 
   providers: [
     // ————— Email/Password + TradingView Username + Plan/Billing —————
@@ -29,16 +35,17 @@ export const authOptions: AuthOptions = {
         billing: { label: "Billing", type: "text" },
       },
       async authorize(creds) {
-        // 1) fetch the user record (or create it) from your `users` table
+        // 1) fetch (or create) user in your `users` table
         const { data: user, error } = await supabase
           .from("users")
           .select("*")
           .eq("email", creds!.email)
           .maybeSingle();
+        if (error || !user) return null;
 
-        if (error) return null;
-        // 2) verify password (bcrypt.compare…) or create new user if you want self-signup
-        //    then attach the extra fields:
+        // 2) verify password (bcrypt.compare…) or handle signup logic here
+
+        // 3) attach extra fields for callbacks/events
         user.tradingViewUsername = creds!.tradingViewUsername!;
         user.plan                = creds!.plan!;
         user.billing             = creds!.billing!;
@@ -54,7 +61,7 @@ export const authOptions: AuthOptions = {
   ],
 
   callbacks: {
-    // Stash extra fields on token
+    // Persist extra fields into the JWT
     async jwt({ token, user }) {
       if (user) {
         token.tradingViewUsername = (user as any).tradingViewUsername;
@@ -63,20 +70,20 @@ export const authOptions: AuthOptions = {
       }
       return token;
     },
-    // Expose them on session.user
+    // Expose them in session.user
     async session({ session, token }) {
       session.user.tradingViewUsername = token.tradingViewUsername as string;
       session.user.plan                = token.plan as string;
       session.user.billing             = token.billing as string;
       return session;
     },
-    // After any login, send ’em to the dashboard
+    // Send everyone to /dashboard after login
     async redirect({ baseUrl }) {
       return `${baseUrl}/dashboard`;
     },
   },
 
-  // When NextAuth creates a new user row, also upsert your “profiles” table
+  // Upsert your profiles table when a new user is created
   events: {
     async createUser({ user }) {
       await supabase.from("profiles").upsert({
