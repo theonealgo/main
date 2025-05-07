@@ -1,3 +1,4 @@
+// app/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -16,7 +17,7 @@ export default function Home() {
     document.documentElement.classList.toggle('light', theme === 'light');
   }, [theme]);
 
-  // Typewriter
+  // Typewriter effect
   const fullText = 'One Signal.\nZero Noise.';
   const [typed, setTyped] = useState('');
   useEffect(() => {
@@ -28,17 +29,17 @@ export default function Home() {
     return () => clearInterval(iv);
   }, []);
 
-  // Back-to-top
+  // Back-to-top visibility
   const [showTop, setShowTop] = useState(false);
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
-
   const scrollToPerf = () =>
     document.getElementById('performance')?.scrollIntoView({ behavior: 'smooth' });
 
+  // Carousel data
   const performanceItems = [
     {
       src: '/images/theonestocks98.png',
@@ -92,6 +93,7 @@ export default function Home() {
             Just signals that work, backed by real data in real time.
           </p>
           <div className="space-y-2">
+            {/* <-- Corrected link to Auth signup --> */}
             <Link
               href="/auth?screen_hint=signup"
               className="bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition"
@@ -150,6 +152,7 @@ export default function Home() {
             <StatCard label="Profit Factor" value="4.36" colorClass="text-green-400" />
             <StatCard label="Free Trial" value="30 Days" colorClass="text-green-400" />
           </div>
+          {/* <-- Corrected link here, too --> */}
           <Link
             href="/auth?screen_hint=signup"
             className="mt-16 inline-block bg-gradient-to-r from-blue-500 to-teal-400 px-8 py-4 rounded-full text-lg font-semibold text-black hover:opacity-90 transition"
