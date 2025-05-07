@@ -1,5 +1,6 @@
 // app/auth/page.tsx
 'use client';
+export const dynamic = 'force-dynamic';
 
 import { useState, FormEvent } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
