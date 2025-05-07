@@ -1,137 +1,92 @@
-// app/auth/page.tsx
 'use client';
 export const dynamic = 'force-dynamic';
 
-import React, { useState, FormEvent } from 'react';
+import { useState, FormEvent } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
+import Link from 'next/link';
 
 type PlanKey = 'the_one_stock' | 'the_one_elite' | 'the_one_premium';
 
 const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: number }> = {
-  the_one_stock:   { label: 'The One: Stock Swing Analyzer',              monthly: 49.99, yearly: 499.90 },
-  the_one_elite:   { label: 'The One Elite – Dynamic Liquidity',           monthly: 59.99, yearly: 599.90 },
-  the_one_premium: { label: 'The One Premium (both indicators)',          monthly: 99.99, yearly: 999.90 },
+  the_one_stock: { label: 'The One: Stock Swing Analyzer', monthly: 49.99, yearly: 499.90 },
+  the_one_elite: { label: 'The One Elite – Dynamic Liquidity', monthly: 59.99, yearly: 599.90 },
+  the_one_premium: { label: 'The One Premium (both indicators)', monthly: 99.99, yearly: 999.90 },
 };
 
 export default function AuthPage() {
-  const params     = useSearchParams();
-  const router     = useRouter();
-  const hint       = params.get('screen_hint');
-  const initialView = hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup';
-  const [view, setView] = useState<'signup' | 'login' | 'forgot'>(initialView);
+  const params = useSearchParams();
+  const router = useRouter();
+  const hint = params.get('screen_hint');
+  const [view, setView] = useState<'signup' | 'login' | 'forgot'>(hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup');
 
-  // Shared state
   const [loading, setLoading] = useState(false);
-  const [error,   setError]   = useState('');
+  const [error, setError] = useState('');
 
-  // Signup fields
-  const rawPlan    = (params.get('plan')    as PlanKey)               || 'the_one_stock';
-  const rawBilling = (params.get('billing') as 'monthly'|'yearly')   || 'monthly';
-  const [tvUser,   setTvUser]    = useState('');
-  const [email,    setEmail]     = useState('');
-  const [password, setPassword]  = useState('');
-  const [plan,     setPlan]      = useState<PlanKey>(rawPlan);
-  const [billing,  setBilling]   = useState<'monthly'|'yearly'>(rawBilling);
-
-  // Login fields
-  const [loginEmail,    setLoginEmail]    = useState('');
-  const [loginPassword, setLoginPassword] = useState('');
-
-  // Forgot field
-  const [forgotEmail, setForgotEmail] = useState('');
-
-  const price = billing === 'monthly'
-    ? PLAN_CONFIG[plan].monthly
-    : PLAN_CONFIG[plan].yearly;
+  // Signup
+  const [tvUser, setTvUser] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [plan, setPlan] = useState<PlanKey>((params.get('plan') as PlanKey) || 'the_one_stock');
+  const [billing, setBilling] = useState<'monthly'|'yearly'>((params.get('billing') as 'monthly'|'yearly') || 'monthly');
+  const price = billing === 'monthly' ? PLAN_CONFIG[plan].monthly : PLAN_CONFIG[plan].yearly;
 
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
 
-    // 1) Credentials signup
-    const res = await signIn('credentials', {
-      redirect: false,
-      tradingViewUsername: tvUser,
-      email, password, plan, billing,
-    });
-    if (res?.error) {
-      setError(res.error);
-      setLoading(false);
-      return;
-    }
-
-    // 2) Stripe checkout
     try {
-      const r = await fetch('/api/stripe/create-checkout', {
+      const signupResponse = await fetch('/api/auth/signup', {
         method: 'POST',
-        headers: { 'Content-Type':'application/json' },
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, plan }),
+      });
+      if (!signupResponse.ok) throw new Error('Signup failed');
+
+      const trackingResponse = await fetch('/api/save-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, tradingViewUsername: tvUser }),
+      });
+      if (!trackingResponse.ok) throw new Error('Tracking failed');
+
+      const stripeRes = await fetch('/api/create-stripe-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, billing, email }),
       });
-      const { url } = await r.json();
-      if (!url) throw new Error('Checkout failed');
-      router.push(url);
+      const { url } = await stripeRes.json();
+      if (!url) throw new Error('Stripe checkout failed');
+
+      window.location.href = url;
     } catch (err: any) {
-      setError(err.message || 'Checkout error');
+      setError(err.message || 'Signup error');
       setLoading(false);
     }
-  }
-
-  async function handleLogin(e: FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    const res = await signIn('credentials', {
-      redirect: false,
-      email: loginEmail,
-      password: loginPassword,
-      callbackUrl: '/dashboard',
-    });
-    if (res?.error) {
-      setError(res.error);
-      setLoading(false);
-    } else {
-      router.push('/dashboard');
-    }
-  }
-
-  async function handleForgot(e: FormEvent) {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-    const resp = await fetch('/api/auth/forgot-password', {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json' },
-      body: JSON.stringify({ email: forgotEmail }),
-    });
-    setError(resp.ok ? 'Check your email for instructions' : 'Failed to send reset link');
-    setLoading(false);
   }
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
-      <div className="w-full max-w-md space-y-6">
-        {/* TABS */}
-        <div className="flex space-x-2">
-          {(['signup','login','forgot'] as const).map(m => (
+    <div className="min-h-screen bg-black flex items-center justify-center p-4 md:p-8">
+      <div className="max-w-xl w-full bg-gray-900 rounded-xl p-8 md:p-12 shadow-xl space-y-6 text-white">
+        <div className="flex justify-center gap-2 bg-gray-800 p-1 rounded-lg">
+          {['signup', 'login', 'forgot'].map((tab) => (
             <button
-              key={m}
-              onClick={() => { setView(m); setError(''); }}
-              className={`
-                flex-1 py-2 rounded
-                ${view === m ? 'bg-teal-500 text-black' : 'bg-gray-800'}
-              `}
+              key={tab}
+              onClick={() => { setView(tab as any); setError(''); }}
+              className={`flex-1 py-2 rounded-lg text-sm font-semibold ${
+                view === tab ? 'bg-teal-500 text-black' : 'text-white'
+              }`}
             >
-              {m === 'signup' ? 'Sign Up' : m === 'login' ? 'Log In' : 'Forgot?'}
+              {tab === 'signup' ? 'Sign Up' : tab === 'login' ? 'Log In' : 'Forgot Password'}
             </button>
           ))}
         </div>
-        {error && <p className="text-red-400">{error}</p>}
 
-        {/* SIGN UP */}
+        {error && <p className="text-red-500 text-center">{error}</p>}
+
         {view === 'signup' && (
-          <form onSubmit={handleSignup} className="space-y-4 bg-gray-900 p-6 rounded-lg">
+          <form onSubmit={handleSignup} className="space-y-4">
             <button
               type="button"
               onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
@@ -139,105 +94,46 @@ export default function AuthPage() {
             >
               Continue with Google
             </button>
-            <div className="text-center text-gray-400">OR</div>
 
-            <input
-              type="text" required placeholder="TradingView Username"
-              value={tvUser} onChange={e => setTvUser(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 rounded"
-            />
-            <input
-              type="email" required placeholder="Email"
-              value={email} onChange={e => setEmail(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 rounded"
-            />
-            <input
-              type="password" required placeholder="Password"
-              value={password} onChange={e => setPassword(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 rounded"
-            />
+            <div className="text-center text-gray-400 my-4">OR</div>
 
-            <select
-              value={plan}
-              onChange={e => setPlan(e.target.value as PlanKey)}
-              className="w-full px-4 py-2 bg-gray-800 rounded"
-            >
-              {Object.entries(PLAN_CONFIG).map(([k, c]) => (
-                <option key={k} value={k}>{c.label}</option>
+            <input required className="w-full px-4 py-3 bg-gray-800 rounded" placeholder="TradingView Username" value={tvUser} onChange={e => setTvUser(e.target.value)} />
+            <input required type="email" className="w-full px-4 py-3 bg-gray-800 rounded" placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
+            <input required type="password" className="w-full px-4 py-3 bg-gray-800 rounded" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+
+            <select value={plan} onChange={e => setPlan(e.target.value as PlanKey)} className="w-full px-4 py-3 bg-gray-800 rounded">
+              {Object.entries(PLAN_CONFIG).map(([key, cfg]) => (
+                <option key={key} value={key}>{cfg.label}</option>
               ))}
             </select>
 
             <div className="flex gap-4">
-              {(['monthly','yearly'] as const).map(cycle => (
+              {(['monthly', 'yearly'] as const).map(cycle => (
                 <label key={cycle} className="flex-1 flex items-center gap-2">
-                  <input
-                    type="radio" name="billing" value={cycle}
-                    checked={billing === cycle}
-                    onChange={() => setBilling(cycle)}
-                    className="w-4 h-4"
-                  />
+                  <input type="radio" checked={billing === cycle} onChange={() => setBilling(cycle)} className="h-4 w-4" />
                   {cycle.charAt(0).toUpperCase() + cycle.slice(1)}
                 </label>
               ))}
             </div>
 
-            <p className="text-center text-lg font-bold">${price}/{billing}</p>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-blue-600 rounded disabled:opacity-50"
-            >
-              {loading ? 'Processing…' : 'Start 30-Day Free Trial'}
+            <button type="submit" className="w-full bg-blue-600 py-3 rounded-lg disabled:opacity-50" disabled={loading}>
+              {loading ? 'Processing…' : `Start 30-Day Free Trial ($${price})`}
             </button>
           </form>
         )}
 
-        {/* LOG IN */}
         {view === 'login' && (
-          <form onSubmit={handleLogin} className="space-y-4 bg-gray-900 p-6 rounded-lg">
-            <input
-              type="email" required placeholder="Email"
-              value={loginEmail} onChange={e => setLoginEmail(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 rounded"
-            />
-            <input
-              type="password" required placeholder="Password"
-              value={loginPassword} onChange={e => setLoginPassword(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 rounded"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-blue-600 rounded disabled:opacity-50"
-            >
-              {loading ? 'Processing…' : 'Log In'}
-            </button>
-            <button
-              type="button"
-              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
-              className="w-full py-3 bg-white text-black rounded"
-            >
-              Continue with Google
-            </button>
+          <form className="space-y-4">
+            <input required type="email" className="w-full px-4 py-3 bg-gray-800 rounded" placeholder="Email" />
+            <input required type="password" className="w-full px-4 py-3 bg-gray-800 rounded" placeholder="Password" />
+            <button className="w-full bg-blue-600 py-3 rounded-lg">Log In</button>
           </form>
         )}
 
-        {/* FORGOT PASSWORD */}
         {view === 'forgot' && (
-          <form onSubmit={handleForgot} className="space-y-4 bg-gray-900 p-6 rounded-lg">
-            <input
-              type="email" required placeholder="Your Email"
-              value={forgotEmail} onChange={e => setForgotEmail(e.target.value)}
-              className="w-full px-4 py-2 bg-gray-800 rounded"
-            />
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-blue-600 rounded disabled:opacity-50"
-            >
-              {loading ? 'Sending…' : 'Send Reset Link'}
-            </button>
+          <form className="space-y-4">
+            <input required type="email" className="w-full px-4 py-3 bg-gray-800 rounded" placeholder="Your Email" />
+            <button className="w-full bg-blue-600 py-3 rounded-lg">Send Reset Link</button>
           </form>
         )}
       </div>
