@@ -30,6 +30,16 @@ const nextConfig: NextConfig = {
     };
     return config;
   },
+
+  // ─── Rewrites ────────────────────────────────────────────────────────────────
+  async rewrites() {
+    return [
+      {
+        source: '/signup',
+        destination: '/auth?screen_hint=signup',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
