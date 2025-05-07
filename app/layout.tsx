@@ -30,10 +30,22 @@ export default function RootLayout({
   return (
     <html lang="en" className="bg-black">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col`}
+        className={`
+          ${geistSans.variable}
+          ${geistMono.variable}
+          antialiased text-white min-h-screen flex flex-col
+        `}
       >
         <Header />
-        <main className="flex-grow w-full">{children}</main>
+
+        {/* 
+          pt-16 == height of your fixed header, 
+          so nothing ever sits underneath it 
+        */}
+        <main className="flex-grow w-full pt-16">
+          {children}
+        </main>
+
         <Footer />
       </body>
     </html>
