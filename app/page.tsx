@@ -81,7 +81,9 @@ export default function Home() {
   className="relative flex items-center justify-center px-4 pt-16 pb-32 bg-cover bg-center min-h-screen"
   style={{ backgroundImage: "url('/images/bground.jpg')" }}
 >
- <div className="relative z-20 max-w-6xl w-full mx-auto px-8 md:px-16 space-y-6 text-center md:text-left">
+<div className="absolute inset-0 bg-black opacity-50" />
+
+<div className="relative z-20 max-w-6xl w-full mx-auto px-8 md:px-16 space-y-6 text-center md:text-left">
   {typed.split('\n').map((line, i) => (
     <h1 key={i} className="text-5xl md:text-7xl font-bold leading-tight">
       {line}
@@ -109,8 +111,7 @@ export default function Home() {
   aria-label="Scroll to performance"
 >
   ↓
-</section>
-
+</button>
       {/* PERFORMANCE ITEMS */}
       <section id="performance" className="bg-black py-24 px-4 md:px-12">
         <div className="max-w-7xl mx-auto space-y-24">
