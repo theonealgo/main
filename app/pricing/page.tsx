@@ -1,3 +1,4 @@
+// app/pricing/page.tsx (or wherever your PricingPage lives)
 'use client';
 
 import { useState } from 'react';
@@ -9,7 +10,7 @@ export default function PricingPage() {
 
   const pricingPlans = [
     {
-      title: "The One Stocks",
+      title: "The One: Stock Swing Analyzer [TheoneAlgo]",
       price: billingCycle === 'monthly' ? 49.99 : 499.90,
       description: "Swing trade strategy for SPY & NASDAQ with 90%+ win rate and high profit factor.",
       features: [
@@ -18,10 +19,10 @@ export default function PricingPage() {
         "2.2+ profit factor",
         "Real-time entry/exit alerts",
       ],
-      planKey: 'the_one_stocks'
+      planKey: 'the_one_stock',         // updated key
     },
     {
-      title: "The One Elite",
+      title: "The One Elite – Dynamic Liquidity Strategy [Theonealgo]",
       price: billingCycle === 'monthly' ? 59.99 : 599.90,
       description: "Intraday strategy optimized for GBP/USD & SPY with 97% win rate and superior profit factor.",
       features: [
@@ -30,10 +31,10 @@ export default function PricingPage() {
         "2.9+ profit factor",
         "Real-time entry/exit alerts",
       ],
-      planKey: 'the_one_elite'
+      planKey: 'the_one_elite',         // updated key
     },
     {
-      title: "The One Premium",
+      title: "The One Premium (both indicators)",
       price: billingCycle === 'monthly' ? 99.99 : 999.90,
       description: "All strategies included — Stocks and Elite — full trading coverage.",
       features: [
@@ -41,7 +42,7 @@ export default function PricingPage() {
         "All timeframes supported",
         "Advanced risk management tools",
       ],
-      planKey: 'the_one_premium'
+      planKey: 'the_one_premium',       // already correct
     }
   ];
 
