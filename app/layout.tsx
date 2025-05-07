@@ -1,20 +1,20 @@
 // app/layout.tsx
-
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./styles/globals.css"; // ✅ correct path since styles is inside the same 'app' folder
+import "./styles/globals.css";
 
-import Header from "../components/Header"; // ✅ correct path from app/ to root/components/
-import Footer from "../components/Footer"; // ✅ correct path from app/ to root/components/
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: "swap",
 });
-
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -24,16 +24,16 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" className="bg-black">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased text-white min-h-screen flex flex-col`}
+      >
         <Header />
-        <main className="flex-grow w-full">
-          {children}
-        </main>
+        <main className="flex-grow w-full">{children}</main>
         <Footer />
       </body>
     </html>
