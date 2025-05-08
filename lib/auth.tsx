@@ -14,7 +14,9 @@ export default function SignupForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [tradingViewUsername, setTradingViewUsername] = useState('');
-
+  const metadata = {
+  title: 'The One Algo — Sign In or Sign Up',
+};
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
