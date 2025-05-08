@@ -1,35 +1,39 @@
-// app/auth/page.tsx
 'use client';
-export const dynamic = 'force-dynamic';
 
 import React, { useState, FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
-type PlanKey = 'the_one_stock' | 'the_one_elite' | 'the_one_premium';
-const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: number }> = {
-  the_one_stock:   { label: 'The One: Stock Swing Analyzer', monthly: 49.99, yearly: 499.90 },
-  the_one_elite:   { label: 'The One Elite – Dynamic Liquidity', monthly: 59.99, yearly: 599.90 },
-  the_one_premium: { label: 'The One Premium (both indicators)', monthly: 99.99, yearly: 999.90 },
-};
+//
+// Helper forms embedded here so this is truly self-contained.
+// You can lift them out later if you prefer.
+//
 
 function LoginForm() {
-  const [email, setEmail] = useState('');
+  const [email, setEmail]     = useState('');
   const [password, setPassword] = useState('');
+
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     await signIn('credentials', { email, password, callbackUrl: '/dashboard' });
   };
+
   return (
     <form onSubmit={handleLogin} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
       <input
-        type="email" placeholder="Email" required value={email}
+        type="email"
+        placeholder="Email"
+        required
+        value={email}
         onChange={e => setEmail(e.target.value)}
         className="w-full px-4 py-3 bg-gray-800 rounded"
       />
       <input
-        type="password" placeholder="Password" required value={password}
+        type="password"
+        placeholder="Password"
+        required
+        value={password}
         onChange={e => setPassword(e.target.value)}
         className="w-full px-4 py-3 bg-gray-800 rounded"
       />
@@ -44,12 +48,17 @@ function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
   const handleReset = (e: FormEvent) => {
     e.preventDefault();
-    alert('Password reset link sent to ' + email);
+    // integrate your real reset logic here
+    alert(`Password reset link sent to ${email}`);
   };
+
   return (
     <form onSubmit={handleReset} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
       <input
-        type="email" placeholder="Enter your email" required value={email}
+        type="email"
+        placeholder="Enter your email"
+        required
+        value={email}
         onChange={e => setEmail(e.target.value)}
         className="w-full px-4 py-3 bg-gray-800 rounded"
       />
@@ -60,14 +69,25 @@ function ForgotPasswordForm() {
   );
 }
 
+type PlanKey = 'the_one_stock' | 'the_one_elite' | 'the_one_premium';
+const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: number }> = {
+  the_one_stock:   { label: 'The One: Stock Swing Analyzer', monthly: 49.99, yearly: 499.90 },
+  the_one_elite:   { label: 'The One Elite – Dynamic Liquidity', monthly: 59.99, yearly: 599.90 },
+  the_one_premium: { label: 'The One Premium (both indicators)', monthly: 99.99, yearly: 999.90 },
+};
+
 export default function AuthPage() {
   const params = useSearchParams();
-  const hint = params.get('screen_hint');
-  const initialView = hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup';
-  const [view, setView] = useState<'signup' | 'login' | 'forgot'>(initialView);
+  const hint   = params.get('screen_hint');
+  const initialView = hint === 'login'
+    ? 'login'
+    : hint === 'forgot'
+    ? 'forgot'
+    : 'signup';
 
+  const [view, setView]     = useState<'signup' | 'login' | 'forgot'>(initialView);
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
+  const [error, setError]     = useState<string>('');
 
   const rawPlan    = (params.get('plan') as PlanKey) || 'the_one_stock';
   const rawBilling = (params.get('billing') as 'monthly' | 'yearly') || 'monthly';
@@ -87,6 +107,7 @@ export default function AuthPage() {
     setLoading(true);
     setError('');
     try {
+      // 1) Create account
       const signupRes = await fetch('/api/auth/signup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -94,6 +115,7 @@ export default function AuthPage() {
       });
       if (!signupRes.ok) throw new Error('Signup failed.');
 
+      // 2) Save TradingView username
       const saveRes = await fetch('/api/save-user', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,6 +123,7 @@ export default function AuthPage() {
       });
       if (!saveRes.ok) throw new Error('Saving user info failed.');
 
+      // 3) Kick off Stripe checkout
       const stripeRes = await fetch('/api/create-stripe-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -119,19 +142,19 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
       <div className="max-w-lg w-full space-y-8">
-        {/* Tabs */}
+        {/* Tab buttons */}
         <div className="flex bg-gray-900 rounded-lg overflow-hidden">
           {(['signup','login','forgot'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setView(tab)}
               className={`flex-1 py-3 font-semibold ${
-                view===tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
+                view === tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
               }`}
             >
-              {tab==='signup'
+              {tab === 'signup'
                 ? 'Sign Up'
-                : tab==='login'
+                : tab === 'login'
                 ? 'Log In'
                 : 'Forgot Password'}
             </button>
@@ -140,11 +163,11 @@ export default function AuthPage() {
 
         {error && <div className="text-center text-red-500">{error}</div>}
 
-        {view==='signup' && (
+        {view === 'signup' && (
           <form onSubmit={handleSignup} className="space-y-6 bg-gray-900 p-6 rounded-lg shadow-lg">
             <button
               type="button"
-              onClick={() => signIn('google',{ callbackUrl:'/dashboard' })}
+              onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
               className="w-full bg-white text-black py-3 rounded font-semibold"
             >
               Continue with Google
@@ -181,20 +204,20 @@ export default function AuthPage() {
               onChange={e => setPlan(e.target.value as PlanKey)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             >
-              {Object.entries(PLAN_CONFIG).map(([k,c])=>(
-                <option key={k} value={k}>{c.label}</option>
+              {Object.entries(PLAN_CONFIG).map(([k, cfg]) => (
+                <option key={k} value={k}>{cfg.label}</option>
               ))}
             </select>
 
             <div className="flex gap-4 justify-center">
-              {(['monthly','yearly'] as const).map(cycle=>(
+              {(['monthly','yearly'] as const).map(cycle => (
                 <label key={cycle} className="flex items-center gap-2">
                   <input
                     type="radio"
-                    checked={billing===cycle}
-                    onChange={()=>setBilling(cycle)}
+                    checked={billing === cycle}
+                    onChange={() => setBilling(cycle)}
                   />
-                  {cycle.charAt(0).toUpperCase()+cycle.slice(1)}
+                  {cycle.charAt(0).toUpperCase() + cycle.slice(1)}
                 </label>
               ))}
             </div>
@@ -209,8 +232,8 @@ export default function AuthPage() {
           </form>
         )}
 
-        {view==='login'  && <LoginForm />}
-        {view==='forgot' && <ForgotPasswordForm />}
+        {view === 'login'  && <LoginForm />}
+        {view === 'forgot' && <ForgotPasswordForm />}
       </div>
     </div>
   );
