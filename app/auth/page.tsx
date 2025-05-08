@@ -1,17 +1,12 @@
 'use client';
+export const dynamic = 'force-dynamic';
 
 import React, { useState, FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
-
-//
-// Helper forms embedded here so this is truly self-contained.
-// You can lift them out later if you prefer.
-//
 
 function LoginForm() {
-  const [email, setEmail]     = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async (e: FormEvent) => {
@@ -46,10 +41,10 @@ function LoginForm() {
 
 function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
+
   const handleReset = (e: FormEvent) => {
     e.preventDefault();
-    // integrate your real reset logic here
-    alert(`Password reset link sent to ${email}`);
+    alert('Password reset link sent to ' + email);
   };
 
   return (
@@ -71,62 +66,50 @@ function ForgotPasswordForm() {
 
 type PlanKey = 'the_one_stock' | 'the_one_elite' | 'the_one_premium';
 const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: number }> = {
-  the_one_stock:   { label: 'The One: Stock Swing Analyzer', monthly: 49.99, yearly: 499.90 },
-  the_one_elite:   { label: 'The One Elite – Dynamic Liquidity', monthly: 59.99, yearly: 599.90 },
+  the_one_stock: { label: 'The One: Stock Swing Analyzer', monthly: 49.99, yearly: 499.90 },
+  the_one_elite: { label: 'The One Elite – Dynamic Liquidity', monthly: 59.99, yearly: 599.90 },
   the_one_premium: { label: 'The One Premium (both indicators)', monthly: 99.99, yearly: 999.90 },
 };
 
 export default function AuthPage() {
   const params = useSearchParams();
-  const hint   = params.get('screen_hint');
-  const initialView = hint === 'login'
-    ? 'login'
-    : hint === 'forgot'
-    ? 'forgot'
-    : 'signup';
+  const hint = params.get('screen_hint');
+  const initialView = hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup';
+  const [view, setView] = useState<'signup' | 'login' | 'forgot'>(initialView);
 
-  const [view, setView]     = useState<'signup' | 'login' | 'forgot'>(initialView);
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState<string>('');
+  const [error, setError] = useState('');
 
-  const rawPlan    = (params.get('plan') as PlanKey) || 'the_one_stock';
+  const rawPlan = (params.get('plan') as PlanKey) || 'the_one_stock';
   const rawBilling = (params.get('billing') as 'monthly' | 'yearly') || 'monthly';
 
-  const [tvUser, setTvUser]     = useState('');
-  const [email,  setEmail]      = useState('');
+  const [tvUser, setTvUser] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [plan,   setPlan]       = useState<PlanKey>(rawPlan);
-  const [billing, setBilling]   = useState<'monthly' | 'yearly'>(rawBilling);
+  const [plan, setPlan] = useState<PlanKey>(rawPlan);
+  const [billing, setBilling] = useState<'monthly' | 'yearly'>(rawBilling);
 
-  const price = billing === 'monthly'
-    ? PLAN_CONFIG[plan].monthly
-    : PLAN_CONFIG[plan].yearly;
+  const price = billing === 'monthly' ? PLAN_CONFIG[plan].monthly : PLAN_CONFIG[plan].yearly;
 
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      // 1) Create account
       const signupRes = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, plan }),
       });
       if (!signupRes.ok) throw new Error('Signup failed.');
 
-      // 2) Save TradingView username
       const saveRes = await fetch('/api/save-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, tradingViewUsername: tvUser }),
       });
       if (!saveRes.ok) throw new Error('Saving user info failed.');
 
-      // 3) Kick off Stripe checkout
       const stripeRes = await fetch('/api/create-stripe-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, billing, email }),
       });
       const { url } = await stripeRes.json();
@@ -142,21 +125,14 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
       <div className="max-w-lg w-full space-y-8">
-        {/* Tab buttons */}
         <div className="flex bg-gray-900 rounded-lg overflow-hidden">
-          {(['signup','login','forgot'] as const).map(tab => (
+          {(['signup', 'login', 'forgot'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setView(tab)}
-              className={`flex-1 py-3 font-semibold ${
-                view === tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
-              }`}
+              className={`flex-1 py-3 font-semibold ${view === tab ? 'bg-teal-500 text-black' : 'bg-gray-800'}`}
             >
-              {tab === 'signup'
-                ? 'Sign Up'
-                : tab === 'login'
-                ? 'Log In'
-                : 'Forgot Password'}
+              {tab === 'signup' ? 'Sign Up' : tab === 'login' ? 'Log In' : 'Forgot Password'}
             </button>
           ))}
         </div>
@@ -172,6 +148,7 @@ export default function AuthPage() {
             >
               Continue with Google
             </button>
+
             <div className="text-center text-gray-400">OR</div>
 
             <input
@@ -204,13 +181,15 @@ export default function AuthPage() {
               onChange={e => setPlan(e.target.value as PlanKey)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             >
-              {Object.entries(PLAN_CONFIG).map(([k, cfg]) => (
-                <option key={k} value={k}>{cfg.label}</option>
+              {Object.entries(PLAN_CONFIG).map(([key, config]) => (
+                <option key={key} value={key}>
+                  {config.label}
+                </option>
               ))}
             </select>
 
             <div className="flex gap-4 justify-center">
-              {(['monthly','yearly'] as const).map(cycle => (
+              {(['monthly', 'yearly'] as const).map(cycle => (
                 <label key={cycle} className="flex items-center gap-2">
                   <input
                     type="radio"
@@ -232,7 +211,7 @@ export default function AuthPage() {
           </form>
         )}
 
-        {view === 'login'  && <LoginForm />}
+        {view === 'login' && <LoginForm />}
         {view === 'forgot' && <ForgotPasswordForm />}
       </div>
     </div>
