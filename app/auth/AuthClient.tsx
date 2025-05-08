@@ -1,4 +1,3 @@
-// app/auth/AuthClientPage.tsx
 'use client';
 
 import React, { useState, FormEvent } from 'react';
@@ -15,11 +14,13 @@ const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: num
 };
 
 export default function AuthClientPage() {
-  const params   = useSearchParams();
-  const router   = useRouter();
-  const hint     = params.get('screen_hint');
+  const params = useSearchParams();
+  const router = useRouter();
+  const hint   = params.get('screen_hint');
   const [view, setView] = useState<'signup' | 'login' | 'forgot'>(
-    hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup'
+    hint === 'login' ? 'login'
+      : hint === 'forgot' ? 'forgot'
+      : 'signup'
   );
 
   // form state
@@ -32,15 +33,15 @@ export default function AuthClientPage() {
   const [billing,  setBilling]  = useState<'monthly'|'yearly'>(
     params.get('billing') === 'yearly' ? 'yearly' : 'monthly'
   );
-  const price = billing === 'monthly' 
-    ? PLAN_CONFIG[plan].monthly 
+  const price = billing === 'monthly'
+    ? PLAN_CONFIG[plan].monthly
     : PLAN_CONFIG[plan].yearly;
 
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
 
   // Handlers
-  const handleSignup = async (e: FormEvent) => {
+  async function handleSignup(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError('');
@@ -72,19 +73,18 @@ export default function AuthClientPage() {
       setError(err.message);
       setLoading(false);
     }
-  };
+  }
 
-  const handleGoogle = () => {
+  function handleGoogle() {
     signIn('google', { callbackUrl: '/dashboard' });
-  };
+  }
 
-  const handleLogin = async (e: FormEvent) => {
+  async function handleLogin(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
     const res = await signIn('credentials', {
       redirect: false,
-      email,
-      password,
+      email, password,
       callbackUrl: '/dashboard',
     });
     if (res?.error) {
@@ -93,25 +93,25 @@ export default function AuthClientPage() {
     } else {
       router.push('/dashboard');
     }
-  };
+  }
 
-  const handleForgot = (e: FormEvent) => {
+  function handleForgot(e: FormEvent) {
     e.preventDefault();
     alert('Password reset link sent to ' + email);
-  };
+  }
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center bg-black text-white">
+    <div className="relative min-h-screen bg-black text-white flex items-center justify-center p-6">
       {/* Background image */}
       <Image
         src="/images/bground.jpg"
         alt="Background"
         fill
-        className="object-cover opacity-30"
+        className="absolute inset-0 object-cover opacity-30"
         priority
       />
 
-      <div className="relative z-10 w-full max-w-lg space-y-8 p-6">
+      <div className="relative z-10 w-full max-w-lg space-y-8">
         {/* Tabs */}
         <div className="flex bg-gray-900 rounded-lg overflow-hidden">
           {(['signup','login','forgot'] as const).map(tab => (
@@ -131,7 +131,6 @@ export default function AuthClientPage() {
           ))}
         </div>
 
-        {/* Error */}
         {error && <div className="text-center text-red-500">{error}</div>}
 
         {/* SIGN UP */}
@@ -154,58 +153,45 @@ export default function AuthClientPage() {
             </div>
 
             <input
-              type="text"
-              placeholder="TradingView Username"
-              required
-              value={tvUser}
-              onChange={e => setTvUser(e.target.value)}
+              type="text" placeholder="TradingView Username" required
+              value={tvUser} onChange={e => setTvUser(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="email"
-              placeholder="Email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              type="email" placeholder="Email" required
+              value={email} onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="password"
-              placeholder="Password"
-              required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              type="password" placeholder="Password" required
+              value={password} onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
 
             <select
-              value={plan}
-              onChange={e => setPlan(e.target.value as PlanKey)}
+              value={plan} onChange={e => setPlan(e.target.value as PlanKey)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             >
-              {Object.entries(PLAN_CONFIG).map(([key, cfg]) => (
-                <option key={key} value={key}>
-                  {cfg.label}
-                </option>
+              {Object.entries(PLAN_CONFIG).map(([k,c])=>(
+                <option key={k} value={k}>{c.label}</option>
               ))}
             </select>
 
             <div className="flex gap-4 justify-center">
-              {(['monthly','yearly'] as const).map(cycle => (
+              {(['monthly','yearly'] as const).map(cycle=>(
                 <label key={cycle} className="flex items-center gap-2">
                   <input
                     type="radio"
-                    checked={billing === cycle}
-                    onChange={() => setBilling(cycle)}
+                    checked={billing===cycle}
+                    onChange={()=>setBilling(cycle)}
                   />
-                  {cycle.charAt(0).toUpperCase() + cycle.slice(1)}
+                  {cycle.charAt(0).toUpperCase()+cycle.slice(1)}
                 </label>
               ))}
             </div>
 
             <button
-              type="submit"
-              disabled={loading}
+              type="submit" disabled={loading}
               className="w-full bg-gradient-to-r from-blue-500 to-teal-500 py-3 rounded-lg font-semibold"
             >
               {loading ? 'Processing…' : `Start 30-Day Free Trial ($${price})`}
@@ -217,24 +203,17 @@ export default function AuthClientPage() {
         {view === 'login' && (
           <form onSubmit={handleLogin} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
             <input
-              type="email"
-              placeholder="Email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              type="email" placeholder="Email" required
+              value={email} onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="password"
-              placeholder="Password"
-              required
-              value={password}
-              onChange={e => setPassword(e.target.value)}
+              type="password" placeholder="Password" required
+              value={password} onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <button
-              type="submit"
-              disabled={loading}
+              type="submit" disabled={loading}
               className="w-full bg-blue-600 py-3 rounded-lg font-semibold"
             >
               {loading ? 'Logging in…' : 'Log In'}
@@ -251,11 +230,8 @@ export default function AuthClientPage() {
         {view === 'forgot' && (
           <form onSubmit={handleForgot} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
             <input
-              type="email"
-              placeholder="Enter your email"
-              required
-              value={email}
-              onChange={e => setEmail(e.target.value)}
+              type="email" placeholder="Enter your email" required
+              value={email} onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <button className="w-full bg-blue-600 py-3 rounded-lg font-semibold">
