@@ -18,44 +18,50 @@ export default function AuthClientPage() {
   const params   = useSearchParams();
   const router   = useRouter();
   const hint     = params.get('screen_hint');
-  const initial  = hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup';
-  const [view, setView] = useState<'signup' | 'login' | 'forgot'>(initial);
+  const [view, setView] = useState<'signup' | 'login' | 'forgot'>(
+    hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup'
+  );
 
-  const [tvUser, setTvUser]       = useState('');
-  const [email, setEmail]         = useState('');
-  const [password, setPassword]   = useState('');
-  const [plan, setPlan]           = useState<PlanKey>((params.get('plan') as PlanKey) || 'the_one_stock');
-  const [billing, setBilling]     = useState<'monthly'|'yearly'>(params.get('billing') === 'yearly' ? 'yearly' : 'monthly');
-  const price = billing === 'monthly'
-    ? PLAN_CONFIG[plan].monthly
+  // form state
+  const [tvUser,   setTvUser]   = useState('');
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [plan,     setPlan]     = useState<PlanKey>(
+    (params.get('plan') as PlanKey) || 'the_one_stock'
+  );
+  const [billing,  setBilling]  = useState<'monthly'|'yearly'>(
+    params.get('billing') === 'yearly' ? 'yearly' : 'monthly'
+  );
+  const price = billing === 'monthly' 
+    ? PLAN_CONFIG[plan].monthly 
     : PLAN_CONFIG[plan].yearly;
 
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
+  const [error,   setError]   = useState('');
 
-  // Sign-up handler
-  async function handleSignup(e: FormEvent) {
+  // Handlers
+  const handleSignup = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
       const r1 = await fetch('/api/auth/signup', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ email, password, plan }),
       });
       if (!r1.ok) throw new Error('Signup failed.');
 
       const r2 = await fetch('/api/save-user', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ email, tradingViewUsername: tvUser }),
       });
       if (!r2.ok) throw new Error('Saving user info failed.');
 
       const r3 = await fetch('/api/create-stripe-session', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ plan, billing, email }),
       });
       const { url } = await r3.json();
@@ -66,15 +72,13 @@ export default function AuthClientPage() {
       setError(err.message);
       setLoading(false);
     }
-  }
+  };
 
-  // Google handler
-  function handleGoogle() {
+  const handleGoogle = () => {
     signIn('google', { callbackUrl: '/dashboard' });
-  }
+  };
 
-  // Credentials-login handler
-  async function handleLogin(e: FormEvent) {
+  const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     setLoading(true);
     const res = await signIn('credentials', {
@@ -89,26 +93,25 @@ export default function AuthClientPage() {
     } else {
       router.push('/dashboard');
     }
-  }
+  };
 
-  // Forgot-password handler
-  function handleForgot(e: FormEvent) {
+  const handleForgot = (e: FormEvent) => {
     e.preventDefault();
     alert('Password reset link sent to ' + email);
-  }
+  };
 
   return (
-    <div className="relative min-h-screen bg-black text-white flex items-center justify-center p-6">
-      {/* dimmed background image */}
+    <div className="relative min-h-screen flex items-center justify-center bg-black text-white">
+      {/* Background image */}
       <Image
         src="/images/bground.jpg"
         alt="Background"
         fill
-        className="absolute inset-0 object-cover opacity-30"
+        className="object-cover opacity-30"
         priority
       />
 
-      <div className="relative z-10 max-w-lg w-full space-y-8">
+      <div className="relative z-10 w-full max-w-lg space-y-8 p-6">
         {/* Tabs */}
         <div className="flex bg-gray-900 rounded-lg overflow-hidden">
           {(['signup','login','forgot'] as const).map(tab => (
@@ -116,20 +119,23 @@ export default function AuthClientPage() {
               key={tab}
               onClick={() => { setView(tab); setError(''); }}
               className={`flex-1 py-3 font-semibold ${
-                view===tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
+                view === tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
               }`}
             >
-              {tab==='signup' ? 'Sign Up'
-                : tab==='login' ? 'Log In'
+              {tab === 'signup'
+                ? 'Sign Up'
+                : tab === 'login'
+                ? 'Log In'
                 : 'Forgot Password'}
             </button>
           ))}
         </div>
 
+        {/* Error */}
         {error && <div className="text-center text-red-500">{error}</div>}
 
         {/* SIGN UP */}
-        {view==='signup' && (
+        {view === 'signup' && (
           <form onSubmit={handleSignup} className="space-y-6 bg-gray-900 p-6 rounded-lg shadow-lg">
             <button
               type="button"
@@ -137,9 +143,10 @@ export default function AuthClientPage() {
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-[#4285F4] text-white hover:opacity-90 transition"
             >
-              <Image src="/images/google-icon.svg" alt="Google" width={20} height={20}/>
+              <Image src="/images/google-icon.svg" alt="Google logo" width={20} height={20} />
               Continue with Google
             </button>
+
             <div className="flex items-center">
               <div className="flex-1 h-px bg-gray-700" />
               <span className="px-4 text-gray-400">OR</span>
@@ -147,45 +154,58 @@ export default function AuthClientPage() {
             </div>
 
             <input
-              type="text" placeholder="TradingView Username" required
-              value={tvUser} onChange={e=>setTvUser(e.target.value)}
+              type="text"
+              placeholder="TradingView Username"
+              required
+              value={tvUser}
+              onChange={e => setTvUser(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="email" placeholder="Email" required
-              value={email} onChange={e=>setEmail(e.target.value)}
+              type="email"
+              placeholder="Email"
+              required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="password" placeholder="Password" required
-              value={password} onChange={e=>setPassword(e.target.value)}
+              type="password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
 
             <select
-              value={plan} onChange={e=>setPlan(e.target.value as PlanKey)}
+              value={plan}
+              onChange={e => setPlan(e.target.value as PlanKey)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             >
-              {Object.entries(PLAN_CONFIG).map(([k,c])=>(
-                <option key={k} value={k}>{c.label}</option>
+              {Object.entries(PLAN_CONFIG).map(([key, cfg]) => (
+                <option key={key} value={key}>
+                  {cfg.label}
+                </option>
               ))}
             </select>
 
             <div className="flex gap-4 justify-center">
-              {(['monthly','yearly'] as const).map(cycle=>(
+              {(['monthly','yearly'] as const).map(cycle => (
                 <label key={cycle} className="flex items-center gap-2">
                   <input
                     type="radio"
-                    checked={billing===cycle}
-                    onChange={()=>setBilling(cycle)}
+                    checked={billing === cycle}
+                    onChange={() => setBilling(cycle)}
                   />
-                  {cycle.charAt(0).toUpperCase()+cycle.slice(1)}
+                  {cycle.charAt(0).toUpperCase() + cycle.slice(1)}
                 </label>
               ))}
             </div>
 
             <button
-              type="submit" disabled={loading}
+              type="submit"
+              disabled={loading}
               className="w-full bg-gradient-to-r from-blue-500 to-teal-500 py-3 rounded-lg font-semibold"
             >
               {loading ? 'Processing…' : `Start 30-Day Free Trial ($${price})`}
@@ -194,20 +214,27 @@ export default function AuthClientPage() {
         )}
 
         {/* LOG IN */}
-        {view==='login' && (
+        {view === 'login' && (
           <form onSubmit={handleLogin} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
             <input
-              type="email" placeholder="Email" required
-              value={email} onChange={e=>setEmail(e.target.value)}
+              type="email"
+              placeholder="Email"
+              required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="password" placeholder="Password" required
-              value={password} onChange={e=>setPassword(e.target.value)}
+              type="password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <button
-              type="submit" disabled={loading}
+              type="submit"
+              disabled={loading}
               className="w-full bg-blue-600 py-3 rounded-lg font-semibold"
             >
               {loading ? 'Logging in…' : 'Log In'}
@@ -220,18 +247,18 @@ export default function AuthClientPage() {
           </form>
         )}
 
-        {/* FORGOT */}
-        {view==='forgot' && (
+        {/* FORGOT PASSWORD */}
+        {view === 'forgot' && (
           <form onSubmit={handleForgot} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
             <input
-              type="email" placeholder="Enter your email" required
-              value={email} onChange={e=>setEmail(e.target.value)}
+              type="email"
+              placeholder="Enter your email"
+              required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
-            <button
-              type="submit"
-              className="w-full bg-blue-600 py-3 rounded-lg font-semibold"
-            >
+            <button className="w-full bg-blue-600 py-3 rounded-lg font-semibold">
               Send Reset Link
             </button>
           </form>
