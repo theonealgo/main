@@ -1,57 +1,86 @@
-// components/Header.tsx
 'use client';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 
 export default function Header() {
-  const [openMenu, setOpenMenu] = useState<string>('');
+  const [openMenu, setOpenMenu] = useState<'product' | 'resources' | 'company' | ''>('');
+
+  const menus = [
+    {
+      key: 'product' as const,
+      label: 'Product',
+      items: [
+        { href: '/pricing', label: 'Pricing' },
+        { href: '/features', label: 'Features' },
+      ],
+    },
+    {
+      key: 'resources' as const,
+      label: 'Resources',
+      items: [
+        { href: '/documentation', label: 'Documentation' },
+        { href: '/tutorials', label: 'Tutorials' },
+      ],
+    },
+    {
+      key: 'company' as const,
+      label: 'Company',
+      items: [
+        { href: '/about', label: 'About' },
+        { href: '/contact', label: 'Contact' },
+      ],
+    },
+  ];
 
   return (
-    <header className="fixed top-0 w-full bg-black text-white border-b border-gray-800 z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-        <Link href="/" className="flex items-center">
-          <Image src="/images/theonelogo.png" alt="Logo" width={40} height={40} />
-        </Link>
+    <header className="w-full bg-black text-white px-6 py-4 flex items-center justify-between border-b border-gray-800">
+      {/* Logo */}
+      <Link href="/" className="flex items-center">
+        <Image
+          src="/images/theonelogo.png"
+          alt="Logo"
+          width={128}
+          height={128}
+          className="h-10 w-auto"
+        />
+      </Link>
 
-        <nav className="flex items-center gap-6 relative">
-          {['product','resources','company'].map(menu => (
-            <div
-              key={menu}
-              className="relative"
-              onMouseLeave={() => setOpenMenu('')}
-            >
-              <button
-                onMouseEnter={() => setOpenMenu(menu)}
-                className="hover:text-teal-400 transition"
-              >
-                {menu.charAt(0).toUpperCase() + menu.slice(1)}
-              </button>
-              {openMenu === menu && (
-                <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2">
-                  {(menu === 'product'
-                    ? [['Pricing','/pricing'], ['Features','/features']]
-                    : menu === 'resources'
-                    ? [['Documentation','/documentation'], ['Tutorials','/tutorials']]
-                    : [['About','/about'], ['Contact','/contact']]
-                  ).map(([label, href]) => (
-                    <Link key={href} href={href} className="block px-4 py-2 hover:bg-gray-800">
-                      {label}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          ))}
-
-          <Link
-            href="/auth?screen_hint=signup"
-            className="bg-gradient-to-r from-blue-500 to-teal-500 px-5 py-2 rounded-full text-sm font-semibold shadow hover:opacity-90 transition"
+      {/* Navigation */}
+      <nav className="flex items-center gap-6">
+        {menus.map(({ key, label, items }) => (
+          <div
+            key={key}
+            className="relative"
+            onMouseEnter={() => setOpenMenu(key)}
+            onMouseLeave={() => setOpenMenu('')}
           >
-            Get Started
-          </Link>
-        </nav>
-      </div>
+            <button className="hover:text-teal-400 transition">{label}</button>
+            {openMenu === key && (
+              <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
+                {items.map(({ href, label }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className="block px-4 py-2 hover:bg-gray-800"
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* Get Started CTA */}
+        <Link
+          href="/auth?screen_hint=signup"
+          className="ml-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition"
+        >
+          Get Started
+        </Link>
+      </nav>
     </header>
   );
 }
