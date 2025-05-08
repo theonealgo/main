@@ -13,7 +13,7 @@ const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: num
   the_one_premium: { label: 'The One Premium (both indicators)',monthly: 99.99,  yearly: 999.90 },
 };
 
-export default function AuthClientPage() {
+export default function AuthClient() {
   const params = useSearchParams();
   const router = useRouter();
   const hint   = params.get('screen_hint');
@@ -95,7 +95,7 @@ export default function AuthClientPage() {
   // --- render ---
   return (
     <div className="relative min-h-screen bg-black text-white flex items-center justify-center p-6">
-      {/* dimmed background image */}
+      {/* dimmed background */}
       <Image
         src="/images/bground.jpg"
         alt="Background"
