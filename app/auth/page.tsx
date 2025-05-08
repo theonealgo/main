@@ -1,10 +1,13 @@
+// app/auth/page.tsx
 'use client';
+export const dynamic = 'force-dynamic'; // ← prevents static prerender and SSR bailout
 
 import React, { useState, FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
+// — Login form for the “Log In” tab —
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -39,6 +42,7 @@ function LoginForm() {
   );
 }
 
+// — Forgot password form for the “Forgot” tab —
 function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
 
@@ -64,6 +68,7 @@ function ForgotPasswordForm() {
   );
 }
 
+// — Plan definitions for signup tab —
 type PlanKey = 'the_one_stock' | 'the_one_elite' | 'the_one_premium';
 const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: number }> = {
   the_one_stock:   { label: 'The One: Stock Swing Analyzer', monthly: 49.99, yearly: 499.90 },
@@ -81,7 +86,7 @@ export default function AuthPage() {
   const [error, setError]     = useState('');
 
   const rawPlan    = (params.get('plan') as PlanKey) || 'the_one_stock';
-  const rawBilling = (params.get('billing') as 'monthly' | 'yearly') || 'monthly';
+  const rawBilling = (params.get('billing') === 'yearly' ? 'yearly' : 'monthly');
 
   const [tvUser, setTvUser]     = useState('');
   const [email,  setEmail]      = useState('');
@@ -140,13 +145,16 @@ export default function AuthPage() {
                 view===tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
               }`}
             >
-              {tab==='signup' ? 'Sign Up' : tab==='login' ? 'Log In' : 'Forgot Password'}
+              {tab==='signup' ? 'Sign Up' :
+               tab==='login'  ? 'Log In' :
+                                'Forgot Password'}
             </button>
           ))}
         </div>
 
         {error && <div className="text-center text-red-500">{error}</div>}
 
+        {/* Sign Up */}
         {view==='signup' && (
           <form onSubmit={handleSignup} className="space-y-6 bg-gray-900 p-6 rounded-lg shadow-lg">
             <button
@@ -216,7 +224,10 @@ export default function AuthPage() {
           </form>
         )}
 
+        {/* Log In */}
         {view==='login'  && <LoginForm />}
+
+        {/* Forgot Password */}
         {view==='forgot' && <ForgotPasswordForm />}
       </div>
     </div>
