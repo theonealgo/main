@@ -138,15 +138,15 @@ export default function AuthClient() {
         {/* SIGN UP */}
         {view === 'signup' && (
           <form onSubmit={handleSignup} className="space-y-6 bg-gray-900 p-6 rounded-lg shadow-lg">
-       <button
+<button
   type="button"
   onClick={handleGoogle}
   disabled={loading}
   className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-white text-gray-800 hover:bg-gray-100 transition"
 >
   <Image
-    src="/images/google-icon.svg"
-    alt="Google logo"
+    src="/signinwithgoogle.png"
+    alt="Sign in with Google"
     width={24}
     height={24}
   />
