@@ -16,29 +16,28 @@ const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: num
 };
 
 export default function AuthClientPage() {
-  const params = useSearchParams();
-  const router = useRouter();
-  const hint = params.get('screen_hint');
-  const initialView = hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup';
-  const [view, setView] = useState<'signup' | 'login' | 'forgot'>(initialView);
+  const params  = useSearchParams();
+  const router  = useRouter();
+  const hint    = params.get('screen_hint');
+  const initial = hint === 'login' ? 'login' : hint === 'forgot' ? 'forgot' : 'signup';
+  const [view, setView] = useState<'signup'|'login'|'forgot'>(initial);
+
+  const rawPlan    = (params.get('plan') as PlanKey)       || 'the_one_stock';
+  const rawBilling = (params.get('billing') as 'monthly'|'yearly') || 'monthly';
+
+  const [tvUser,   setTvUser]   = useState('');
+  const [email,    setEmail]    = useState('');
+  const [password, setPassword] = useState('');
+  const [plan,     setPlan]     = useState<PlanKey>(rawPlan);
+  const [billing,  setBilling]  = useState<'monthly'|'yearly'>(rawBilling);
 
   const [loading, setLoading] = useState(false);
-  const [error, setError]     = useState('');
-
-  const rawPlan    = (params.get('plan') as PlanKey) || 'the_one_stock';
-  const rawBilling = (params.get('billing') as 'monthly' | 'yearly') || 'monthly';
-
-  const [tvUser,   setTvUser]     = useState('');
-  const [email,    setEmail]      = useState('');
-  const [password, setPassword]   = useState('');
-  const [plan,     setPlan]       = useState<PlanKey>(rawPlan);
-  const [billing,  setBilling]    = useState<'monthly' | 'yearly'>(rawBilling);
+  const [error,   setError]   = useState('');
 
   const price = billing === 'monthly'
     ? PLAN_CONFIG[plan].monthly
     : PLAN_CONFIG[plan].yearly;
 
-  // --- Handlers ---
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -46,21 +45,21 @@ export default function AuthClientPage() {
     try {
       const signupRes = await fetch('/api/auth/signup', {
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ email, password, plan }),
       });
       if (!signupRes.ok) throw new Error('Signup failed.');
 
       const saveRes = await fetch('/api/save-user', {
         method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        headers:{ 'Content-Type':'application/json' },
         body: JSON.stringify({ email, tradingViewUsername: tvUser }),
       });
       if (!saveRes.ok) throw new Error('Saving user info failed.');
 
       const stripeRes = await fetch('/api/create-stripe-session', {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
+        method:'POST',
+        headers:{ 'Content-Type':'application/json' },
         body: JSON.stringify({ plan, billing, email }),
       });
       const { url } = await stripeRes.json();
@@ -73,13 +72,10 @@ export default function AuthClientPage() {
     }
   }
 
-  function handleGoogle() {
-    signIn('google', { callbackUrl: `${window.location.origin}/dashboard` });
-  }
-
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setError('');
     const res = await signIn('credentials', {
       redirect: false,
       email, password,
@@ -98,10 +94,13 @@ export default function AuthClientPage() {
     alert('Password reset link sent to ' + email);
   }
 
-  // --- Render ---
+  function handleGoogle() {
+    signIn('google', { callbackUrl: `${window.location.origin}/dashboard` });
+  }
+
   return (
     <div className="relative min-h-screen bg-black text-white flex items-center justify-center p-6">
-      {/* background image behind form */}
+      {/* background image */}
       <Image
         src="/images/bground.jpg"
         alt="Background"
@@ -111,14 +110,14 @@ export default function AuthClientPage() {
       />
 
       <div className="relative z-10 max-w-lg w-full space-y-8">
-        {/* Tabs */}
+        {/* tab selector */}
         <div className="flex bg-gray-900 rounded-lg overflow-hidden">
           {(['signup','login','forgot'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => { setView(tab); setError(''); }}
               className={`flex-1 py-3 font-semibold ${
-                view===tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
+                view === tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
               }`}
             >
               {tab==='signup' ? 'Sign Up'
@@ -128,61 +127,54 @@ export default function AuthClientPage() {
           ))}
         </div>
 
-        {error && (
-          <div className="text-center text-red-500">{error}</div>
-        )}
+        {error && <div className="text-center text-red-500">{error}</div>}
 
-        {/* Sign Up */}
+        {/* --- SIGN UP --- */}
         {view==='signup' && (
           <form onSubmit={handleSignup} className="space-y-6 bg-gray-900 p-6 rounded-lg shadow-lg">
             <button
               type="button"
               onClick={handleGoogle}
               disabled={loading}
-              className="w-full flex items-center justify-center gap-3 bg-white text-gray-800 py-3 rounded-lg shadow hover:bg-gray-100 transition"
+              className="w-full flex items-center justify-center gap-2 bg-[#4285F4] text-white py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
-              <svg className="w-5 h-5" viewBox="0 0 24 24">
-                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-..."/>
-                <path fill="#34A853" d="M12 23c2.97 0 5.46-..."/>
-                <path fill="#FBBC05" d="M5.84 14.09c-.22-..."/>
-                <path fill="#EA4335" d="M12 5.38c1.62 0 ..."/>
-              </svg>
+              <Image src="/images/google-icon.svg" alt="Google logo" width={20} height={20}/>
               Continue with Google
             </button>
 
             <div className="flex items-center">
-              <div className="flex-1 h-px bg-gray-700"></div>
+              <div className="flex-1 h-px bg-gray-700" />
               <span className="px-4 text-gray-400">OR</span>
-              <div className="flex-1 h-px bg-gray-700"></div>
+              <div className="flex-1 h-px bg-gray-700" />
             </div>
 
             <input
               type="text" placeholder="TradingView Username" required
               value={tvUser} onChange={e=>setTvUser(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 rounded"
+              className="w-full px-4 py-3 bg-gray-800 rounded focus:outline-none"
             />
             <input
               type="email" placeholder="Email" required
               value={email} onChange={e=>setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 rounded"
+              className="w-full px-4 py-3 bg-gray-800 rounded focus:outline-none"
             />
             <input
               type="password" placeholder="Password" required
               value={password} onChange={e=>setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 rounded"
+              className="w-full px-4 py-3 bg-gray-800 rounded focus:outline-none"
             />
 
             <select
               value={plan} onChange={e=>setPlan(e.target.value as PlanKey)}
-              className="w-full px-4 py-3 bg-gray-800 rounded"
+              className="w-full px-4 py-3 bg-gray-800 rounded focus:outline-none"
             >
               {Object.entries(PLAN_CONFIG).map(([k,c])=>(
                 <option key={k} value={k}>{c.label}</option>
               ))}
             </select>
 
-            <div className="flex gap-4 justify-center">
-              {(['monthly','yearly'] as const).map(cycle=>(
+            <div className="flex justify-center gap-4">
+              {(['monthly','yearly'] as const).map(cycle => (
                 <label key={cycle} className="flex items-center gap-2">
                   <input
                     type="radio"
@@ -195,30 +187,32 @@ export default function AuthClientPage() {
             </div>
 
             <button
-              type="submit" disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-500 to-teal-500 py-3 rounded-lg font-semibold"
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 rounded-lg font-semibold bg-gradient-to-r from-blue-500 to-teal-500 hover:opacity-90 transition disabled:opacity-50"
             >
               {loading ? 'Processing…' : `Start 30-Day Free Trial ($${price})`}
             </button>
           </form>
         )}
 
-        {/* Log In */}
+        {/* --- LOG IN --- */}
         {view==='login' && (
           <form onSubmit={handleLogin} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
             <input
               type="email" placeholder="Email" required
               value={email} onChange={e=>setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 rounded"
+              className="w-full px-4 py-3 bg-gray-800 rounded focus:outline-none"
             />
             <input
               type="password" placeholder="Password" required
               value={password} onChange={e=>setPassword(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 rounded"
+              className="w-full px-4 py-3 bg-gray-800 rounded focus:outline-none"
             />
             <button
-              type="submit" disabled={loading}
-              className="w-full bg-blue-600 py-3 rounded-lg font-semibold"
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 py-3 rounded-lg font-semibold hover:opacity-90 transition disabled:opacity-50"
             >
               {loading ? 'Logging in…' : 'Log In'}
             </button>
@@ -230,17 +224,17 @@ export default function AuthClientPage() {
           </form>
         )}
 
-        {/* Forgot Password */}
+        {/* --- FORGOT PASSWORD --- */}
         {view==='forgot' && (
           <form onSubmit={handleForgot} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
             <input
               type="email" placeholder="Enter your email" required
               value={email} onChange={e=>setEmail(e.target.value)}
-              className="w-full px-4 py-3 bg-gray-800 rounded"
+              className="w-full px-4 py-3 bg-gray-800 rounded focus:outline-none"
             />
             <button
               type="submit"
-              className="w-full bg-blue-600 py-3 rounded-lg font-semibold"
+              className="w-full bg-blue-600 py-3 rounded-lg font-semibold hover:opacity-90 transition"
             >
               Send Reset Link
             </button>
