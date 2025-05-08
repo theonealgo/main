@@ -19,20 +19,16 @@ export default function AuthClientPage() {
   const hint   = params.get('screen_hint');
   const [view, setView] = useState<'signup' | 'login' | 'forgot'>(
     hint === 'login' ? 'login'
-      : hint === 'forgot' ? 'forgot'
-      : 'signup'
+    : hint === 'forgot' ? 'forgot'
+    : 'signup'
   );
 
-  // form state
+  // shared form state
   const [tvUser,   setTvUser]   = useState('');
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
-  const [plan,     setPlan]     = useState<PlanKey>(
-    (params.get('plan') as PlanKey) || 'the_one_stock'
-  );
-  const [billing,  setBilling]  = useState<'monthly'|'yearly'>(
-    params.get('billing') === 'yearly' ? 'yearly' : 'monthly'
-  );
+  const [plan,     setPlan]     = useState<PlanKey>((params.get('plan') as PlanKey) || 'the_one_stock');
+  const [billing,  setBilling]  = useState<'monthly'|'yearly'>(params.get('billing') === 'yearly' ? 'yearly' : 'monthly');
   const price = billing === 'monthly'
     ? PLAN_CONFIG[plan].monthly
     : PLAN_CONFIG[plan].yearly;
@@ -40,7 +36,7 @@ export default function AuthClientPage() {
   const [loading, setLoading] = useState(false);
   const [error,   setError]   = useState('');
 
-  // Handlers
+  // --- handlers ---
   async function handleSignup(e: FormEvent) {
     e.preventDefault();
     setLoading(true);
@@ -52,14 +48,11 @@ export default function AuthClientPage() {
         body: JSON.stringify({ email, password, plan }),
       });
       if (!r1.ok) throw new Error('Signup failed.');
-
-      const r2 = await fetch('/api/save-user', {
+      await fetch('/api/save-user', {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ email, tradingViewUsername: tvUser }),
       });
-      if (!r2.ok) throw new Error('Saving user info failed.');
-
       const r3 = await fetch('/api/create-stripe-session', {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
@@ -67,7 +60,6 @@ export default function AuthClientPage() {
       });
       const { url } = await r3.json();
       if (!url) throw new Error('Stripe session creation failed.');
-
       window.location.href = url;
     } catch (err: any) {
       setError(err.message);
@@ -100,9 +92,10 @@ export default function AuthClientPage() {
     alert('Password reset link sent to ' + email);
   }
 
+  // --- render ---
   return (
     <div className="relative min-h-screen bg-black text-white flex items-center justify-center p-6">
-      {/* Background image */}
+      {/* dimmed background image */}
       <Image
         src="/images/bground.jpg"
         alt="Background"
@@ -112,7 +105,7 @@ export default function AuthClientPage() {
       />
 
       <div className="relative z-10 w-full max-w-lg space-y-8">
-        {/* Tabs */}
+        {/* tabs */}
         <div className="flex bg-gray-900 rounded-lg overflow-hidden">
           {(['signup','login','forgot'] as const).map(tab => (
             <button
@@ -142,56 +135,67 @@ export default function AuthClientPage() {
               disabled={loading}
               className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-[#4285F4] text-white hover:opacity-90 transition"
             >
-              <Image src="/images/google-icon.svg" alt="Google logo" width={20} height={20} />
+              <Image src="/images/google-icon.svg" alt="Google" width={20} height={20}/>
               Continue with Google
             </button>
 
             <div className="flex items-center">
-              <div className="flex-1 h-px bg-gray-700" />
+              <div className="flex-1 h-px bg-gray-700"/>
               <span className="px-4 text-gray-400">OR</span>
-              <div className="flex-1 h-px bg-gray-700" />
+              <div className="flex-1 h-px bg-gray-700"/>
             </div>
 
             <input
-              type="text" placeholder="TradingView Username" required
-              value={tvUser} onChange={e => setTvUser(e.target.value)}
+              type="text"
+              placeholder="TradingView Username"
+              required
+              value={tvUser}
+              onChange={e => setTvUser(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="email" placeholder="Email" required
-              value={email} onChange={e => setEmail(e.target.value)}
+              type="email"
+              placeholder="Email"
+              required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="password" placeholder="Password" required
-              value={password} onChange={e => setPassword(e.target.value)}
+              type="password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
 
             <select
-              value={plan} onChange={e => setPlan(e.target.value as PlanKey)}
+              value={plan}
+              onChange={e => setPlan(e.target.value as PlanKey)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             >
-              {Object.entries(PLAN_CONFIG).map(([k,c])=>(
+              {Object.entries(PLAN_CONFIG).map(([k,c]) => (
                 <option key={k} value={k}>{c.label}</option>
               ))}
             </select>
 
             <div className="flex gap-4 justify-center">
-              {(['monthly','yearly'] as const).map(cycle=>(
+              {(['monthly','yearly'] as const).map(cycle => (
                 <label key={cycle} className="flex items-center gap-2">
                   <input
                     type="radio"
-                    checked={billing===cycle}
-                    onChange={()=>setBilling(cycle)}
+                    checked={billing === cycle}
+                    onChange={() => setBilling(cycle)}
                   />
-                  {cycle.charAt(0).toUpperCase()+cycle.slice(1)}
+                  {cycle.charAt(0).toUpperCase() + cycle.slice(1)}
                 </label>
               ))}
             </div>
 
             <button
-              type="submit" disabled={loading}
+              type="submit"
+              disabled={loading}
               className="w-full bg-gradient-to-r from-blue-500 to-teal-500 py-3 rounded-lg font-semibold"
             >
               {loading ? 'Processing…' : `Start 30-Day Free Trial ($${price})`}
@@ -203,17 +207,24 @@ export default function AuthClientPage() {
         {view === 'login' && (
           <form onSubmit={handleLogin} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
             <input
-              type="email" placeholder="Email" required
-              value={email} onChange={e => setEmail(e.target.value)}
+              type="email"
+              placeholder="Email"
+              required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
-              type="password" placeholder="Password" required
-              value={password} onChange={e => setPassword(e.target.value)}
+              type="password"
+              placeholder="Password"
+              required
+              value={password}
+              onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <button
-              type="submit" disabled={loading}
+              type="submit"
+              disabled={loading}
               className="w-full bg-blue-600 py-3 rounded-lg font-semibold"
             >
               {loading ? 'Logging in…' : 'Log In'}
@@ -230,8 +241,11 @@ export default function AuthClientPage() {
         {view === 'forgot' && (
           <form onSubmit={handleForgot} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
             <input
-              type="email" placeholder="Enter your email" required
-              value={email} onChange={e => setEmail(e.target.value)}
+              type="email"
+              placeholder="Enter your email"
+              required
+              value={email}
+              onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <button className="w-full bg-blue-600 py-3 rounded-lg font-semibold">
