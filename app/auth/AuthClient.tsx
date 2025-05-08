@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
-import { FcGoogle } from "react-icons/fc"
+import { FcGoogle } from 'react-icons/fc';
 
 type PlanKey = 'the_one_stock' | 'the_one_elite' | 'the_one_premium';
 const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: number }> = {
@@ -135,8 +135,13 @@ export default function AuthClient() {
   onClick={handleGoogle}
   disabled={loading}
   className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-[#4285F4] text-white hover:opacity-90 transition"
+<button
+  type="button"
+  onClick={handleGoogle}
+  disabled={loading}
+  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-white text-gray-800 hover:bg-gray-100 transition"
 >
-  <FcGoogle className="w-5 h-5" />
+  <FcGoogle size={24} />
   Continue with Google
 </button>
 
