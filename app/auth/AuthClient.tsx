@@ -142,15 +142,15 @@ export default function AuthClient() {
   type="button"
   onClick={handleGoogle}
   disabled={loading}
-  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-white text-gray-800 hover:bg-gray-100 transition"
+  className="w-full p-0 bg-transparent flex justify-center"
 >
   <Image
     src="/signinwithgoogle.png"
     alt="Sign in with Google"
-    width={24}
-    height={24}
+    width={240}   // adjust as needed
+    height={48}   // adjust as needed
+    className="object-contain"
   />
-  Continue with Google
 </button>
 
             <div className="flex items-center">
