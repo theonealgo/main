@@ -2,12 +2,68 @@
 'use client';
 
 import React, { useState, FormEvent } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
 
-type PlanKey = 'the_one_stock' | 'the_one_elite' | 'the_one_premium';
+// Stub LoginForm inside this file
+function LoginForm() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const handleLogin = async (e: FormEvent) => {
+    e.preventDefault();
+    await signIn('credentials', { email, password, callbackUrl: '/dashboard' });
+  };
+  return (
+    <form onSubmit={handleLogin} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
+      <input
+        type="email"
+        placeholder="Email"
+        required
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        className="w-full px-4 py-3 bg-gray-800 rounded"
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        required
+        value={password}
+        onChange={e => setPassword(e.target.value)}
+        className="w-full px-4 py-3 bg-gray-800 rounded"
+      />
+      <button type="submit" className="w-full bg-blue-600 py-3 rounded font-semibold">
+        Log In
+      </button>
+    </form>
+  );
+}
 
+// Stub ForgotPasswordForm inside this file
+function ForgotPasswordForm() {
+  const [email, setEmail] = useState('');
+  const handleReset = (e: FormEvent) => {
+    e.preventDefault();
+    alert('Password reset link sent to ' + email);
+  };
+  return (
+    <form onSubmit={handleReset} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
+      <input
+        type="email"
+        placeholder="Enter your email"
+        required
+        value={email}
+        onChange={e => setEmail(e.target.value)}
+        className="w-full px-4 py-3 bg-gray-800 rounded"
+      />
+      <button type="submit" className="w-full bg-blue-600 py-3 rounded font-semibold">
+        Send Reset Link
+      </button>
+    </form>
+  );
+}
+
+type PlanKey = 'the_one_stock' | 'the_one_elite' | 'the_one_premium';
 const PLAN_CONFIG: Record<PlanKey, { label: string; monthly: number; yearly: number }> = {
   the_one_stock: { label: 'The One: Stock Swing Analyzer', monthly: 49.99, yearly: 499.90 },
   the_one_elite: { label: 'The One Elite – Dynamic Liquidity', monthly: 59.99, yearly: 599.90 },
@@ -71,15 +127,12 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen bg-black text-white flex items-center justify-center p-6">
       <div className="max-w-lg w-full space-y-8">
-        {/* Tab Buttons */}
         <div className="flex bg-gray-900 rounded-lg overflow-hidden">
-          {(['signup', 'login', 'forgot'] as const).map((tab) => (
+          {(['signup', 'login', 'forgot'] as const).map(tab => (
             <button
               key={tab}
               onClick={() => setView(tab)}
-              className={`flex-1 py-3 font-semibold ${
-                view === tab ? 'bg-teal-500 text-black' : 'bg-gray-800'
-              }`}
+              className={`flex-1 py-3 font-semibold ${view === tab ? 'bg-teal-500 text-black' : 'bg-gray-800'}`}
             >
               {tab === 'signup'
                 ? 'Sign Up'
@@ -109,7 +162,7 @@ export default function AuthPage() {
               placeholder="TradingView Username"
               required
               value={tvUser}
-              onChange={(e) => setTvUser(e.target.value)}
+              onChange={e => setTvUser(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
@@ -117,7 +170,7 @@ export default function AuthPage() {
               placeholder="Email"
               required
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={e => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
             <input
@@ -125,13 +178,13 @@ export default function AuthPage() {
               placeholder="Password"
               required
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             />
 
             <select
               value={plan}
-              onChange={(e) => setPlan(e.target.value as PlanKey)}
+              onChange={e => setPlan(e.target.value as PlanKey)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             >
               {Object.entries(PLAN_CONFIG).map(([key, config]) => (
@@ -142,7 +195,7 @@ export default function AuthPage() {
             </select>
 
             <div className="flex gap-4 justify-center">
-              {(['monthly', 'yearly'] as const).map((cycle) => (
+              {(['monthly', 'yearly'] as const).map(cycle => (
                 <label key={cycle} className="flex items-center gap-2">
                   <input
                     type="radio"
@@ -164,12 +217,8 @@ export default function AuthPage() {
           </form>
         )}
 
-        {view === 'login' && (
-          <LoginForm />  /* ensure you have a LoginForm component */
-        )}
-        {view === 'forgot' && (
-          <ForgotPasswordForm /> /* ensure you have this component too */
-        )}
+        {view === 'login' && <LoginForm />}
+        {view === 'forgot' && <ForgotPasswordForm />}
       </div>
     </div>
   );
