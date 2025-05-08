@@ -1,48 +1,21 @@
 // app/layout.tsx
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./styles/globals.css";
+import './styles/globals.css';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
-import Header from "../components/Header";
-import Footer from "../components/Footer";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-export const metadata: Metadata = {
-  title: "TheOneAlgo",
-  description: "Built with TradingView® technology",
+export const metadata = {
+  title: 'TheOneAlgo',
+  description: 'Built with TradingView® technology',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="bg-black">
-      <body
-        className={`
-          ${geistSans.variable}
-          ${geistMono.variable}
-          antialiased text-white min-h-screen flex flex-col
-        `}
-      >
+      <body className="antialiased text-white flex flex-col min-h-screen">
         <Header />
 
-        {/* 
-          pt-16 == height of your fixed header, 
-          so nothing ever sits underneath it 
-        */}
-        <main className="flex-grow w-full pt-16">
+        {/* push content below fixed header */}
+        <main className="flex-grow pt-16">
           {children}
         </main>
 
