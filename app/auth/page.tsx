@@ -1,19 +1,19 @@
-// app/auth/page.tsx
 'use client';
+export const dynamic = 'force-dynamic';
 
 import React, { useState, FormEvent } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { signIn } from 'next-auth/react';
-import Link from 'next/link';
 
-// Stub LoginForm inside this file
 function LoginForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     await signIn('credentials', { email, password, callbackUrl: '/dashboard' });
   };
+
   return (
     <form onSubmit={handleLogin} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
       <input
@@ -39,13 +39,14 @@ function LoginForm() {
   );
 }
 
-// Stub ForgotPasswordForm inside this file
 function ForgotPasswordForm() {
   const [email, setEmail] = useState('');
+
   const handleReset = (e: FormEvent) => {
     e.preventDefault();
     alert('Password reset link sent to ' + email);
   };
+
   return (
     <form onSubmit={handleReset} className="space-y-4 bg-gray-900 p-6 rounded-lg shadow-lg">
       <input
@@ -96,22 +97,19 @@ export default function AuthPage() {
     setError('');
     try {
       const signupRes = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password, plan }),
       });
       if (!signupRes.ok) throw new Error('Signup failed.');
 
       const saveRes = await fetch('/api/save-user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, tradingViewUsername: tvUser }),
       });
       if (!saveRes.ok) throw new Error('Saving user info failed.');
 
       const stripeRes = await fetch('/api/create-stripe-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan, billing, email }),
       });
       const { url } = await stripeRes.json();
@@ -134,11 +132,7 @@ export default function AuthPage() {
               onClick={() => setView(tab)}
               className={`flex-1 py-3 font-semibold ${view === tab ? 'bg-teal-500 text-black' : 'bg-gray-800'}`}
             >
-              {tab === 'signup'
-                ? 'Sign Up'
-                : tab === 'login'
-                ? 'Log In'
-                : 'Forgot Password'}
+              {tab === 'signup' ? 'Sign Up' : tab === 'login' ? 'Log In' : 'Forgot Password'}
             </button>
           ))}
         </div>
