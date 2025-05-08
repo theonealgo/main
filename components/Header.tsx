@@ -50,12 +50,14 @@ export default function Header() {
         {menus.map(({ key, label, items }) => (
           <div key={key} className="relative group">
             <button className="hover:text-teal-400 transition">{label}</button>
+
+            {/* submenu appears on hover of the entire group */}
             <div
-              className={`
-                absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50
+              className="
+                absolute left-0 top-full w-40 bg-gray-900 rounded shadow-lg py-2 z-50
                 opacity-0 invisible group-hover:visible group-hover:opacity-100
                 transition-opacity
-              `}
+              "
             >
               {items.map(({ href, label }) => (
                 <Link
