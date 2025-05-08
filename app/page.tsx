@@ -1,3 +1,4 @@
+// app/page.tsx
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -10,11 +11,7 @@ import './zoom-overrides.css';
 const Zoom = dynamic(() => import('react-medium-image-zoom'), { ssr: false });
 
 export default function Home() {
-  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-  useEffect(() => {
-    document.documentElement.classList.toggle('light', theme === 'light');
-  }, [theme]);
-
+  // — Typewriter for headline —
   const fullText = 'One Signal.\nZero Noise.';
   const [typed, setTyped] = useState('');
   useEffect(() => {
@@ -26,6 +23,7 @@ export default function Home() {
     return () => clearInterval(iv);
   }, []);
 
+  // — Scroll arrow & Back-to-top —
   const [showTop, setShowTop] = useState(false);
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 600);
@@ -64,66 +62,46 @@ export default function Home() {
 
   return (
     <div className="relative">
-      {/* Sun / Moon toggle */}
-      <button
-        onClick={() => setTheme(t => (t === 'dark' ? 'light' : 'dark'))}
-        className="fixed top-4 right-4 z-40 p-2 bg-gray-800 rounded-full hover:bg-gray-700 transition"
-        aria-label="Toggle theme"
-      >
-        {theme === 'dark' ? '🌞' : '🌙'}
-      </button>
-
       {/* HERO */}
       <section
-        className="relative flex items-center justify-center px-4 pt-16 pb-32 bg-cover bg-center min-h-screen"
+        className="relative flex items-center justify-start px-4 pt-16 pb-32 bg-cover bg-center min-h-screen"
         style={{ backgroundImage: "url('/images/bground.jpg')" }}
       >
-        <div className="relative min-h-screen flex flex-col justify-between">
-          <div
-            className="absolute inset-0 bg-cover bg-center"
-            style={{ backgroundImage: "url('/images/bground.jpg')" }}
-          >
-            <div className="absolute inset-0 bg-black opacity-50" />
-          </div>
-
-          <div className="relative z-10 flex-grow flex flex-col justify-center px-8 md:px-16 py-16">
-            <div className="max-w-6xl w-full space-y-6">
-              {typed.split('\n').map((line, i) => (
-                <h1 key={i} className="text-5xl md:text-7xl font-bold leading-tight text-white">
-                  {line}
-                </h1>
-              ))}
-
-              <p className="text-xl md:text-2xl text-gray-200 max-w-2xl">
-                Just signals that work, backed by real data in real time.
-              </p>
-
-              {/* Fix: Reversed the order so small text is on top, button below */}
-              <div className="mt-8 flex flex-col items-center space-y-3">
-                <p className="text-sm text-gray-200">No credit card required</p>
-                <Link
-                  href="/auth?screen_hint=signup"
-                  className="bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition"
-                >
-                  Get Started For Free
-                </Link>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative z-10 pb-8 flex justify-center">
-            <button
-              onClick={scrollToPerf}
-              className="text-4xl animate-bounce text-gray-300"
-              aria-label="Scroll to performance"
+        {/* overlay */}
+        <div className="absolute inset-0 bg-black/50" />
+        {/* content */}
+        <div className="relative z-10 flex flex-col justify-center px-8 md:px-16 py-16 max-w-6xl">
+          {typed.split('\n').map((line, i) => (
+            <h1 key={i} className="text-5xl md:text-7xl font-bold leading-tight text-left text-white">
+              {line}
+            </h1>
+          ))}
+          <p className="mt-4 text-xl md:text-2xl text-gray-200 max-w-2xl">
+            Just signals that work, backed by real data in real time.
+          </p>
+          <div className="mt-8 space-y-2">
+            <Link
+              href="/auth?screen_hint=signup"
+              className="inline-block bg-white text-black px-6 py-3 rounded-full text-sm font-semibold shadow hover:bg-gray-200 transition"
             >
-              ↓
-            </button>
+              Get Started For Free
+            </Link>
+            <p className="text-sm text-gray-200">No credit card required</p>
           </div>
+        </div>
+        {/* scroll arrow */}
+        <div className="relative z-10 pb-8 flex justify-center w-full">
+          <button
+            onClick={scrollToPerf}
+            className="text-4xl animate-bounce text-gray-300"
+            aria-label="Scroll to performance"
+          >
+            ↓
+          </button>
         </div>
       </section>
 
-      {/* PERFORMANCE */}
+      {/* PERFORMANCE ITEMS */}
       <section id="performance" className="bg-black py-24 px-4 md:px-12">
         <div className="max-w-7xl mx-auto space-y-24">
           {performanceItems.map((item, i) => (
@@ -138,12 +116,11 @@ export default function Home() {
                     priority
                     className="rounded-xl object-contain hover:shadow-xl transition-shadow"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 800px"
-                    style={{ imageRendering: 'crisp-edges' }}
                   />
                 </div>
               </Zoom>
               <div className="px-4 space-y-4">
-                <h3 className="text-3xl font-bold">{item.title}</h3>
+                <h3 className="text-3xl font-bold text-white">{item.title}</h3>
                 <p className="text-gray-300 text-lg">{item.desc}</p>
               </div>
             </div>
@@ -154,7 +131,7 @@ export default function Home() {
       {/* LIVE STATS */}
       <section className="bg-gradient-to-r from-gray-900 to-black py-24 px-4 md:px-12">
         <div className="max-w-6xl mx-auto text-center space-y-12">
-          <h2 className="text-5xl font-bold">Real Results. Real Time.</h2>
+          <h2 className="text-5xl font-bold text-white">Real Results. Real Time.</h2>
           <p className="text-xl text-gray-300">
             Our strategies are engineered for performance. See it live below.
           </p>
@@ -193,17 +170,17 @@ export default function Home() {
           playsInline
           className="w-full h-auto rounded-2xl shadow-xl"
         />
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white z-10">
+        <div className="absolute inset-0 flex flex-col justify-center items-center text-center text-white z-10 px-4">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
             Trade with Confidence. Powered by Data.
           </h2>
           <p className="text-lg md:text-xl max-w-4xl">
-            Harness the power of our proven trading strategies and make informed,
-            data-driven decisions in real time.
+            Harness the power of our proven trading strategies and make informed, data-driven decisions in real time.
           </p>
         </div>
       </section>
 
+      {/* BACK TO TOP */}
       {showTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
