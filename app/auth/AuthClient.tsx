@@ -142,10 +142,10 @@ export default function AuthClient() {
   type="button"
   onClick={handleGoogle}
   disabled={loading}
-  className="w-full flex items-center justify-center gap-3 py-3 rounded-lg bg-white text-gray-800 hover:bg-gray-100 transition"
+  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-[#4285F4] text-white hover:opacity-90 transition"
 >
   <FcGoogle size={24} />
-  <span className="font-medium">Sign in with Google</span>
+  Continue with Google
 </button>
 
             <div className="flex items-center">
