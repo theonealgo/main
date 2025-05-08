@@ -1,5 +1,6 @@
+// app/auth/page.tsx
 import React, { Suspense } from 'react'
-import AuthClientPage from './AuthClientPage'
+import AuthClient from './AuthClient'
 
 export const metadata = {
   title: 'Sign Up / Log In – The One Algo',
@@ -7,12 +8,8 @@ export const metadata = {
 
 export default function AuthPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center">
-        Loading…
-      </div>
-    }>
-      <AuthClientPage />
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading…</div>}>
+      <AuthClient />
     </Suspense>
   )
 }
