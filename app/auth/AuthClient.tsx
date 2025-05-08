@@ -1,3 +1,4 @@
+// app/auth/AuthClient.tsx
 'use client';
 
 import React, { useState, FormEvent } from 'react';
@@ -28,8 +29,12 @@ export default function AuthClient() {
   const [tvUser,   setTvUser]   = useState('');
   const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
-  const [plan,     setPlan]     = useState<PlanKey>((params.get('plan') as PlanKey) || 'the_one_stock');
-  const [billing,  setBilling]  = useState<'monthly'|'yearly'>(params.get('billing') === 'yearly' ? 'yearly' : 'monthly');
+  const [plan,     setPlan]     = useState<PlanKey>(
+    (params.get('plan') as PlanKey) || 'the_one_stock'
+  );
+  const [billing,  setBilling]  = useState<'monthly'|'yearly'>(
+    params.get('billing') === 'yearly' ? 'yearly' : 'monthly'
+  );
   const price = billing === 'monthly'
     ? PLAN_CONFIG[plan].monthly
     : PLAN_CONFIG[plan].yearly;
@@ -49,11 +54,13 @@ export default function AuthClient() {
         body: JSON.stringify({ email, password, plan }),
       });
       if (!r1.ok) throw new Error('Signup failed.');
+
       await fetch('/api/save-user', {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify({ email, tradingViewUsername: tvUser }),
       });
+
       const r3 = await fetch('/api/create-stripe-session', {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
@@ -61,6 +68,7 @@ export default function AuthClient() {
       });
       const { url } = await r3.json();
       if (!url) throw new Error('Stripe session creation failed.');
+
       window.location.href = url;
     } catch (err: any) {
       setError(err.message);
@@ -130,25 +138,20 @@ export default function AuthClient() {
         {/* SIGN UP */}
         {view === 'signup' && (
           <form onSubmit={handleSignup} className="space-y-6 bg-gray-900 p-6 rounded-lg shadow-lg">
-           <button
-  type="button"
-  onClick={handleGoogle}
-  disabled={loading}
-  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-[#4285F4] text-white hover:opacity-90 transition"
-<button
-  type="button"
-  onClick={handleGoogle}
-  disabled={loading}
-  className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-white text-gray-800 hover:bg-gray-100 transition"
->
-  <FcGoogle size={24} />
-  Continue with Google
-</button>
+            <button
+              type="button"
+              onClick={handleGoogle}
+              disabled={loading}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg font-semibold bg-white text-gray-800 hover:bg-gray-100 transition"
+            >
+              <FcGoogle size={24} />
+              Continue with Google
+            </button>
 
             <div className="flex items-center">
-              <div className="flex-1 h-px bg-gray-700"/>
+              <div className="flex-1 h-px bg-gray-700" />
               <span className="px-4 text-gray-400">OR</span>
-              <div className="flex-1 h-px bg-gray-700"/>
+              <div className="flex-1 h-px bg-gray-700" />
             </div>
 
             <input
@@ -181,7 +184,7 @@ export default function AuthClient() {
               onChange={e => setPlan(e.target.value as PlanKey)}
               className="w-full px-4 py-3 bg-gray-800 rounded"
             >
-              {Object.entries(PLAN_CONFIG).map(([k,c]) => (
+              {Object.entries(PLAN_CONFIG).map(([k, c]) => (
                 <option key={k} value={k}>{c.label}</option>
               ))}
             </select>
