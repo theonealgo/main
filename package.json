@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "npm install tailwindcss postcss autoprefixer"
   },
   "dependencies": {
     "@next-auth/supabase-adapter": "^0.2.1",
