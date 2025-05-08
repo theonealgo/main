@@ -1,39 +1,37 @@
+// components/Header.tsx
 'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+
+const menus = [
+  {
+    key: 'product' as const,
+    label: 'Product',
+    items: [
+      { href: '/pricing', label: 'Pricing' },
+      { href: '/features', label: 'Features' },
+    ],
+  },
+  {
+    key: 'resources' as const,
+    label: 'Resources',
+    items: [
+      { href: '/documentation', label: 'Documentation' },
+      { href: '/tutorials', label: 'Tutorials' },
+    ],
+  },
+  {
+    key: 'company' as const,
+    label: 'Company',
+    items: [
+      { href: '/about', label: 'About' },
+      { href: '/contact', label: 'Contact' },
+    ],
+  },
+];
 
 export default function Header() {
-  const [openMenu, setOpenMenu] = useState<'product' | 'resources' | 'company' | ''>('');
-
-  const menus = [
-    {
-      key: 'product' as const,
-      label: 'Product',
-      items: [
-        { href: '/pricing', label: 'Pricing' },
-        { href: '/features', label: 'Features' },
-      ],
-    },
-    {
-      key: 'resources' as const,
-      label: 'Resources',
-      items: [
-        { href: '/documentation', label: 'Documentation' },
-        { href: '/tutorials', label: 'Tutorials' },
-      ],
-    },
-    {
-      key: 'company' as const,
-      label: 'Company',
-      items: [
-        { href: '/about', label: 'About' },
-        { href: '/contact', label: 'Contact' },
-      ],
-    },
-  ];
-
   return (
     <header className="w-full bg-black text-white px-6 py-4 flex items-center justify-between border-b border-gray-800">
       {/* Logo */}
@@ -50,26 +48,25 @@ export default function Header() {
       {/* Navigation */}
       <nav className="flex items-center gap-6">
         {menus.map(({ key, label, items }) => (
-          <div
-            key={key}
-            className="relative"
-            onMouseEnter={() => setOpenMenu(key)}
-            onMouseLeave={() => setOpenMenu('')}
-          >
+          <div key={key} className="relative group">
             <button className="hover:text-teal-400 transition">{label}</button>
-            {openMenu === key && (
-              <div className="absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50">
-                {items.map(({ href, label }) => (
-                  <Link
-                    key={href}
-                    href={href}
-                    className="block px-4 py-2 hover:bg-gray-800"
-                  >
-                    {label}
-                  </Link>
-                ))}
-              </div>
-            )}
+            <div
+              className={`
+                absolute left-0 mt-2 w-40 bg-gray-900 rounded shadow-lg py-2 z-50
+                opacity-0 invisible group-hover:visible group-hover:opacity-100
+                transition-opacity
+              `}
+            >
+              {items.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className="block px-4 py-2 hover:bg-gray-800"
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
           </div>
         ))}
 
