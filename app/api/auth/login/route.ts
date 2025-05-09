@@ -1,12 +1,16 @@
 // app/api/auth/login/route.ts
-import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { createClient } from "@supabase/supabase-js";
+import { NextResponse }  from "next/server";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(req: Request) {
-  const supabase = createRouteHandlerClient({ cookies });
   const { email, password, tradingViewUsername } = await req.json();
 
+  // ← use auth.signInWithPassword, NOT auth.admin.signInWithPassword
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
@@ -16,9 +20,9 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: error.message }, { status: 401 });
   }
 
-  // Save or upsert the tradingViewUsername, if needed
+  // record TradingView username if you want
   await supabase
-    .from('profiles')
+    .from("profiles")
     .upsert({ id: data.user.id, tradingViewUsername });
 
   return NextResponse.json({ user: data.user });
