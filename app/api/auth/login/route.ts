@@ -1,24 +1,31 @@
-import { createClient } from '@supabase/supabase-js'
+// app/api/auth/login/route.ts
+
+import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs'
+import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
-
 export async function POST(req: Request) {
+  // Initialize Supabase client for this route
+  const supabase = createRouteHandlerClient({ cookies })
+
+  // Pull in the credentials and TV username
   const { email, password, tradingViewUsername } = await req.json()
-  // Attempt sign‐in with password
-  const { data, error } = await supabase.auth.admin.signInWithPassword({
+
+  // Perform a regular sign-in with email & password
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
+
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 401 })
   }
-  // Optionally: record the TV username on login if you need it
+
+  // Optionally save TradingView username in your profiles table
   await supabase
     .from('profiles')
     .upsert({ id: data.user.id, tradingViewUsername })
+
+  // Return the signed-in user
   return NextResponse.json({ user: data.user })
 }
