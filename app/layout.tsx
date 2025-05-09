@@ -1,10 +1,11 @@
-// app/layout.tsx
 import './styles/globals.css';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+// switch to the React entrypoint for SpeedInsights:
+import { SpeedInsights } from '@vercel/speed-insights/react';
+
 export const metadata = {
-  title: 'TheOneAlgo',
+  title: 'The One Algo',
   description: 'Built with TradingView® technology',
 };
 
@@ -20,6 +21,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </main>
 
         <Footer />
+
+        {/* Vercel Speed Insights widget */}
+        <SpeedInsights />
       </body>
     </html>
   );
