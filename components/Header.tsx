@@ -35,7 +35,7 @@ export default function Header() {
   const { data: session } = useSession();
 
   return (
-    <header className="w-full bg-black text-white px-6 py-4 flex items-center justify-between border-b border-gray-800">
+    <header className="fixed top-0 left-0 w-full bg-black text-white px-6 py-4 flex items-center justify-between border-b border-gray-800 z-50">
       {/* Logo */}
       <Link href="/" className="flex items-center">
         <Image
