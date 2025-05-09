@@ -11,32 +11,37 @@ export const authOptions: NextAuthOptions = {
   }),
 
   providers: [
-    // 1) Credentials (email/password)
+    // 1) Credentials (email/password + TV username)
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
+        tradingViewUsername: { label: "TradingView Username", type: "text" },
+        email:                { label: "Email",                type: "email" },
+        password:             { label: "Password",             type: "password" },
       },
       async authorize(credentials) {
-        // call your signup endpoint (or login) here:
+        // <-- NOTE: switched from /signup to /login
         const res = await fetch(
-          `${process.env.NEXTAUTH_URL}/api/auth/signup`,
+          `${process.env.NEXTAUTH_URL}/api/auth/login`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials),
+            body: JSON.stringify({
+              tradingViewUsername: credentials?.tradingViewUsername,
+              email:                credentials?.email,
+              password:             credentials?.password,
+            }),
           }
         );
-        const user = await res.json();
-        if (res.ok && user) return user;
-        return null;
+        if (!res.ok) return null;
+        const { user } = await res.json();
+        return user;
       },
     }),
 
     // 2) Google OAuth
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientId:     process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
   ],
@@ -46,14 +51,10 @@ export const authOptions: NextAuthOptions = {
   },
 
   pages: {
-    // send all sign-in calls (credentials & OAuth) to your /auth page
+    // all auth actions (credentials & OAuth) land on your custom /auth
     signIn: "/auth",
-    // error messages also land here
-    error: "/auth?error=1",
+    error:  "/auth?error=1",
   },
-
-  // (optionally) you can add callbacks here to persist
-  // tradingViewUsername, plan, etc. into the JWT/session
 };
 
 const handler = NextAuth(authOptions);
